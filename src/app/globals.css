@@ -669,3 +669,61 @@ legend {
     margin-top: 8px;
   }
 }
+
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  margin-top: 6px;
+}
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin: 25px 0;
+}
+.metrics strong {
+  display: block;
+  font-size: 30px;
+}
+.metrics span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.table-scroll {
+  overflow: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.history-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.history-row p {
+  margin: 6px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.preserve-lines {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 70ch;
+}

@@ -89,11 +89,13 @@ export default async function Home() {
       <div className="two-col">
         <section className="card">
           <div className="section-title">
-            <h2>Una semana con intención</h2>
+            <h2>
+              <Link href="/plan">Una semana con intención →</Link>
+            </h2>
             <span>Plan inicial</span>
           </div>
           <p className="muted">
-            6 h 30 min · Se ajustará cuando haya evidencias.
+            6 h 30 min · Propuesta inicial. Consulta tu plan guardado.
           </p>
           {Object.entries(plan).map(([s, m]) => (
             <div className="plan-row" key={s}>
@@ -116,11 +118,11 @@ export default async function Home() {
               <Mic size={18} /> Prepara una respuesta con hipótesis.
             </p>
             <p>
-              <Target size={18} /> Conecta tu cuenta y realiza el diagnóstico.
+              <Target size={18} /> Recoge tus primeras muestras de diagnóstico.
             </p>
           </div>
-          <Link className="text-link" href="/library">
-            Ir a la biblioteca <ArrowRight size={17} />
+          <Link className="text-link" href="/diagnostic">
+            Abrir diagnóstico <ArrowRight size={17} />
           </Link>
           <p className="muted small">
             El diagnóstico completo aún está en desarrollo. No mostraremos un
