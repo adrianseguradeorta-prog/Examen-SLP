@@ -29,7 +29,7 @@ Node.js 24. Ejecutar `npm ci` y `npm run dev`. Validar con `npm run lint`, `npm 
 
 [Instrucciones de conexión a Supabase/Vercel/OpenAI](docs/deployment/CONNECT_SERVICES.md).
 
-Implementado: interfaz responsive, clases originales, Reading con feedback, prueba local de micrófono, login Supabase y borradores Writing versionados con RLS. Sin credenciales, guardado cloud no disponible. Añadido: plan versionado de 36 semanas, registro manual de actividades y muestras iniciales de diagnóstico Reading/Writing con historial y borrado. Aún pendientes: voz conversacional, evaluadores, diagnóstico completo de cuatro skills, SRS, Error Bank persistente, mocks, informes y despliegue. Manifest inicial, sin service worker/offline completo ni pruebas físicas iPhone.
+Implementado: interfaz responsive, clases originales, Reading con feedback, prueba local de micrófono, login Supabase y borradores Writing versionados con RLS. Sin credenciales, guardado cloud no disponible. Añadido: Error Bank manual persistente con estados basados en oportunidades y recomendaciones, y plan versionado de 36 semanas, registro manual de actividades y muestras iniciales de diagnóstico Reading/Writing con historial y borrado. Aún pendientes: voz conversacional, evaluadores, diagnóstico completo de cuatro skills, SRS, detección automática de errores, mocks, informes y despliegue. Manifest inicial, sin service worker/offline completo ni pruebas físicas iPhone.
 
 ## Desarrollo posterior
 

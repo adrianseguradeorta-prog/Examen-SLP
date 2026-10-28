@@ -17,7 +17,7 @@ Abrir http://localhost:3000. Sin claves se pueden consultar clases, practicar Re
 ## 2. Supabase
 
 1. Crear cuenta y proyecto en región UE. Free basta para probar; decidir Pro al comenzar uso diario con requisitos de respaldo.
-2. Ejecutar en orden `supabase/migrations/202610280001_foundation.sql` y `supabase/migrations/202610280002_training.sql` en SQL Editor de un proyecto nuevo. Si ya aplicaste la primera, ejecutar solamente la segunda. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
+2. Ejecutar en orden `supabase/migrations/202610280001_foundation.sql` , `supabase/migrations/202610280002_training.sql` y `supabase/migrations/202610280003_error_bank.sql` en SQL Editor de un proyecto nuevo. Si ya aplicaste alguna, ejecutar solamente las pendientes, en orden. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
 3. En Authentication, desactivar registro público y crear el usuario personal desde la administración. El login actual es email/contraseña; recuperación de contraseña y MFA todavía pendientes de interfaz.
 4. Copiar Project URL y publishable key a `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.env.local` o secretos del hosting. La publishable key está diseñada para cliente; la protección efectiva son RLS y los permisos SQL.
 5. Configurar Site URL y URLs de redirección del despliegue. No poner secret/service-role key en variables públicas. El código actual NO necesita esa clave privilegiada.
@@ -56,3 +56,13 @@ Lint, typecheck, tests de dominio y migración/RLS sobre PostgreSQL embebido PGl
 - El texto del diagnóstico no tiene autosave; ofrece descarga y aviso al salir. No hay garantía de recuperación después de cerrar forzosamente iOS. Para escritura con autosave usar Writing Lab con Supabase conectado.
 
 Verificación local del segundo incremento: 28 pruebas (dominio, SQL/RLS y contratos API), lint, TypeScript y build. No equivale a validación contra un proyecto Supabase real o iPhone físico.
+
+## Tercer incremento: Error Bank
+
+Aplicar `202610280003_error_bank.sql` tras las dos anteriores. `/errors` permite registrar patrones y ejemplos manuales, añadir oportunidades correctas, consultar frecuencia/primera/última aparición y borrar observaciones o patrones completos. Un borrado recalcula las reglas desde las evidencias restantes.
+
+Los patrones se deduplican por usuario, categoría y texto normalizado. La escritura transaccional bloquea reintentos del mismo evento y rechaza reutilizar su identificador con contenido diferente. Una oportunidad correcta requiere un error previo. No hay detector IA: las observaciones son declaradas por el usuario.
+
+Los estados NEW/RECURRING/IMPROVING/CONTROLLED se derivan de sesiones, oportunidades sin ayuda y separación temporal. El mismo día del último error no acredita reparación independiente. No practicar no cuenta como mejora. Las recomendaciones usan categorías y recurrencia; no reprograman todavía el calendario. Si el historial recibido es parcial (máximo 500 patrones/1.000 observaciones por consulta), se omiten estados y recomendaciones hasta implementar paginación completa.
+
+Verificación ampliada: 39 pruebas de dominio, API y PostgreSQL embebido; lint, TypeScript y build. Los controles no sustituyen pruebas contra Supabase gestionado ni iPhone físico.
