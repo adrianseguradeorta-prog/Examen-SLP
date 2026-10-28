@@ -1,6 +1,6 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-28. Primer incremento de implementación, autorizado por el usuario. Rama `feat/training-foundation`.
+Actualizado: 2026-10-28. Segundo incremento de implementación, autorizado por el usuario. Rama `feat/training-foundation`.
 
 ## DONE
 
@@ -14,6 +14,12 @@ Actualizado: 2026-10-28. Primer incremento de implementación, autorizado por el
 - Reglas iniciales de planificación y guarda longitudinal conservadora (no evaluador habilitado).
 - CI lint/typecheck/tests/build e instrucciones para conectar servicios.
 
+- Plan de 36 semanas guardado por versiones, carga de 6–7 h, calendario y señalización de semanas posteriores al examen.
+- Registro manual de actividades con resumen, deduplicación de reintentos y borrado por propietario.
+- Muestras iniciales de diagnóstico: Reading original con corrección servidor sin nivel SLP; Writing guardado pendiente de revisión.
+- Segunda migración de planes/actividades/muestras, validación de datos almacenados y permisos RLS.
+- 28 pruebas locales pasan, además de lint, TypeScript y build de producción.
+
 ## IN PROGRESS
 
 - Base de producto; aún no es plataforma completa para uso diario durante nueve meses.
@@ -21,14 +27,16 @@ Actualizado: 2026-10-28. Primer incremento de implementación, autorizado por el
 ## TODO
 
 - Conectar Supabase/Vercel/OpenAI cuando el usuario cree proyectos y configure secretos.
-- Diagnóstico, persistencia de plan y perfil, Error Bank, SRS, Reading/Listening guardados, mocks e informes.
+- Completar diagnóstico de cuatro destrezas, perfil editable, adaptación automática, Error Bank, SRS, Listening, mocks e informes.
 - Voz WebRTC real, cuotas servidor, grabación privada, reconexión y evaluación posterior.
 - Borrado/exportación, recuperación offline, recuperación de contraseña y backups antes de producción.
 - Contenido inicial completo, admin editorial, pruebas físicas y calibración humana.
 
 ## KNOWN ISSUES
 
-- Sin servicios configurados: login y guardado cloud no probados contra Supabase gestionado.
+- Sin servicios configurados: login y guardado cloud no probados contra Supabase gestionado. Aplicar ambas migraciones en orden.
+- Plan inicial sin adaptación automática. Actividades declaradas, resúmenes UTC y límites de carga de historial explícitos.
+- Diagnóstico todavía parcial y sin calibración; texto de muestra sin autosave (descarga disponible).
 - Writing sin conexión conserva texto solo en pestaña; hay descarga explícita y aviso de salida, no recuperación offline.
 - Solo se recupera el borrador más reciente; selector de historial pendiente.
 - Manifest inicial sin service worker ni iconos Apple completos: no declarar PWA validada.

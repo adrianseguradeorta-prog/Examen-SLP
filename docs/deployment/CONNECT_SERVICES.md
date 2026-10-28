@@ -17,13 +17,13 @@ Abrir http://localhost:3000. Sin claves se pueden consultar clases, practicar Re
 ## 2. Supabase
 
 1. Crear cuenta y proyecto en región UE. Free basta para probar; decidir Pro al comenzar uso diario con requisitos de respaldo.
-2. Ejecutar `supabase/migrations/202610280001_foundation.sql` en SQL Editor de un proyecto nuevo. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
+2. Ejecutar en orden `supabase/migrations/202610280001_foundation.sql` y `supabase/migrations/202610280002_training.sql` en SQL Editor de un proyecto nuevo. Si ya aplicaste la primera, ejecutar solamente la segunda. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
 3. En Authentication, desactivar registro público y crear el usuario personal desde la administración. El login actual es email/contraseña; recuperación de contraseña y MFA todavía pendientes de interfaz.
 4. Copiar Project URL y publishable key a `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.env.local` o secretos del hosting. La publishable key está diseñada para cliente; la protección efectiva son RLS y los permisos SQL.
 5. Configurar Site URL y URLs de redirección del despliegue. No poner secret/service-role key en variables públicas. El código actual NO necesita esa clave privilegiada.
 6. Reiniciar app. Crear dos usuarios de prueba: comprobar acceso, autosave, recuperación en otro navegador, conflicto al escribir simultáneamente y aislamiento. Borrar usuarios de test al terminar.
 
-La migración implementa borradores/versiones y tabla inicial de perfil, no todo el esquema diseñado. No habilitar producción para nueve meses hasta implementar borrado/exportación, backups y recuperación completa.
+Las migraciones implementan borradores/versiones, tabla inicial de perfil, planes, actividades y muestras del diagnóstico; no todo el esquema diseñado. No habilitar producción para nueve meses hasta implementar borrado/exportación, backups y recuperación completa.
 
 ## 3. Vercel
 
@@ -44,3 +44,15 @@ Las variables OPENAI_* están reservadas: **añadir una clave no habilita conver
 ## Comprobación ejecutada
 
 Lint, typecheck, tests de dominio y migración/RLS sobre PostgreSQL embebido PGlite y build de producción. PGlite prueba SQL real pero no los servicios gestionados Auth/Storage de Supabase. No se ha verificado cuenta cloud, iPhone físico ni calidad del evaluador. Ningún diagnóstico o nivel 3 validado está habilitado.
+
+## Segundo incremento: plan y muestras
+
+- `/plan`: crear plan de 36 semanas con 6, 6.5 o 7 horas semanales, fecha de inicio y examen opcional. Se conserva cada versión; el plan es inicial, no adaptativo aún. Semanas posteriores al examen aparecen marcadas.
+- Registrar actividades manuales por skill, fecha, minutos y nota; resumen de los últimos siete días UTC y total del historial cargado (hasta 1.000 registros). Son minutos declarados, no tiempo medido automáticamente.
+- `/diagnostic`: Reading original de cuatro preguntas, corrección servidor después de entregar, muestra de Writing pendiente de revisión y acceso/borrado de muestras. No atribuye nivel SLP; Speaking/Listening siguen pendientes.
+- Las claves Reading no se importan en componentes cliente. Tras ver soluciones, repetir sirve de repaso, no de evidencia independiente.
+- Comprobar con dos cuentas que historial, muestras y planes no se cruzan. Reintentar la misma operación no debe duplicar registros. La API rechaza reutilizar un identificador con otro contenido.
+- Se puede borrar cada actividad, plan o muestra desde su pantalla. Borrado de cuenta completa, backups y exportación global siguen pendientes.
+- El texto del diagnóstico no tiene autosave; ofrece descarga y aviso al salir. No hay garantía de recuperación después de cerrar forzosamente iOS. Para escritura con autosave usar Writing Lab con Supabase conectado.
+
+Verificación local del segundo incremento: 28 pruebas (dominio, SQL/RLS y contratos API), lint, TypeScript y build. No equivale a validación contra un proyecto Supabase real o iPhone físico.
