@@ -1,44 +1,46 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-28 UTC. Fase activa: investigación y diseño inicial entregables; implementación no iniciada.
+Actualizado: 2026-10-28. Primer incremento de implementación, autorizado por el usuario. Rama `feat/training-foundation`.
 
 ## DONE
 
-- Repositorio oficial clonado y verificado vacío; rama `docs/research-design`.
-- .gitignore y .env.example sin secretos; identidad Git existente conservada.
-- Investigación inicial con fuentes y limitaciones de acceso; lectura de descriptores ATrainP-5.
-- Identificación de referencias públicas calificadas 2/2+/3, sin fingir análisis de grabaciones.
-- PRD, roadmap, UX conceptual, arquitectura y alternativas, sincronización y esquema relacional.
-- Diseño IA, Speaking en tres modos, estimación longitudinal, calibración pendiente, mocks, adaptación, Error Bank y analytics.
-- Seguridad/retención propuestas, matriz iPhone, testing, CI/CD diseñado y costes con hipótesis.
-- Commits documentales pequeños por bloque; ninguna aplicación o infraestructura implementada.
+- Investigación/diseño conservados con limitaciones y referencias.
+- Next.js/React/TypeScript con versiones fijas y lockfile.
+- Interfaz responsive, dashboard sin progreso inventado, light/dark, manifest inicial.
+- Cuatro clases originales, Reading de tres preguntas con feedback y seis chunks.
+- Speaking: selección de modos y prueba local de micrófono/reproducción, sin gasto IA.
+- Login/logout Supabase; Writing con contador, descarga, autosave servidor y detección de conflictos.
+- Migración PostgreSQL: borradores, versiones, RLS y función de guardado con revisión optimista.
+- Reglas iniciales de planificación y guarda longitudinal conservadora (no evaluador habilitado).
+- CI lint/typecheck/tests/build e instrucciones para conectar servicios.
 
 ## IN PROGRESS
 
-- Pendiente de revisión y aprobación del usuario; no se está implementando software.
+- Base de producto; aún no es plataforma completa para uso diario durante nueve meses.
 
 ## TODO
 
-- Aprobar decisiones significativas antes de implementar.
-- Recuperar íntegramente documentación española actualizada y convocatoria aplicable.
-- Acceder/escuchar/anotar muestras BILC y examinar Writing; obtener derechos y corpus suficiente.
-- Realizar calibración humana y evals holdout; no habilitar certeza de nivel por diseño solamente.
-- Construir spike de voz y ejecutar pruebas físicas iPhone/PC tras aprobación.
-- Implementar fases del roadmap, contenido inicial, CI/CD real y despliegue.
+- Conectar Supabase/Vercel/OpenAI cuando el usuario cree proyectos y configure secretos.
+- Diagnóstico, persistencia de plan y perfil, Error Bank, SRS, Reading/Listening guardados, mocks e informes.
+- Voz WebRTC real, cuotas servidor, grabación privada, reconexión y evaluación posterior.
+- Borrado/exportación, recuperación offline, recuperación de contraseña y backups antes de producción.
+- Contenido inicial completo, admin editorial, pruebas físicas y calibración humana.
 
 ## KNOWN ISSUES
 
-- Algunas fuentes Defensa/BILC respondieron 403/500/502/503; extractos indexados no equivalen a revisión íntegra.
-- Formato exacto de convocatoria española no confirmado; no fijar tiempos oficiales.
-- Sin API keys/proyectos cloud creados; disponibilidad real y consumo de modelos no probados.
-- Sin iPhone conectado ni aplicación: ninguna prueba física o funcional realizada.
-- Sin corpus humano calibrado: no hay evidencia de precisión de un evaluador IA.
-- Coste de worker persistente, backups de objetos y calibración humana por concretar.
+- Sin servicios configurados: login y guardado cloud no probados contra Supabase gestionado.
+- Writing sin conexión conserva texto solo en pestaña; hay descarga explícita y aviso de salida, no recuperación offline.
+- Solo se recupera el borrador más reciente; selector de historial pendiente.
+- Manifest inicial sin service worker ni iconos Apple completos: no declarar PWA validada.
+- Speaking es prueba local, no conversación IA. No habilitada evaluación de nivel.
+- Normativa/convocatoria concreta y análisis de muestras pendientes según investigación.
+- No pruebas físicas iPhone ni QA visual de navegador realizadas.
 
 ## DECISIONS NEEDED
 
-Ver [registro](docs/decisions/DECISION_LOG.md): stack/servicios, presupuesto, retención y procesamiento, metodología de evaluación y condiciones de mocks. Fecha exacta de examen y convocatoria aún pendientes.
+- No nuevas aprobaciones menores para seguir. Usuario solicitó preparar sin cuentas cloud.
+- Antes de almacenar audio: confirmar conservación y privacidad; costes externos dentro del presupuesto revisado.
 
 ## NEXT STEPS
 
-Presentar resumen ejecutivo y esperar aprobación solicitada expresamente por el usuario. Después cerrar incertidumbres prioritarias, fijar decisiones y comenzar spike de voz y base sincronizada. No continuar automáticamente con implementación.
+Conectar servicios siguiendo docs/deployment/CONNECT_SERVICES.md, validar dos dispositivos y construir el flujo completo de voz con presupuesto y recuperación. No llamar terminado a Speaking ni a la plataforma con esta base.

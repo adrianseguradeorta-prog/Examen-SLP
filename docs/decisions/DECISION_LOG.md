@@ -18,3 +18,7 @@ Todas las propuestas significativas requieren aprobación del usuario; las menor
 | D12 | Propuesta | Sin CRDT inicial: control optimista + versiones y resolución explícita de conflicto |
 
 Aprobar D02/D03/D05 no autoriza cualquier servicio futuro: D04 requiere concretar coste si hace falta. D06 implica decidir si se desea conservar todos los audios nueve meses en lugar de borrado a 90 días. D07 requiere reconocer que mínimos de sesiones son hipótesis de producto, sujetas a validación. Registrar fecha y alcance de aprobación en este archivo antes de implementar.
+
+## Actualización autorizada — 2026-10-28
+
+El usuario respondió «Perfecto, continua con el programa» tras propuesta de objetivo $45/mes y límite operativo $60/mes. Confirmó no tener proyectos y pidió preparar proyecto e instrucciones. Se inicia implementación local en repositorio oficial, sin contratar ni desplegar servicios. La aprobación sustituye la puerta de parada inicial; no implica servicios de pago creados ni validación de metodología. Retención todavía no aplicada: no se guardan audios cloud.
