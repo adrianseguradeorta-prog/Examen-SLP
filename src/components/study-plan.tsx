@@ -90,7 +90,7 @@ export function StudyPlan() {
             </label>
             <label>
               Tiempo semanal
-              <select name="weekly_minutes" defaultValue="390">
+              <select disabled={busy} name="weekly_minutes" defaultValue="390">
                 <option value="360">6 horas</option>
                 <option value="390">6 horas y media</option>
                 <option value="420">7 horas</option>
@@ -157,7 +157,7 @@ export function StudyPlan() {
           >
             <label>
               Destreza
-              <select name="skill">
+              <select disabled={busy} name="skill">
                 <option value="speaking">Speaking</option>
                 <option value="writing">Writing</option>
                 <option value="reading">Reading</option>
@@ -167,6 +167,7 @@ export function StudyPlan() {
             <label>
               Minutos practicados
               <input
+                disabled={busy}
                 type="number"
                 name="minutes"
                 min="1"
@@ -182,6 +183,7 @@ export function StudyPlan() {
             <label>
               Qué has trabajado
               <input
+                disabled={busy}
                 name="note"
                 maxLength={500}
                 placeholder="Ej.: defender una hipótesis sobre energía"

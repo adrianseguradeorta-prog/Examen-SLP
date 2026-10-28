@@ -31,6 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ["/speaking", "Speaking Lab", Mic],
               ["/diagnostic", "Diagnóstico", Compass],
               ["/plan", "Plan y actividad", BookOpen],
+              ["/errors", "Error Bank", PenLine],
               ["/writing", "Writing Lab", PenLine],
               ["/library", "Biblioteca", BookOpen],
               ["/settings", "Cuenta y conexión", Settings],
