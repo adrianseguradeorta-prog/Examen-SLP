@@ -16,6 +16,9 @@ beforeAll(async () => {
   await db.exec(
     readFileSync("supabase/migrations/202610280002_training.sql", "utf8"),
   );
+  await db.exec(
+    readFileSync("supabase/migrations/202610280003_error_bank.sql", "utf8"),
+  );
 }, 30000);
 afterAll(async () => {
   await db.close();
@@ -128,4 +131,66 @@ it("validates plan constraints and diagnostic ownership", async () => {
       `insert into public.diagnostic_submissions(id,user_id,payload) values ('ffffffff-ffff-4fff-afff-ffffffffffff','${bob}','{}')`,
     ),
   ).rejects.toThrow(/check constraint/);
+});
+
+it("deduplicates normalized error patterns and retries while preserving ownership", async () => {
+  await asUser(alice);
+  const call = (
+    event: string,
+    pattern: string,
+    text: string,
+    example: string,
+  ) =>
+    db.query<{ id: string }>(
+      `select public.record_error_observation('${event}','${pattern}','${text}','grammar','speaking','session-a','2026-10-28','error','${example}',false) as id`,
+    );
+  const id1 = "11111111-1111-4111-a111-111111111111",
+    id2 = "22222222-2222-4222-a222-222222222222";
+  const p1 = "33333333-3333-4333-a333-333333333333",
+    p2 = "44444444-4444-4444-a444-444444444444";
+  expect((await call(id1, p1, "Past tense", "I go yesterday")).rows[0].id).toBe(
+    p1,
+  );
+  expect((await call(id1, p1, "Past tense", "I go yesterday")).rows[0].id).toBe(
+    p1,
+  );
+  expect(
+    (await call(id2, p2, " PAST   TENSE ", "Yesterday I go")).rows[0].id,
+  ).toBe(p1);
+  expect(
+    (await db.query("select * from public.error_patterns")).rows,
+  ).toHaveLength(1);
+  expect(
+    (await db.query("select * from public.error_observations")).rows,
+  ).toHaveLength(2);
+  await expect(call(id1, p1, "Past tense", "Changed content")).rejects.toThrow(
+    /Operation conflict/,
+  );
+  await asUser(bob);
+  expect(
+    (await db.query("select * from public.error_observations")).rows,
+  ).toHaveLength(0);
+  await expect(call(id1, p1, "Past tense", "I go yesterday")).rejects.toThrow(
+    /Operation conflict/,
+  );
+  await db.query("delete from public.error_patterns");
+  await asUser(alice);
+  expect(
+    (await db.query("select * from public.error_patterns")).rows,
+  ).toHaveLength(1);
+  await db.query("delete from public.error_patterns");
+  expect(
+    (await db.query("select * from public.error_observations")).rows,
+  ).toHaveLength(0);
+});
+it("rolls back a pattern if the first event claims success without an error", async () => {
+  await asUser(alice);
+  await expect(
+    db.query(
+      `select public.record_error_observation('55555555-5555-4555-a555-555555555555','66666666-6666-4666-a666-666666666666','Hypothesis','grammar','speaking','session-b','2026-10-28','correct','If we were ready',false)`,
+    ),
+  ).rejects.toThrow(/Record an error/);
+  expect(
+    (await db.query("select * from public.error_patterns")).rows,
+  ).toHaveLength(0);
 });
