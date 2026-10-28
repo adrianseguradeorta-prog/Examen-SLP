@@ -13,6 +13,9 @@ beforeAll(async () => {
   await db.exec(
     readFileSync("supabase/migrations/202610280001_foundation.sql", "utf8"),
   );
+  await db.exec(
+    readFileSync("supabase/migrations/202610280002_training.sql", "utf8"),
+  );
 }, 30000);
 afterAll(async () => {
   await db.close();
@@ -66,4 +69,63 @@ it("anonymous caller cannot invoke the mutating function", async () => {
       `select public.save_writing_draft('${draft}',2,'attack','Practice')`,
     ),
   ).rejects.toThrow(/permission denied/);
+});
+
+it("stores immutable study history and prevents cross-user writes and deletes", async () => {
+  await asUser(alice);
+  await db.query(
+    `insert into public.study_activities(id,user_id,skill,minutes,studied_on) values ('eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee','${alice}','speaking',25,'2026-10-28')`,
+  );
+  await expect(
+    db.query(
+      `insert into public.study_activities(id,user_id,skill,minutes,studied_on) values ('eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee','${alice}','speaking',25,'2026-10-28')`,
+    ),
+  ).rejects.toThrow(/duplicate key/);
+  await expect(
+    db.query("update public.study_activities set minutes=180"),
+  ).rejects.toThrow(/permission denied/);
+  await asUser(bob);
+  expect(
+    (await db.query("select * from public.study_activities")).rows,
+  ).toHaveLength(0);
+  await db.query("delete from public.study_activities");
+  await expect(
+    db.query(
+      `insert into public.study_activities(id,user_id,skill,minutes,studied_on) values ('ffffffff-ffff-4fff-afff-ffffffffffff','${alice}','speaking',25,'2026-10-28')`,
+    ),
+  ).rejects.toThrow(/row-level security/);
+  await asUser(alice);
+  expect(
+    (await db.query("select * from public.study_activities")).rows,
+  ).toHaveLength(1);
+  await db.query("delete from public.study_activities");
+  expect(
+    (await db.query("select * from public.study_activities")).rows,
+  ).toHaveLength(0);
+});
+it("validates plan constraints and diagnostic ownership", async () => {
+  await asUser(alice);
+  await expect(
+    db.query(
+      `insert into public.study_plans(id,user_id,start_date,exam_date,weekly_minutes) values ('eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee','${alice}','2026-10-28','2026-10-01',390)`,
+    ),
+  ).rejects.toThrow(/check constraint/);
+  await db.query(
+    `insert into public.study_plans(id,user_id,start_date,weekly_minutes) values ('eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee','${alice}','2026-10-28',390)`,
+  );
+  await db.query(
+    `insert into public.diagnostic_submissions(id,user_id,payload) values ('eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee','${alice}','{"id":"eeeeeeee-eeee-4eee-aeee-eeeeeeeeeeee","kind":"reading","version":"sensors-v1","answers":[0,1,2,1]}')`,
+  );
+  await asUser(bob);
+  expect(
+    (await db.query("select * from public.study_plans")).rows,
+  ).toHaveLength(0);
+  expect(
+    (await db.query("select * from public.diagnostic_submissions")).rows,
+  ).toHaveLength(0);
+  await expect(
+    db.query(
+      `insert into public.diagnostic_submissions(id,user_id,payload) values ('ffffffff-ffff-4fff-afff-ffffffffffff','${bob}','{}')`,
+    ),
+  ).rejects.toThrow(/check constraint/);
 });
