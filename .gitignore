@@ -18,3 +18,5 @@ backups/
 uploads/
 recordings/
 research-downloads/
+
+*.tsbuildinfo
