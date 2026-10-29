@@ -19,6 +19,12 @@ beforeAll(async () => {
   await db.exec(
     readFileSync("supabase/migrations/202610280003_error_bank.sql", "utf8"),
   );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/202610290004_diagnostic_skills.sql",
+      "utf8",
+    ),
+  );
 }, 30000);
 afterAll(async () => {
   await db.close();
@@ -131,6 +137,62 @@ it("validates plan constraints and diagnostic ownership", async () => {
       `insert into public.diagnostic_submissions(id,user_id,payload) values ('ffffffff-ffff-4fff-afff-ffffffffffff','${bob}','{}')`,
     ),
   ).rejects.toThrow(/check constraint/);
+});
+it("accepts the new metadata-only diagnostic kinds while preserving RLS and rejecting audio", async () => {
+  await asUser(alice);
+  const listeningId = "abababab-abab-4bab-abab-abababababab";
+  const speakingId = "cdcdcdcd-cdcd-4dcd-adcd-cdcdcdcdcdcd";
+  const listening = {
+    id: listeningId,
+    kind: "listening",
+    version: "library-evenings-v1",
+    mode: "practice",
+    answers: [0, 1, 2, 1, 2],
+    playCount: 1,
+    completedListens: 1,
+    transcriptViewed: false,
+  };
+  const speaking = {
+    id: speakingId,
+    kind: "speaking",
+    version: "community-decision-v1",
+    completed: true,
+    audioRetained: false,
+    durationSeconds: null,
+    durationReliable: false,
+    interrupted: false,
+    assisted: false,
+    notes: "No audio saved",
+  };
+  await db.query(
+    "insert into public.diagnostic_submissions(id,user_id,payload) values ($1,$2,$3)",
+    [listeningId, alice, JSON.stringify(listening)],
+  );
+  await expect(
+    db.query(
+      "insert into public.diagnostic_submissions(id,user_id,payload) values ($1,$2,$3)",
+      [speakingId, alice, JSON.stringify({ ...speaking, audio: "forbidden" })],
+    ),
+  ).rejects.toThrow(/check constraint/);
+  await expect(
+    db.query(
+      "insert into public.diagnostic_submissions(id,user_id,payload) values ($1,$2,$3)",
+      [speakingId, alice, JSON.stringify({ ...speaking, audioRetained: null })],
+    ),
+  ).rejects.toThrow(/check constraint/);
+  await db.query(
+    "insert into public.diagnostic_submissions(id,user_id,payload) values ($1,$2,$3)",
+    [speakingId, alice, JSON.stringify(speaking)],
+  );
+  await asUser(bob);
+  expect(
+    (
+      await db.query(
+        "select * from public.diagnostic_submissions where id in ($1,$2)",
+        [listeningId, speakingId],
+      )
+    ).rows,
+  ).toHaveLength(0);
 });
 
 it("deduplicates normalized error patterns and retries while preserving ownership", async () => {

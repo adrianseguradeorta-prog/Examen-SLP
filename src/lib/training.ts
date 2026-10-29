@@ -47,13 +47,60 @@ export const writingInput = z
     text: z.string().trim().min(30).max(30000),
   })
   .strict();
+export const listeningInput = z
+  .object({
+    id: z.uuid(),
+    kind: z.literal("listening"),
+    version: z.literal("library-evenings-v1"),
+    answers: z.array(z.number().int().min(0).max(2)).length(5),
+    mode: z.literal("practice"),
+    playCount: z.number().int().min(1).max(1000),
+    completedListens: z.number().int().min(1).max(1000),
+    transcriptViewed: z.boolean(),
+    solutionsKnown: z.boolean().default(false),
+  })
+  .strict()
+  .refine((x) => x.completedListens <= x.playCount, "Reproducciones inválidas");
+export const speakingInput = z
+  .object({
+    id: z.uuid(),
+    kind: z.literal("speaking"),
+    version: z.literal("community-decision-v1"),
+    completed: z.literal(true),
+    durationSeconds: z.number().min(1).max(600).nullable(),
+    durationReliable: z.boolean(),
+    interrupted: z.boolean(),
+    notes: z.string().max(2000),
+    assisted: z.boolean(),
+    audioRetained: z.literal(false),
+  })
+  .strict()
+  .refine(
+    (x) =>
+      x.durationReliable
+        ? x.durationSeconds !== null && !x.interrupted
+        : x.durationSeconds === null,
+    "Duración no fiable debe ser nula",
+  );
 export const submissionInput = z.discriminatedUnion("kind", [
   readingInput,
   writingInput,
+  listeningInput,
+  speakingInput,
 ]);
 export type PlanInput = z.infer<typeof planInput>;
 export type Activity = z.infer<typeof activityInput>;
 export type Submission = z.infer<typeof submissionInput>;
+export type DiagnosticReport = {
+  kind?: Submission["kind"];
+  estimatedLevel: null;
+  status: string;
+  message: string;
+  correct?: number;
+  total?: number;
+  transcript?: string;
+  items?: { correct: boolean; explanation: string; type?: string }[];
+};
 export function addDays(date: string, days: number) {
   const d = new Date(date + "T12:00:00Z");
   d.setUTCDate(d.getUTCDate() + days);
