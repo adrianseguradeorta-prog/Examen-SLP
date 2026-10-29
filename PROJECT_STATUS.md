@@ -24,6 +24,7 @@ Actualizado: 2026-10-29. Cuarto incremento de implementación, autorizado por el
 - Writing recupera borradores desde `localStorage` tras recarga o cierre, conserva cambios locales ante conflictos remotos y separa el almacenamiento por usuario autenticado o invitado.
 - Logout elimina la identidad local activa de Writing sin borrar los borradores de otros usuarios.
 - Pruebas unitarias añadidas para aislamiento de claves, recuperación local, selección local/remota y rechazo de datos locales inválidos.
+- Cuarto incremento validado en GitHub Actions: `npm ci`, lint, TypeScript, tests y build de producción pasan.
 
 ## IN PROGRESS
 
@@ -59,4 +60,4 @@ Actualizado: 2026-10-29. Cuarto incremento de implementación, autorizado por el
 
 ## NEXT STEPS
 
-Validar este incremento con CI (tests, lint, TypeScript y build) y seguir completando funciones que no requieran servicios externos. Mantener Supabase, Vercel y OpenAI sin conectar hasta autorización expresa.
+Seguir completando funciones que no requieran servicios externos y priorizar diagnóstico, adaptación del calendario y flujo de práctica. Mantener Supabase, Vercel y OpenAI sin conectar hasta autorización expresa.
