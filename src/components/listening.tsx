@@ -1,19 +1,41 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { useTraining } from "./use-training";
 import { LocalPracticeNotice } from "./local-practice-notice";
-import { listeningTask as task } from "@/lib/listening-content";
-export function Listening({ local, owner }: { local: boolean; owner: string }) {
+import { listeningTasks } from "@/lib/task-catalog";
+import { useTaskDraft } from "./use-task-draft";
+import { TaskPicker, useOpenedTask } from "./task-picker";
+export function Listening({
+  local,
+  owner,
+  version = "library-evenings-v1",
+}: {
+  local: boolean;
+  owner: string;
+  version?: string;
+}) {
+  const task = listeningTasks.find((t) => t.version === version)!;
   const { data, error, mutate } = useTraining(local, owner);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const {
+    draft,
+    ready,
+    message: draftMessage,
+    edit,
+    clearAfterConfirmed,
+    restart,
+  } = useTaskDraft(owner, "listening", version);
+  const answers = draft?.answers ?? {};
+  const warning = useOpenedTask(local, owner, "listening", version, !!data);
   const [plays, setPlays] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [transcriptViewed, setTranscriptViewed] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const submitted = !!data?.submissions.some((s) => s.id === draft?.id);
+  useEffect(() => {
+    if (submitted) queueMicrotask(clearAfterConfirmed);
+  }, [submitted, clearAfterConfirmed]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const id = useRef("");
   const player = useRef<HTMLAudioElement | null>(null);
   const last = data?.submissions.find(
     (s) => s.payload.kind === "listening" && s.payload.version === task.version,
@@ -23,6 +45,12 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
       {local && <LocalPracticeNotice />}
       <section className="card">
         <div className="eyebrow">3 / LISTENING · PRÁCTICA · 8–10 MINUTOS</div>
+        <TaskPicker
+          skill="listening"
+          version={version}
+          data={data}
+          disabled={busy}
+        />
         <h2>{task.title}</h2>
         <p>
           Audio sintético original del proyecto, breve y no calibrado. Escucha
@@ -36,7 +64,7 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
           controls
           preload="metadata"
           src={task.audio}
-          aria-label="Audio original: A trial worth changing"
+          aria-label={`Audio original: ${task.title}`}
           onPlay={() => setPlays((n) => n + 1)}
           onEnded={() => setCompleted((n) => n + 1)}
           onError={() =>
@@ -60,9 +88,9 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
                 <input
                   type="radio"
                   name={`listening-${i}`}
-                  disabled={busy || submitted}
-                  checked={answers[i] === j}
-                  onChange={() => setAnswers({ ...answers, [i]: j })}
+                  disabled={!data || !ready || busy || submitted}
+                  checked={!!data && answers[i] === j}
+                  onChange={() => edit({ answers: { ...answers, [i]: j } })}
                 />
                 {o}
               </label>
@@ -73,20 +101,22 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
           className="button"
           disabled={
             !data ||
+            !ready ||
             busy ||
             submitted ||
             completed < 1 ||
             Object.keys(answers).length !== task.questions.length
           }
           onClick={async () => {
+            if (!draft) return;
             setBusy(true);
-            id.current ||= crypto.randomUUID();
             try {
               await mutate({
                 action: "submission",
                 data: {
-                  id: id.current,
+                  id: draft.id,
                   kind: "listening",
+                  priorExposure: "none",
                   version: task.version,
                   answers: task.questions.map((_, i) => answers[i]),
                   mode: "practice",
@@ -96,7 +126,7 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
                   solutionsKnown: Boolean(last),
                 },
               });
-              setSubmitted(true);
+              clearAfterConfirmed();
               setMessage(
                 "Respuestas y condiciones guardadas. Esta muestra aporta evidencia limitada, no un nivel SLP.",
               );
@@ -110,11 +140,13 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
           Entregar respuestas
         </button>
         <p role="status">{error || message}</p>
+        <p role="status">{draftMessage}</p>
+        {warning && <p role="status">{warning}</p>}
         <p className="small muted">
-          Antes de entregar, estas respuestas y los contadores solo viven en la
-          pestaña. Tras entregar se conservan resultado, fecha, versión y
-          condiciones. Haber visto soluciones anteriormente convierte otra
-          entrega en repaso.
+          Tus respuestas pendientes se recuperan al volver. Después de recargar,
+          escucha de nuevo: no guardamos la posición ni los contadores del
+          reproductor. Tras entregar se conservan resultado, fecha y versión.
+          Repetir soluciones conocidas es práctica. Usa una pestaña por tarea.
         </p>
         {last && (
           <div className="feedback">
@@ -122,6 +154,12 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
               Última entrega: {last.report.correct} / {last.report.total}
             </h3>
             <p>{last.report.message}</p>
+            <p>
+              {last.payload.kind === "listening" &&
+              last.payload.priorExposure === "none"
+                ? "Primera muestra de este material, sin soluciones previas registradas."
+                : "Práctica o exposición previa desconocida; no añade evidencia independiente."}
+            </p>
             {last.report.items?.map((item, i) => (
               <p key={i}>
                 <strong>
@@ -152,12 +190,10 @@ export function Listening({ local, owner }: { local: boolean; owner: string }) {
                   player.current.pause();
                   player.current.currentTime = 0;
                 }
-                id.current = "";
-                setAnswers({});
+                restart();
                 setPlays(0);
                 setCompleted(0);
                 setTranscriptViewed(false);
-                setSubmitted(false);
                 setMessage(
                   "Nuevo repaso; las entregas anteriores se conservan.",
                 );

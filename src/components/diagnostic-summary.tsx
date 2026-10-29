@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { TrainingData } from "./use-training";
+import { taskHref } from "@/lib/task-rotation";
 import { diagnosticSummary } from "@/lib/diagnostic-summary";
 export function DiagnosticSummary({ data }: { data: TrainingData | null }) {
   return (
@@ -25,6 +26,14 @@ export function DiagnosticSummary({ data }: { data: TrainingData | null }) {
                 {s.last.payload.version} · {s.sampleCount} entrega(s)
               </p>
             )}
+            {(s.skill === "reading" || s.skill === "listening") && (
+              <p>
+                {s.independentCount} material(es) distintos con primera entrega
+                sin soluciones previas registradas. No demuestra nivel SLP;
+                repeticiones y datos antiguos no se cuentan como evidencia
+                independiente.
+              </p>
+            )}
             {s.taskResult && (
               <p>
                 Tarea concreta: {s.taskResult.correct} / {s.taskResult.total}{" "}
@@ -40,9 +49,11 @@ export function DiagnosticSummary({ data }: { data: TrainingData | null }) {
             ))}
             <Link
               href={
-                s.skill === "listening"
-                  ? "/listening"
-                  : `/diagnostic#${s.skill}`
+                s.last
+                  ? taskHref(s.skill, s.last.payload.version)
+                  : s.skill === "listening"
+                    ? "/listening"
+                    : `/diagnostic#${s.skill}`
               }
             >
               {s.last ? "Revisar o repetir como práctica" : "Completar muestra"}{" "}

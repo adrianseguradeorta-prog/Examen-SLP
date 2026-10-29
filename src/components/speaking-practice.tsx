@@ -1,35 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-const topics = [
-  {
-    title: "Technology and public decisions",
-    steps: [
-      "Describe a time when technology changed the way a team worked.",
-      "Should public institutions rely on automated decisions? Support your position with two reasons.",
-      "Some people argue that human judgement is less consistent. How would you respond?",
-      "Would your recommendation change if people could appeal every automated decision?",
-    ],
-  },
-  {
-    title: "Energy and resilience",
-    steps: [
-      "Describe a disruption to an essential service and explain its consequences.",
-      "Should a community prioritise cheaper energy or a more resilient supply?",
-      "How would you respond to residents who cannot afford higher bills?",
-      "What might happen if the community depended on one supplier?",
-    ],
-  },
-  {
-    title: "Leadership and flexible work",
-    steps: [
-      "Describe how a team handled an unexpected change.",
-      "Should every employee have the same right to work remotely? Explain your position.",
-      "A colleague says remote work weakens cooperation. How would you respond?",
-      "Would your answer change during a crisis?",
-    ],
-  },
-];
+import { speakingTopics as topics } from "@/lib/speaking-content";
+
 export function SpeakingPractice() {
   const [topic, setTopic] = useState(0);
   const [step, setStep] = useState(0);

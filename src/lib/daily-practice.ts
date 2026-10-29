@@ -1,6 +1,7 @@
 import type { TrainingData } from "@/components/use-training";
 import type { ErrorData } from "@/components/error-bank";
 import { addDays, allocation } from "./training";
+import { nextTask, taskHref, taskState } from "./task-rotation";
 import { diagnosticOrder, diagnosticSummary } from "./diagnostic-summary";
 
 const tasks = {
@@ -79,7 +80,7 @@ export function nextPractice(
     return {
       ...fallback,
       title: `Completa tu muestra de ${missing}`,
-      href: missing === "listening" ? "/listening" : `/diagnostic#${missing}`,
+      href: taskHref(missing, nextTask(data, missing).version),
       skill: missing,
       minutes: missing === "writing" ? 20 : 10,
       week,
@@ -101,6 +102,7 @@ export function nextPractice(
     return {
       ...fallback,
       ...tasks[gap.skill],
+      href: taskHref(gap.skill, gap.last!.payload.version),
       skill: gap.skill,
       week,
       reason: `En la última muestra de ${gap.skill}: ${gap.gaps.map((g) => `${g.missed} de ${g.total} preguntas falladas de ${g.type}`).join("; ")}. Revisa esas explicaciones y registra tu práctica. Evidencia limitada a esta tarea; repetirla es repaso, no diagnóstico nuevo.`,
@@ -132,12 +134,16 @@ export function nextPractice(
         ),
       )
     : null;
+  const selected = nextTask(data, skill);
+  const state = taskState(data, skill, selected.version);
   return {
     ...tasks[skill],
+    title: selected.title,
+    href: taskHref(skill, selected.version),
     skill,
     week,
     minutes: Math.min(tasks[skill].minutes, target[skill] - totals[skill]),
-    reason: `${totals[skill]} de ${target[skill]} minutos declarados de ${skill} ${week ? `en la semana ${week}` : "en los últimos siete días (propuesta base)"}. Se prioriza el reparto del tiempo, no una supuesta nota.`,
+    reason: `${totals[skill]} de ${target[skill]} minutos declarados de ${skill} ${week ? `en la semana ${week}` : "en los últimos siete días (propuesta base)"}. ${state}: ${selected.title}. Se prioriza el reparto del tiempo y material pendiente, no una supuesta nota. El plan sigue siendo provisional.`,
     focus: pattern ? `${pattern.pattern}: ${pattern.prompt}` : null,
   };
 }

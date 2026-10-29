@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isDeepStrictEqual } from "node:util";
 import { context } from "@/lib/api";
 import {
+  taskExposureInput,
   activityInput,
   planInput,
   submissionInput,
@@ -27,12 +28,17 @@ export async function GET() {
       .select("id,payload,created_at")
       .order("created_at", { ascending: false })
       .limit(50),
+    c.db
+      .from("task_exposures")
+      .select("id,skill,version,stage")
+      .order("created_at", { ascending: false })
+      .limit(1000),
   ]);
   if (results.some((r) => r.error))
     return NextResponse.json(
       {
         error:
-          "No se pudo cargar el entrenamiento. Comprueba que ambas migraciones estén aplicadas.",
+          "No se pudo cargar el entrenamiento. Comprueba que las migraciones pendientes estén aplicadas.",
       },
       { status: 500 },
     );
@@ -69,8 +75,18 @@ export async function GET() {
       { ...row, payload: parsed.data, report: diagnosticReport(parsed.data) },
     ];
   });
+  const exposures = results[3].data?.flatMap((row) => {
+    const parsed = taskExposureInput.safeParse(row);
+    if (!parsed.success) {
+      warnings.push("invalid_exposure");
+      return [];
+    }
+    return [parsed.data];
+  });
+  if ((results[3].data?.length ?? 0) >= 1000)
+    warnings.push("partial_exposure_history");
   return NextResponse.json(
-    { plans, activities, submissions, warnings, ownerId: c.user.id },
+    { plans, activities, submissions, exposures, warnings, ownerId: c.user.id },
     { headers: { "Cache-Control": "no-store" } },
   );
 }
@@ -83,6 +99,30 @@ export async function POST(request: Request) {
       { error: "La cuenta ha cambiado." },
       { status: 403 },
     );
+  if (body?.action === "exposure") {
+    const parsed = taskExposureInput.safeParse(body.data);
+    if (!parsed.success)
+      return NextResponse.json({ error: "Tarea inválida." }, { status: 400 });
+    const { error } = await c.db
+      .from("task_exposures")
+      .insert({ ...parsed.data, user_id: c.user.id });
+    if (error?.code === "23505") {
+      const { data: existing } = await c.db
+        .from("task_exposures")
+        .select("id")
+        .eq("skill", parsed.data.skill)
+        .eq("version", parsed.data.version)
+        .eq("stage", parsed.data.stage)
+        .maybeSingle();
+      if (existing) return NextResponse.json({ ok: true });
+    }
+    return error
+      ? NextResponse.json(
+          { error: "No se confirmó la apertura de la tarea." },
+          { status: 500 },
+        )
+      : NextResponse.json({ ok: true });
+  }
   let table: string, payload: Record<string, unknown>;
   if (body?.action === "plan") {
     const p = planInput.safeParse(body.data);
@@ -114,7 +154,13 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     table = "diagnostic_submissions";
-    payload = { id: p.data.id, payload: p.data };
+    // Cloud independence needs transactional exposure/attempt handling in a later increment.
+    // Do not accept a client claim of unseen solutions as verified cross-device evidence.
+    const submission =
+      p.data.kind === "reading" || p.data.kind === "listening"
+        ? { ...p.data, priorExposure: "unknown" as const }
+        : p.data;
+    payload = { id: p.data.id, payload: submission };
   } else
     return NextResponse.json({ error: "Acción desconocida" }, { status: 400 });
   const { error } = await c.db

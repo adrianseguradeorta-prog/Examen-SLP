@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useTraining } from "./use-training";
+import { useTaskDraft } from "./use-task-draft";
+import { TaskPicker, useOpenedTask } from "./task-picker";
+import { speakingTasks, oralFunctions } from "@/lib/speaking-content";
 import {
   EphemeralRecording,
   emptyRecording,
@@ -9,19 +12,33 @@ import {
 export function DiagnosticSpeaking({
   local,
   owner,
+  version = "community-decision-v1",
   onSubmitted,
 }: {
   local: boolean;
   owner: string;
+  version?: string;
   onSubmitted: () => Promise<void>;
 }) {
   const { data, mutate } = useTraining(local, owner);
+  const task = speakingTasks.find((t) => t.version === version)!;
+  const {
+    draft,
+    ready,
+    message: draftMessage,
+    edit,
+    clearAfterConfirmed,
+    restart,
+  } = useTaskDraft(owner, "speaking", version);
+  const warning = useOpenedTask(local, owner, "speaking", version, !!data);
   const [recording, setRecording] = useState<RecordingState>(emptyRecording);
   const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const saved = !!data?.submissions.some((s) => s.id === draft?.id);
+  useEffect(() => {
+    if (saved) queueMicrotask(clearAfterConfirmed);
+  }, [saved, clearAfterConfirmed]);
   const [message, setMessage] = useState("");
   const recorder = useRef<EphemeralRecording | null>(null);
-  const id = useRef("");
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -57,29 +74,29 @@ export function DiagnosticSpeaking({
   return (
     <section className="card" id="speaking">
       <div className="eyebrow">4 / SPEAKING · 8–10 MINUTOS</div>
-      <h2>A community decision</h2>
+      <TaskPicker
+        skill="speaking"
+        version={version}
+        data={data}
+        disabled={
+          busy ||
+          recording.phase === "recording" ||
+          recording.phase === "requesting"
+        }
+      />
+      <h2>{task.title}</h2>
       <p>
         Prepara ideas durante un minuto, sin redactar un guion. Graba una
         respuesta independiente de unos 3–4 minutos. No necesitas conocimientos
         especializados. La aplicación no te escucha, transcribe ni evalúa.
       </p>
       <ol lang="en">
-        <li>
-          Describe a change that affected a team or community you know. What
-          happened?
-        </li>
-        <li>
-          Should a local authority spend more on shared public spaces or on
-          online services? Explain your position and support it with reasons.
-        </li>
-        <li>
-          Some residents say your choice excludes people with different needs.
-          How would you respond?
-        </li>
-        <li>
-          Would your recommendation change if the budget were cut in half?
-          Explain why.
-        </li>
+        {task.steps.map((q, i) => (
+          <li key={q}>
+            <span className="small">{oralFunctions[i]}: </span>
+            {q}
+          </li>
+        ))}
       </ol>
       <p>
         Al iniciar, autorizas únicamente la captura temporal en memoria para
@@ -88,12 +105,11 @@ export function DiagnosticSpeaking({
       </p>
       <button
         className="button"
-        disabled={busy || recording.phase === "requesting"}
+        disabled={!data || !ready || busy || recording.phase === "requesting"}
         onClick={() => {
           if (recording.phase === "recording") recorder.current?.stop();
           else {
-            id.current = "";
-            setSaved(false);
+            if (saved) restart();
             setMessage("");
             void recorder.current?.start();
           }
@@ -136,27 +152,26 @@ export function DiagnosticSpeaking({
         key={recording.url}
         onSubmit={async (e) => {
           e.preventDefault();
-          const f = new FormData(e.currentTarget);
-          id.current ||= crypto.randomUUID();
+          if (!draft) return;
           setBusy(true);
           try {
             await mutate({
               action: "submission",
               data: {
-                id: id.current,
+                id: draft.id,
                 kind: "speaking",
-                version: "community-decision-v1",
+                version,
                 completed: true,
                 durationSeconds: recording.seconds,
                 durationReliable: recording.seconds !== null,
                 interrupted: recording.interrupted,
-                notes: String(f.get("notes")),
-                assisted: f.get("assisted") === "on",
+                notes: draft.notes,
+                assisted: draft.assisted,
                 audioRetained: false,
               },
             });
             if (!mounted.current) return;
-            setSaved(true);
+            clearAfterConfirmed();
             setMessage(
               "Realización y notas guardadas. El audio sigue siendo efímero. Evidencia insuficiente para estimar nivel.",
             );
@@ -175,8 +190,10 @@ export function DiagnosticSpeaking({
           Observaciones personales (no evaluación)
           <textarea
             name="notes"
+            value={data ? (draft?.notes ?? "") : ""}
+            onChange={(e) => edit({ notes: e.target.value })}
             maxLength={2000}
-            disabled={busy || saved || recording.phase !== "ready"}
+            disabled={!data || !ready || busy || saved}
             placeholder="Ej.: me costó responder a la objeción; no sé si utilicé bien el condicional."
           />
         </label>
@@ -184,7 +201,9 @@ export function DiagnosticSpeaking({
           <input
             type="checkbox"
             name="assisted"
-            disabled={busy || saved || recording.phase !== "ready"}
+            checked={!!data && !!draft?.assisted}
+            onChange={(e) => edit({ assisted: e.target.checked })}
+            disabled={!data || !ready || busy || saved}
           />{" "}
           Consulté ayuda o un modelo al preparar/responder.
         </label>
@@ -199,12 +218,21 @@ export function DiagnosticSpeaking({
         </label>
         <button
           className="button"
-          disabled={!data || recording.phase !== "ready" || busy || saved}
+          disabled={
+            !data || !ready || recording.phase !== "ready" || busy || saved
+          }
         >
           Registrar realización sin conservar audio
         </button>
       </form>
       <p role="status">{message}</p>
+      <p role="status">{draftMessage}</p>
+      {warning && <p role="status">{warning}</p>}
+      <p className="small">
+        Las notas y la ayuda declarada se recuperan al volver. El audio no.
+        Después de recargar necesitarás grabar y escuchar otra respuesta antes
+        de entregar.
+      </p>
       <p className="small muted">
         Registrar esta constancia no suma minutos automáticamente. Usa Hoy o
         Plan para declarar el tiempo real una sola vez. No se puntúan

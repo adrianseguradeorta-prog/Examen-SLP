@@ -1,6 +1,6 @@
 import type { TrainingData } from "@/components/use-training";
-import { diagnosticReading } from "./diagnostic-content";
-import { listeningTask } from "./listening-content";
+import { comprehensionTask } from "./task-catalog";
+import { independentSamples } from "./task-rotation";
 export const diagnosticOrder = [
   "reading",
   "writing",
@@ -23,18 +23,14 @@ export function diagnosticSummary(data: TrainingData | null) {
         .sort((a, b) => b.created_at.localeCompare(a.created_at)) ?? [];
     const last = samples[0];
     const questions =
-      skill === "reading"
-        ? diagnosticReading.questions
-        : skill === "listening"
-          ? listeningTask.questions
-          : [];
+      last && (skill === "reading" || skill === "listening")
+        ? (comprehensionTask(skill, last.payload.version)?.questions ?? [])
+        : [];
     const groups = new Map<string, { missed: number; total: number }>();
-    // Only summarize a complete report for a known version; never infer from a percentage alone.
     const compatible =
-      last &&
-      last.report.items?.length === questions.length &&
-      (last.payload.version === "sensors-v1" ||
-        last.payload.version === "library-evenings-v1");
+      !!last &&
+      questions.length > 0 &&
+      last.report.items?.length === questions.length;
     if (!incomplete && compatible)
       last.report.items?.forEach((item, i) => {
         const type = questions[i].type;
@@ -69,6 +65,10 @@ export function diagnosticSummary(data: TrainingData | null) {
                 ? "Evidencia parcial"
                 : "Evidencia insuficiente",
       sampleCount: samples.length,
+      independentCount:
+        data && !incomplete && (skill === "reading" || skill === "listening")
+          ? independentSamples(data, skill).length
+          : 0,
       last,
       gaps,
       taskResult,

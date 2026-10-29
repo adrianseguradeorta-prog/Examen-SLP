@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useTraining } from "./use-training";
-import { diagnosticWriting } from "@/lib/diagnostic-content";
+import { writingTasks } from "@/lib/task-catalog";
+import { TaskPicker, useOpenedTask } from "./task-picker";
 import { wordCount } from "@/lib/domain";
 import {
   diagnosticDraftKey,
@@ -13,13 +14,17 @@ import {
 export function DiagnosticWriting({
   local,
   owner,
+  version = "public-services-v1",
   onSubmitted,
 }: {
   local: boolean;
   owner: string;
+  version?: string;
   onSubmitted: () => Promise<void>;
 }) {
+  const diagnosticWriting = writingTasks.find((t) => t.version === version)!;
   const { data, mutate } = useTraining(local, owner);
+  const warning = useOpenedTask(local, owner, "writing", version, !!data);
   const [draft, setDraft] = useState<DiagnosticDraft | null>(null);
   const [durable, setDurable] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -32,8 +37,8 @@ export function DiagnosticWriting({
     queueMicrotask(() => {
       if (cancelled) return;
       try {
-        const raw = localStorage.getItem(diagnosticDraftKey(owner));
-        const restored = parseDiagnosticDraft(raw, owner);
+        const raw = localStorage.getItem(diagnosticDraftKey(owner, version));
+        const restored = parseDiagnosticDraft(raw, owner, version);
         if (raw && !restored)
           throw Error(
             "La copia local tiene un formato inválido; se conserva sin sobrescribir. No se ha abierto el editor.",
@@ -44,6 +49,7 @@ export function DiagnosticWriting({
               owner,
               () => crypto.randomUUID(),
               () => new Date().toISOString(),
+              version,
             ),
         );
         setDurable(Boolean(restored));
@@ -62,7 +68,7 @@ export function DiagnosticWriting({
       cancelled = true;
       mounted.current = false;
     };
-  }, [owner]);
+  }, [owner, version]);
   const closed = Boolean(
     draft?.closed ||
     data?.submissions.some((s) => s.id === draft?.submissionId),
@@ -93,6 +99,12 @@ export function DiagnosticWriting({
   return (
     <section className="card" id="writing">
       <div className="eyebrow">2 / WRITING · 15–20 MINUTOS ORIENTATIVOS</div>
+      <TaskPicker
+        skill="writing"
+        version={version}
+        data={data}
+        disabled={busy}
+      />
       <h2>{diagnosticWriting.title}</h2>
       <p lang="en">{diagnosticWriting.prompt}</p>
       <p>
@@ -128,6 +140,7 @@ export function DiagnosticWriting({
         {durable ? "Copia local disponible" : "Sin confirmar copia local"}
       </p>
       <p role="status">{message}</p>
+      {warning && <p role="status">{warning}</p>}
       <button
         className="button"
         disabled={
@@ -142,7 +155,7 @@ export function DiagnosticWriting({
               data: {
                 id: draft.submissionId,
                 kind: "writing",
-                version: "public-services-v1",
+                version,
                 text: draft.text,
               },
             });
@@ -209,6 +222,7 @@ export function DiagnosticWriting({
               owner,
               () => crypto.randomUUID(),
               () => new Date().toISOString(),
+              version,
             );
             try {
               saveDiagnosticDraft(localStorage, next);

@@ -145,6 +145,36 @@ export function DailyPractice({ local }: { local: boolean }) {
         </details>
       </section>
       <section className="card">
+        <h2>Tu primera semana · plan provisional</h2>
+        <p>
+          Empieza por las cuatro muestras, en una o dos sesiones. Después,
+          vuelve a Hoy: primero revisa errores concretos pendientes; luego
+          continúa una tarea abierta o prueba material nuevo según los minutos
+          de tu plan.
+        </p>
+        <ol>
+          <li>Inicio: Reading y Writing. Al volver: Listening y Speaking.</li>
+          <li>
+            Sesiones siguientes: 15–25 minutos de producción oral y bloques de
+            10–20 minutos de otra destreza, siguiendo la propuesta de Hoy.
+          </li>
+          <li>
+            Al terminar: registra minutos reales una sola vez y revisa Error
+            Bank durante cinco minutos.
+          </li>
+          <li>
+            Fin de semana: revisa qué has hecho y qué falta. El plan conserva la
+            carga elegida; no deduce un nivel por acumular tiempo.
+          </li>
+        </ol>
+        <p>
+          Hay tres tareas distintas de Reading, Listening y Writing diagnóstico.
+          Cuando se agoten, las repeticiones seguirán siendo útiles como
+          práctica, pero no aumentarán la evidencia independiente.
+        </p>
+        <Link href="/plan">Ajustar inicio y horas semanales →</Link>
+      </section>
+      <section className="card">
         <h2>Tu primera sesión · unos 40 minutos</h2>
         <p>
           <Link href="/diagnostic">

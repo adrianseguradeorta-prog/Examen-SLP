@@ -5,7 +5,12 @@ import {
   PRACTICE_CHANGE,
   practicePrefix,
 } from "@/lib/local-practice";
-import type { Activity, PlanInput, Submission } from "@/lib/training";
+import type {
+  Activity,
+  PlanInput,
+  Submission,
+  TaskExposure,
+} from "@/lib/training";
 export type Report = {
   estimatedLevel: null;
   status: string;
@@ -16,6 +21,7 @@ export type Report = {
   transcript?: string;
 };
 export type TrainingData = {
+  exposures?: TaskExposure[];
   warnings?: string[];
   plans: PlanInput[];
   activities: Activity[];

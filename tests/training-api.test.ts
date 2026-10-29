@@ -115,3 +115,18 @@ it("validates stored payloads before grading and keeps valid history available",
   expect(body.submissions).toEqual([]);
   expect(body.warnings).toEqual(["invalid_submission"]);
 });
+it("does not trust a client assertion of independent evidence in cloud mode", async () => {
+  const s = {
+    id: record.id,
+    kind: "reading",
+    version: "training-time-v1",
+    answers: [1, 0, 2, 1],
+    priorExposure: "none",
+  };
+  expect((await POST(request("submission", s))).status).toBe(200);
+  expect(mocks.insert).toHaveBeenCalledWith({
+    id: s.id,
+    user_id: "alice",
+    payload: { ...s, priorExposure: "unknown" },
+  });
+});

@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { activityInput, planInput, submissionInput } from "./training";
+import {
+  activityInput,
+  planInput,
+  submissionInput,
+  taskExposureInput,
+} from "./training";
+import { knownSolutions } from "./task-rotation";
 import { observationInput, errorProgress, recommendPractice } from "./errors";
 
 export const PRACTICE_PREFIX = "slp:practice:v1:guest:";
@@ -25,6 +31,7 @@ export const reportSchema = z.object({
     .optional(),
 });
 const recordSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("exposure"), data: taskExposureInput }),
   z.object({ kind: z.literal("plan"), data: planInput }),
   z.object({ kind: z.literal("activity"), data: activityInput }),
   z.object({
@@ -110,6 +117,9 @@ export function createLocalPracticeRequest(
       if (method === "GET") {
         if (path === "/api/training")
           return json({
+            exposures: rows.flatMap(({ record }) =>
+              record.kind === "exposure" ? [record.data] : [],
+            ),
             plans: rows.flatMap(({ record }) =>
               record.kind === "plan" ? [record.data] : [],
             ),
@@ -151,7 +161,19 @@ export function createLocalPracticeRequest(
       }
       const body = JSON.parse(String(init?.body ?? "null"));
       if (method === "POST" && path === "/api/training") {
-        if (body?.action === "plan")
+        if (body?.action === "exposure") {
+          const data = taskExposureInput.parse(body.data);
+          if (
+            !rows.some(
+              ({ record }) =>
+                record.kind === "exposure" &&
+                record.data.skill === data.skill &&
+                record.data.version === data.version &&
+                record.data.stage === data.stage,
+            )
+          )
+            write({ kind: "exposure", data });
+        } else if (body?.action === "plan")
           write({ kind: "plan", data: planInput.parse(body.data) });
         else if (body?.action === "activity") {
           const data = activityInput.parse(body.data);
@@ -159,7 +181,46 @@ export function createLocalPracticeRequest(
             throw Error("No registres actividad futura.");
           write({ kind: "activity", data });
         } else if (body?.action === "submission") {
-          const data = submissionInput.parse(body.data);
+          let data = submissionInput.parse(body.data);
+          const previous = rows.find(
+            ({ record }) =>
+              record.kind === "submission" && record.data.id === data.id,
+          )?.record;
+          if (previous?.kind === "submission") {
+            // A retry after a lost acknowledgement must not become a different attempt.
+            const incoming = { ...data },
+              saved = { ...previous.data };
+            if (incoming.kind === "reading" || incoming.kind === "listening")
+              delete incoming.priorExposure;
+            if (saved.kind === "reading" || saved.kind === "listening")
+              delete saved.priorExposure;
+            if (JSON.stringify(incoming) !== JSON.stringify(saved))
+              throw Error(
+                "La entrega ya contiene otra respuesta; no se ha sustituido.",
+              );
+            return json({ ok: true, local: true });
+          }
+          const exposures = rows.flatMap(({ record }) =>
+            record.kind === "exposure" ? [record.data] : [],
+          );
+          if (data.kind === "reading" || data.kind === "listening") {
+            const known = knownSolutions(
+              exposures,
+              rows.flatMap(({ record }) =>
+                record.kind === "submission" ? [{ payload: record.data }] : [],
+              ),
+              data.kind,
+              data.version,
+            );
+            data = {
+              ...data,
+              priorExposure: known
+                ? "solutions"
+                : warnings.length
+                  ? "unknown"
+                  : (data.priorExposure ?? "unknown"),
+            };
+          }
           // The local application server grades original Reading; no cloud/AI call.
           const r = await fetcher("/api/practice/diagnostic", {
             method: "POST",
@@ -172,6 +233,25 @@ export function createLocalPracticeRequest(
               "No se pudo revisar la muestra. Mantén la aplicación local en marcha y reintenta.",
             );
           const report = reportSchema.parse(await r.json());
+          // Keep exposure after deleting results; a repeat cannot become independent again.
+          if (
+            (data.kind === "reading" || data.kind === "listening") &&
+            !exposures.some(
+              (e) =>
+                e.skill === data.kind &&
+                e.version === data.version &&
+                e.stage === "solutions",
+            )
+          )
+            write({
+              kind: "exposure",
+              data: {
+                id: crypto.randomUUID(),
+                skill: data.kind,
+                version: data.version,
+                stage: "solutions",
+              },
+            });
           write({ kind: "submission", data, report });
         } else throw Error("Acción desconocida.");
         return json({ ok: true, local: true });
