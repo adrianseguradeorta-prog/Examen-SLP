@@ -1,9 +1,14 @@
 import type { TrainingData } from "@/components/use-training";
 import type { ErrorData } from "@/components/error-bank";
 import { addDays, allocation } from "./training";
-import { diagnosticReading } from "./diagnostic-content";
+import { diagnosticOrder, diagnosticSummary } from "./diagnostic-summary";
 
 const tasks = {
+  listening: {
+    title: "Escucha y justifica las inferencias del anuncio",
+    href: "/listening",
+    minutes: 10,
+  },
   speaking: {
     title: "Defiende una postura en voz alta",
     href: "/speaking#practice",
@@ -63,49 +68,48 @@ export function nextPractice(
   const activities = [
     ...new Map(data.activities.map((a) => [a.id, a])).values(),
   ].filter((a) => a.studied_on >= from && a.studied_on <= today);
-  const reading = data.submissions
-    .filter(
-      (s) => s.payload.kind === "reading" && s.created_at.slice(0, 10) <= today,
-    )
-    .sort((a, b) => a.created_at.localeCompare(b.created_at))[0];
-  if (!reading)
+  const summaries = diagnosticSummary(data);
+  const missing = diagnosticOrder.find(
+    (skill) =>
+      !data.submissions.some(
+        (s) => s.payload.kind === skill && s.created_at.slice(0, 10) <= today,
+      ),
+  );
+  if (missing)
     return {
       ...fallback,
-      title: "Empieza con la muestra breve de Reading",
-      href: "/diagnostic",
-      skill: "reading",
-      minutes: 10,
+      title: `Completa tu muestra de ${missing}`,
+      href: missing === "listening" ? "/listening" : `/diagnostic#${missing}`,
+      skill: missing,
+      minutes: missing === "writing" ? 20 : 10,
       week,
-      reason:
-        "Todavía no hay una muestra de Reading guardada. Cuatro preguntas con explicación; después pasa a Speaking. No determina tu SLP.",
+      reason: `Falta la muestra de ${missing}. Completa esta tarea para ampliar la evidencia inicial. El perfil sigue siendo declarado: evidencia insuficiente para estimar un SLP.`,
     };
-  const missed =
-    reading.report.items?.flatMap((item, i) =>
-      !item.correct && diagnosticReading.questions[i]
-        ? [diagnosticReading.questions[i].type]
-        : [],
-    ) ?? [];
-  if (
-    missed.length &&
-    !data.activities.some(
-      (a) =>
-        a.skill === "reading" &&
-        a.studied_on >= reading.created_at.slice(0, 10) &&
-        a.studied_on <= today,
-    )
-  )
+  const gap = summaries.find(
+    (s) =>
+      (s.skill === "reading" || s.skill === "listening") &&
+      s.gaps.length &&
+      s.last &&
+      !data.activities.some(
+        (a) =>
+          a.skill === s.skill &&
+          a.studied_on >= s.last!.created_at.slice(0, 10) &&
+          a.studied_on <= today,
+      ),
+  );
+  if (gap && (gap.skill === "reading" || gap.skill === "listening"))
     return {
       ...fallback,
-      ...tasks.reading,
-      skill: "reading",
+      ...tasks[gap.skill],
+      skill: gap.skill,
       week,
-      reason: `En tu primera muestra fallaste: ${missed.join(", ")}. Practica otra lectura y registra lo trabajado; una muestra no demuestra una carencia estable.`,
+      reason: `En la última muestra de ${gap.skill}: ${gap.gaps.map((g) => `${g.missed} de ${g.total} preguntas falladas de ${g.type}`).join("; ")}. Revisa esas explicaciones y registra tu práctica. Evidencia limitada a esta tarea; repetirla es repaso, no diagnóstico nuevo.`,
     };
   const target = allocation(plan?.weekly_minutes ?? 390);
-  const totals = { speaking: 0, writing: 0, reading: 0 };
+  const totals = { speaking: 0, writing: 0, reading: 0, listening: 0 };
   for (const a of activities)
     if (a.skill in totals) totals[a.skill as keyof typeof totals] += a.minutes;
-  const skill = (Object.keys(tasks) as (keyof typeof tasks)[])
+  const skill = (["speaking", "writing", "reading", "listening"] as const)
     .filter((s) => totals[s] < target[s])
     .sort((a, b) => totals[a] / target[a] - totals[b] / target[b])[0];
   if (!skill)
@@ -116,7 +120,7 @@ export function nextPractice(
       minutes: 5,
       week,
       reason:
-        "Has registrado la carga propuesta de Speaking, Writing y Reading para este periodo. Repaso opcional; no aumentamos la carga ni deducimos un nivel por minutos.",
+        "Has registrado la carga propuesta de Speaking, Writing, Reading y Listening para este periodo. Repaso opcional; no aumentamos la carga ni deducimos un nivel por minutos.",
     };
   const pattern = !errors?.truncated
     ? errors?.recommendations.find((p) =>

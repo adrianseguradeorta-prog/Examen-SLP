@@ -70,7 +70,7 @@ export async function GET() {
     ];
   });
   return NextResponse.json(
-    { plans, activities, submissions, warnings },
+    { plans, activities, submissions, warnings, ownerId: c.user.id },
     { headers: { "Cache-Control": "no-store" } },
   );
 }
@@ -78,6 +78,11 @@ export async function POST(request: Request) {
   const c = await context(request);
   if (c.error) return c.error;
   const body = await request.json().catch(() => null);
+  if (body?.expectedOwner && body.expectedOwner !== c.user.id)
+    return NextResponse.json(
+      { error: "La cuenta ha cambiado." },
+      { status: 403 },
+    );
   let table: string, payload: Record<string, unknown>;
   if (body?.action === "plan") {
     const p = planInput.safeParse(body.data);
@@ -155,6 +160,11 @@ export async function DELETE(request: Request) {
   const c = await context(request);
   if (c.error) return c.error;
   const body = await request.json().catch(() => null);
+  if (body?.expectedOwner && body.expectedOwner !== c.user.id)
+    return NextResponse.json(
+      { error: "La cuenta ha cambiado." },
+      { status: 403 },
+    );
   const tables: Record<string, string> = {
     activity: "study_activities",
     submission: "diagnostic_submissions",

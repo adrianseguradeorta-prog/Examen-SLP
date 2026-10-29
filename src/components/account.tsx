@@ -1,4 +1,5 @@
 "use client";
+import { invalidateDiagnosticIdentity } from "@/lib/diagnostic-identity";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ACTIVE_WRITING_USER_KEY } from "@/lib/writing-draft";
@@ -15,6 +16,7 @@ export function Account({ connected }: { connected: boolean }) {
           setBusy(true);
           const data = new FormData(e.currentTarget);
           try {
+            invalidateDiagnosticIdentity();
             const r = await fetch("/api/auth", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -25,6 +27,7 @@ export function Account({ connected }: { connected: boolean }) {
             });
             const j = await r.json();
             if (r.ok) {
+              invalidateDiagnosticIdentity();
               router.push("/");
               router.refresh();
             } else setMessage(j.error);
@@ -60,7 +63,9 @@ export function Account({ connected }: { connected: boolean }) {
       <button
         className="text-button"
         onClick={async () => {
+          invalidateDiagnosticIdentity();
           await fetch("/api/auth", { method: "DELETE" });
+          invalidateDiagnosticIdentity();
           localStorage.removeItem(ACTIVE_WRITING_USER_KEY);
           sessionStorage.clear();
           router.push("/");

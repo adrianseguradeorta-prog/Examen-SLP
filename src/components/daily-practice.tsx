@@ -146,6 +146,13 @@ export function DailyPractice({ local }: { local: boolean }) {
       </section>
       <section className="card">
         <h2>Tu primera sesión · unos 40 minutos</h2>
+        <p>
+          <Link href="/diagnostic">
+            Completar diagnóstico de cuatro destrezas →
+          </Link>{" "}
+          (unos 45–50 minutos, divisible en dos sesiones). Esta sesión breve
+          sigue disponible como práctica.
+        </p>
         <ol>
           <li>
             <Link href="/diagnostic">Reading (10 min)</Link>: lee «Warnings are
@@ -174,10 +181,10 @@ export function DailyPractice({ local }: { local: boolean }) {
           </li>
         </ol>
         <p className="small muted">
-          Abrir una pantalla no cuenta como practicar. Listening conserva su
-          hueco en el plan, pero aún no hay un ejercicio de audio evaluable. Las
-          recomendaciones no cambian automáticamente las fechas ni los objetivos
-          de nivel.
+          Abrir una pantalla no cuenta como practicar. Listening Lab ya incluye
+          una tarea original de práctica. El diagnóstico de cuatro destrezas
+          puede completarse en dos sesiones. Las recomendaciones no cambian
+          automáticamente las fechas ni los objetivos de nivel.
         </p>
         {local && (
           <button

@@ -2,6 +2,8 @@ import { expect, it } from "vitest";
 import { nextPractice } from "../src/lib/daily-practice";
 import type { TrainingData } from "../src/components/use-training";
 import type { ErrorData } from "../src/components/error-bank";
+import { diagnosticReport } from "../src/lib/diagnostic-grading";
+import type { Submission } from "../src/lib/training";
 import { recommendPractice } from "../src/lib/errors";
 const date = "2026-10-29";
 function data(): TrainingData {
@@ -28,6 +30,44 @@ function data(): TrainingData {
           })),
         },
       },
+      ...(
+        [
+          {
+            id: "write",
+            kind: "writing",
+            version: "public-services-v1",
+            text: "A complete sample awaiting independent review.",
+          },
+          {
+            id: "listen",
+            kind: "listening",
+            version: "library-evenings-v1",
+            answers: [0, 1, 2, 1, 2],
+            mode: "practice",
+            playCount: 1,
+            completedListens: 1,
+            transcriptViewed: false,
+            solutionsKnown: false,
+          },
+          {
+            id: "speak",
+            kind: "speaking",
+            version: "community-decision-v1",
+            completed: true,
+            durationSeconds: null,
+            durationReliable: false,
+            interrupted: false,
+            notes: "",
+            assisted: false,
+            audioRetained: false,
+          },
+        ] as Submission[]
+      ).map((payload) => ({
+        id: payload.id,
+        payload,
+        created_at: `${date}T12:00:00Z`,
+        report: diagnosticReport(payload),
+      })),
     ],
   };
 }
@@ -37,11 +77,11 @@ it("offers an honest general task for unavailable or incomplete history", () => 
     nextPractice({ ...data(), warnings: ["invalid"] }, null, date).reason,
   ).toContain("Sin historial suficiente");
 });
-it("starts with a brief diagnostic and prioritizes speaking after the sample", () => {
+it("starts with a brief diagnostic and prioritizes speaking after all four samples", () => {
   expect(
     nextPractice({ plans: [], activities: [], submissions: [] }, null, date)
       .href,
-  ).toBe("/diagnostic");
+  ).toBe("/diagnostic#reading");
   expect(nextPractice(data(), null, date).skill).toBe("speaking");
 });
 it("uses the active calendar week and excludes duplicate, old and future activities", () => {
@@ -72,18 +112,18 @@ it("uses the active calendar week and excludes duplicate, old and future activit
   expect(next.skill).toBe("writing");
   expect(next.reason).toContain("0 de 80");
 });
-it("does not treat a repeated perfect answer as new independent diagnostic evidence", () => {
+it("uses only the latest task errors to suggest review without estimating a level", () => {
   const d = data();
-  d.submissions[0].report.items![1].correct = false;
   const repeated = data().submissions[0];
   repeated.created_at = "2026-10-30T12:00:00Z";
+  repeated.report.items![1].correct = false;
   d.submissions.unshift(repeated);
   expect(nextPractice(d, null, "2026-10-30").reason).toContain("inference");
   d.activities.push({
     id: "a",
     skill: "reading",
     minutes: 10,
-    studied_on: date,
+    studied_on: "2026-10-30",
     note: "evidence",
   });
   expect(nextPractice(d, null, "2026-10-30").skill).toBe("speaking");
@@ -135,13 +175,15 @@ it("adds only observed matching error context and abstains for truncated Error B
 });
 it("does not increase workload or fabricate level after the available skill targets are met", () => {
   const d = data();
-  d.activities = ["speaking", "reading", "writing"].map((skill) => ({
-    id: skill,
-    skill: skill as "speaking" | "reading" | "writing",
-    studied_on: date,
-    minutes: 180,
-    note: "",
-  }));
+  d.activities = ["speaking", "reading", "writing", "listening"].map(
+    (skill) => ({
+      id: skill,
+      skill: skill as "speaking" | "reading" | "writing" | "listening",
+      studied_on: date,
+      minutes: 180,
+      note: "",
+    }),
+  );
   const next = nextPractice(d, null, date);
   expect(next.href).toBe("/errors");
   expect(next.reason).toContain("no aumentamos");

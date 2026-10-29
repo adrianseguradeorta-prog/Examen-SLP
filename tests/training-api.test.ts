@@ -40,6 +40,32 @@ it("returns the authentication gate without touching storage", async () => {
   expect((await POST(request("activity", record))).status).toBe(401);
   expect(mocks.from).not.toHaveBeenCalled();
 });
+it("rejects an in-flight diagnostic mutation after the account changed", async () => {
+  const r = await POST(
+    new Request("http://localhost/api/training", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "activity",
+        data: record,
+        expectedOwner: "bob",
+      }),
+    }),
+  );
+  expect(r.status).toBe(403);
+  expect(mocks.from).not.toHaveBeenCalled();
+  const d = await DELETE(
+    new Request("http://localhost/api/training", {
+      method: "DELETE",
+      body: JSON.stringify({
+        kind: "activity",
+        id: record.id,
+        expectedOwner: "bob",
+      }),
+    }),
+  );
+  expect(d.status).toBe(403);
+  expect(mocks.from).not.toHaveBeenCalled();
+});
 it("derives owner from the session and rejects attempts to inject a score", async () => {
   expect((await POST(request("activity", record))).status).toBe(200);
   expect(mocks.insert).toHaveBeenCalledWith({ ...record, user_id: "alice" });

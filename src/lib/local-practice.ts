@@ -3,6 +3,9 @@ import { activityInput, planInput, submissionInput } from "./training";
 import { observationInput, errorProgress, recommendPractice } from "./errors";
 
 export const PRACTICE_PREFIX = "slp:practice:v1:guest:";
+export function practicePrefix(owner = "guest") {
+  return `slp:practice:v1:${encodeURIComponent(owner)}:`;
+}
 export const PRACTICE_CHANGE = "slp-practice-change";
 export const reportSchema = z.object({
   estimatedLevel: z.null(),
@@ -10,8 +13,15 @@ export const reportSchema = z.object({
   message: z.string(),
   correct: z.number().int().nonnegative().optional(),
   total: z.number().int().positive().optional(),
+  transcript: z.string().optional(),
   items: z
-    .array(z.object({ correct: z.boolean(), explanation: z.string() }))
+    .array(
+      z.object({
+        correct: z.boolean(),
+        explanation: z.string(),
+        type: z.string().optional(),
+      }),
+    )
     .optional(),
 });
 const recordSchema = z.discriminatedUnion("kind", [
@@ -44,18 +54,18 @@ export function createLocalPracticeRequest(
   store: Store,
   fetcher: typeof fetch,
   now = () => new Date(),
+  owner = "guest",
 ) {
+  const prefix = practicePrefix(owner);
   function read() {
     const rows: z.infer<typeof storedSchema>[] = [];
     const warnings: string[] = [];
     for (let i = 0; i < store.length; i++) {
       const key = store.key(i);
-      if (!key?.startsWith(PRACTICE_PREFIX)) continue;
+      if (!key?.startsWith(prefix)) continue;
       try {
         const row = storedSchema.parse(JSON.parse(store.getItem(key)!));
-        if (
-          key !== `${PRACTICE_PREFIX}${row.record.kind}:${row.record.data.id}`
-        )
+        if (key !== `${prefix}${row.record.kind}:${row.record.data.id}`)
           throw Error("key mismatch");
         rows.push(row);
       } catch {
@@ -66,7 +76,7 @@ export function createLocalPracticeRequest(
     return { rows, warnings };
   }
   function write(record: RecordData) {
-    const key = `${PRACTICE_PREFIX}${record.kind}:${record.data.id}`;
+    const key = `${prefix}${record.kind}:${record.data.id}`;
     const previous = store.getItem(key);
     if (previous) {
       const old = storedSchema.parse(JSON.parse(previous));
@@ -225,10 +235,8 @@ export function createLocalPracticeRequest(
         if (p.kind === "pattern")
           observations
             .filter((o) => o.pattern_id === p.id)
-            .forEach((o) =>
-              store.removeItem(`${PRACTICE_PREFIX}observation:${o.id}`),
-            );
-        else store.removeItem(`${PRACTICE_PREFIX}${p.kind}:${p.id}`);
+            .forEach((o) => store.removeItem(`${prefix}observation:${o.id}`));
+        else store.removeItem(`${prefix}${p.kind}:${p.id}`);
         return json({ ok: true });
       }
       return json({ error: "Solicitud no disponible." }, 400);
@@ -253,12 +261,15 @@ export async function practiceRequest(
   local: boolean,
   path: string,
   init?: RequestInit,
+  owner = "guest",
 ) {
   if (!local) return fetch(path, init);
   try {
     const r = await createLocalPracticeRequest(
       window.localStorage,
       window.fetch.bind(window),
+      () => new Date(),
+      owner,
     )(path, init);
     if (r.ok && init?.method && init.method !== "GET")
       window.dispatchEvent(new Event(PRACTICE_CHANGE));

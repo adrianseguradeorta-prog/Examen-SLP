@@ -29,6 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {[
               ["/", "Hoy", Compass],
               ["/speaking", "Speaking Lab", Mic],
+              ["/listening", "Listening Lab", BookOpen],
               ["/diagnostic", "Diagnóstico", Compass],
               ["/plan", "Plan y actividad", BookOpen],
               ["/errors", "Error Bank", PenLine],

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   practiceRequest,
   PRACTICE_CHANGE,
-  PRACTICE_PREFIX,
+  practicePrefix,
 } from "@/lib/local-practice";
 import type { Activity, PlanInput, Submission } from "@/lib/training";
 export type Report = {
@@ -12,7 +12,8 @@ export type Report = {
   message: string;
   correct?: number;
   total?: number;
-  items?: { correct: boolean; explanation: string }[];
+  items?: { correct: boolean; explanation: string; type?: string }[];
+  transcript?: string;
 };
 export type TrainingData = {
   warnings?: string[];
@@ -25,17 +26,24 @@ export type TrainingData = {
     report: Report;
   }[];
 };
-export function useTraining(local = false) {
+export function useTraining(local = false, owner = "guest") {
   const [data, setData] = useState<TrainingData | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const load = useCallback(async () => {
     try {
-      const r = await practiceRequest(local, "/api/training", {
-        cache: "no-store",
-      });
+      const r = await practiceRequest(
+        local,
+        "/api/training",
+        {
+          cache: "no-store",
+        },
+        owner,
+      );
       const j = await r.json();
       if (!r.ok) throw Error(j.error);
+      if (!local && owner !== "guest" && j.ownerId !== owner)
+        throw Error("La cuenta ha cambiado. Recarga la página.");
       setData(j);
       setError(
         j.warnings?.length
@@ -48,13 +56,18 @@ export function useTraining(local = false) {
     } finally {
       setLoading(false);
     }
-  }, [local]);
+  }, [local, owner]);
   useEffect(() => {
     const abort = new AbortController();
-    practiceRequest(local, "/api/training", {
-      cache: "no-store",
-      signal: abort.signal,
-    })
+    practiceRequest(
+      local,
+      "/api/training",
+      {
+        cache: "no-store",
+        signal: abort.signal,
+      },
+      owner,
+    )
       .then(async (r) => {
         const j = await r.json();
         if (!r.ok) throw Error(j.error);
@@ -62,6 +75,8 @@ export function useTraining(local = false) {
       })
       .then((j) => {
         if (abort.signal.aborted) return;
+        if (!local && owner !== "guest" && j.ownerId !== owner)
+          throw Error("La cuenta ha cambiado. Recarga la página.");
         setData(j);
         setError(
           j.warnings?.length
@@ -79,14 +94,14 @@ export function useTraining(local = false) {
         if (!abort.signal.aborted) setLoading(false);
       });
     return () => abort.abort();
-  }, [local]);
+  }, [local, owner]);
   useEffect(() => {
     if (!local) return;
     const changed = () => {
       void load();
     };
     const storage = (e: StorageEvent) => {
-      if (!e.key || e.key.startsWith(PRACTICE_PREFIX)) changed();
+      if (!e.key || e.key.startsWith(practicePrefix(owner))) changed();
     };
     window.addEventListener(PRACTICE_CHANGE, changed);
     window.addEventListener("storage", storage);
@@ -94,13 +109,22 @@ export function useTraining(local = false) {
       window.removeEventListener(PRACTICE_CHANGE, changed);
       window.removeEventListener("storage", storage);
     };
-  }, [local, load]);
+  }, [local, owner, load]);
   async function mutate(body: unknown, method = "POST") {
-    const r = await practiceRequest(local, "/api/training", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const r = await practiceRequest(
+      local,
+      "/api/training",
+      {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          !local && owner !== "guest"
+            ? { ...(body as object), expectedOwner: owner }
+            : body,
+        ),
+      },
+      owner,
+    );
     const j = await r.json();
     if (!r.ok) throw Error(j.error);
     await load();

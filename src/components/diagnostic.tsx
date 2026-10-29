@@ -1,56 +1,46 @@
 "use client";
 import { LocalPracticeNotice } from "./local-practice-notice";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import {
-  diagnosticReading as task,
-  diagnosticWriting,
-} from "@/lib/diagnostic-content";
+import { diagnosticReading as task } from "@/lib/diagnostic-content";
 import { useTraining } from "./use-training";
-import { wordCount } from "@/lib/domain";
-export function Diagnostic({ local = false }: { local?: boolean }) {
-  const { data, error, loading, mutate } = useTraining(local);
+import { DiagnosticSummary } from "./diagnostic-summary";
+import { DiagnosticWriting } from "./diagnostic-writing";
+import { DiagnosticSpeaking } from "./diagnostic-speaking";
+export function Diagnostic({
+  local = false,
+  owner = "guest",
+}: {
+  local?: boolean;
+  owner?: string;
+}) {
+  const { data, error, loading, mutate, load } = useTraining(local, owner);
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const readId = useRef("");
-  const writeId = useRef("");
   const [showWriting, setShowWriting] = useState(false);
-  useEffect(() => {
-    const warn = (event: BeforeUnloadEvent) => {
-      if (text.trim()) event.preventDefault();
-    };
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [text]);
   const lastReading = data?.submissions.find(
     (s) => s.payload.kind === "reading",
   );
-  async function submit(kind: "reading" | "writing") {
+  async function submit() {
     setBusy(true);
-    const id = kind === "reading" ? readId : writeId;
+    const id = readId;
     id.current ||= crypto.randomUUID();
     try {
       await mutate({
         action: "submission",
-        data:
-          kind === "reading"
-            ? {
-                id: id.current,
-                kind,
-                version: "sensors-v1",
-                answers: task.questions.map((_, i) => answers[i]),
-              }
-            : { id: id.current, kind, version: "public-services-v1", text },
+        data: {
+          id: id.current,
+          kind: "reading",
+          version: "sensors-v1",
+          answers: task.questions.map((_, i) => answers[i]),
+        },
       });
       id.current = "";
       setMessage(
-        kind === "reading"
-          ? "Respuestas guardadas. Revisa la evidencia del texto."
-          : "Muestra escrita guardada; evaluación pendiente.",
+        "Respuestas guardadas. Revisa las explicaciones y continúa con Writing.",
       );
-      if (kind === "writing") setText("");
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "No se pudo guardar");
     } finally {
@@ -66,31 +56,22 @@ export function Diagnostic({ local = false }: { local?: boolean }) {
         </div>
       )}
       <div className="notice">
-        Diagnóstico en construcción: Reading ofrece una muestra breve; Writing
-        recoge una producción para revisión. Speaking y Listening aún no están
-        evaluados. No se asigna nivel SLP.
+        Diagnóstico inicial de entrenamiento: cuatro tareas originales, ninguna
+        calibrada para certificar un SLP. Puedes completarlas en dos sesiones.
+        Las muestras cerradas se distinguen de los borradores.
       </div>
-      <div className="skill-grid">
-        {[
-          ["Reading", lastReading ? "Muestra registrada" : "Pendiente"],
-          [
-            "Writing",
-            data?.submissions.some((s) => s.payload.kind === "writing")
-              ? "Pendiente de revisión"
-              : "Pendiente",
-          ],
-          ["Speaking", "Pendiente de voz real"],
-          ["Listening", "Pendiente de audio validado"],
-        ].map(([skill, state]) => (
-          <article className="skill-card" key={skill}>
-            <h3>{skill}</h3>
-            <p>{state}</p>
-          </article>
-        ))}
-      </div>
+      <nav aria-label="Pasos del diagnóstico">
+        <Link href="#reading">1. Reading</Link> ·{" "}
+        <Link href="#writing">2. Writing</Link> ·{" "}
+        <Link href="/listening">3. Listening</Link> ·{" "}
+        <Link href="#speaking">4. Speaking</Link>
+      </nav>
+      <DiagnosticSummary data={data} />
       <p role="status">{loading ? "Recuperando muestras…" : message}</p>
-      <section className="card">
-        <div className="eyebrow">READING · MATERIAL ORIGINAL NO CALIBRADO</div>
+      <section className="card" id="reading">
+        <div className="eyebrow">
+          1 / READING · 10 MINUTOS · MATERIAL ORIGINAL NO CALIBRADO
+        </div>
         <h2>{task.title}</h2>
         <p lang="en" className="reading">
           {task.text}
@@ -121,7 +102,7 @@ export function Diagnostic({ local = false }: { local?: boolean }) {
             !data ||
             Object.keys(answers).length !== task.questions.length
           }
-          onClick={() => submit("reading")}
+          onClick={() => submit()}
         >
           Entregar muestra de Reading
         </button>
@@ -152,62 +133,25 @@ export function Diagnostic({ local = false }: { local?: boolean }) {
               <Link href="/library#reading">
                 Practicar otra lectura con justificación
               </Link>{" "}
-              · <Link href="/speaking#practice">Continuar con Speaking</Link> ·{" "}
+              · <Link href="#writing">Continuar con Writing diagnóstico</Link> ·{" "}
               <Link href="/plan#activity">Registrar los minutos reales</Link>
             </p>
           </div>
         )}
       </section>
-      <section className="card">
-        <div className="eyebrow">WRITING · PRODUCCIÓN SIN AYUDA</div>
-        <h2>{diagnosticWriting.title}</h2>
-        <p lang="en">{diagnosticWriting.prompt}</p>
-        <p className="muted">
-          Elabora una recomendación con razones y una objeción. No se atribuye
-          un límite de palabras a la prueba oficial.
-        </p>
-        <textarea
-          lang="en"
-          aria-label="Muestra escrita del diagnóstico"
-          spellCheck={false}
-          maxLength={30000}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          disabled={busy}
-        />
+      <DiagnosticWriting local={local} owner={owner} onSubmitted={load} />
+      <section className="card" id="listening">
+        <h2>3 / Listening</h2>
         <p>
-          {wordCount(text)} palabras · Este campo no tiene autosave; descarga
-          una copia antes de salir.
+          Escucha el anuncio original, responde cinco preguntas y revisa qué
+          evidencia apoya cada respuesta. 8–10 minutos; repetición permitida en
+          práctica.
         </p>
-        <p>
-          <Link href="/writing">
-            Para una práctica que puedas interrumpir, abre Writing Lab con
-            recuperación automática.
-          </Link>
-        </p>
-        <button
-          className="button"
-          disabled={busy || !data || text.trim().length < 30}
-          onClick={() => submit("writing")}
-        >
-          Guardar muestra para revisión
-        </button>
-        <button
-          className="text-button"
-          onClick={() => {
-            const url = URL.createObjectURL(
-              new Blob([text], { type: "text/plain" }),
-            );
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "diagnostic-writing.txt";
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
-        >
-          Descargar copia
-        </button>
+        <Link className="button" href="/listening">
+          Abrir Listening Lab →
+        </Link>
       </section>
+      <DiagnosticSpeaking local={local} owner={owner} onSubmitted={load} />
       <section className="card">
         <h2>Muestras conservadas</h2>
         <button
@@ -221,10 +165,32 @@ export function Diagnostic({ local = false }: { local?: boolean }) {
           <article key={s.id} className="history-row">
             <div>
               <strong>
-                {s.payload.kind} ·{" "}
+                {s.payload.kind} · {s.payload.version} ·{" "}
                 {new Date(s.created_at).toLocaleDateString("es")}
               </strong>
               <p>{s.report.message}</p>
+              {s.payload.kind === "speaking" && (
+                <p>
+                  Duración del archivo:{" "}
+                  {s.payload.durationSeconds ?? "no disponible"} ·{" "}
+                  {s.payload.interrupted
+                    ? "interrumpida"
+                    : "sin interrupción detectada"}{" "}
+                  ·{" "}
+                  {s.payload.assisted
+                    ? "con ayuda declarada"
+                    : "sin ayuda declarada"}
+                  . Notas: {s.payload.notes || "sin notas"}. Audio no
+                  conservado.
+                </p>
+              )}
+              {s.payload.kind === "listening" && (
+                <p>
+                  Práctica · inicios/reanudaciones {s.payload.playCount} ·
+                  finales de audio {s.payload.completedListens} · transcripción
+                  consultada: {s.payload.transcriptViewed ? "sí" : "no"}.
+                </p>
+              )}
               {showWriting && s.payload.kind === "writing" && (
                 <p className="preserve-lines">{s.payload.text}</p>
               )}
