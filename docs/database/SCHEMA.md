@@ -84,8 +84,15 @@ Retención/borrado: [seguridad](../architecture/SECURITY.md). Cascada controlada
 
 ## Implementación disponible: muestras de cuatro destrezas
 
-El esquema extenso anterior sigue siendo diseño objetivo. Las cuatro migraciones en `supabase/migrations/` preparan la base implementada de borradores, planes, actividades, muestras y Error Bank; ninguna se ha aplicado a un servicio externo en este incremento. `202610290004_diagnostic_skills.sql` amplía las condiciones JSON de `diagnostic_submissions` para Listening/Speaking conservando las políticas RLS y la inmutabilidad. No añade columnas, buckets ni objetos de audio.
+El esquema extenso anterior sigue siendo diseño objetivo. Las cinco migraciones en `supabase/migrations/` preparan la base implementada de borradores, planes, actividades, muestras y Error Bank; ninguna se ha aplicado a un servicio externo en este incremento. `202610290004_diagnostic_skills.sql` amplía las condiciones JSON de `diagnostic_submissions` para Listening/Speaking conservando las políticas RLS y la inmutabilidad. No añade columnas, buckets ni objetos de audio.
 
 Cada muestra guarda ID, propietario, fecha y payload con versión. Reading: respuestas; Listening: respuestas, modo práctica, inicios/reanudaciones, finales de reproducción y exposición declarada a transcripción/soluciones. Speaking: realización, ayuda, notas, interrupción, duración fiable opcional y `audioRetained=false`. Writing entregado es texto cerrado. Las rutas rechazan campos de audio y niveles enviados por el cliente; la migración limita a las formas admitidas, las validaciones completas permanecen en los schemas de servidor.
 
 En modo local estos contratos se conservan como registros independientes por identidad en `slp:practice:v1:<identidad>:`. El borrador diagnóstico Writing usa `slp:diagnostic:writing:v1:<identidad>` con ID de entrega estable, estado cerrado y metadatos de recuperación; no reemplaza las claves de Writing Lab. El cierre no implica sincronización cloud. Exportación incluye muestras cerradas, no borradores ni audio. No hay importación automática entre identidades.
+
+
+## Incremento de uso frecuente
+
+`202610290005_independent_tasks.sql` amplía versiones y prepara `task_exposures` (propietario, destreza, versión, apertura/soluciones, fecha). Registros inmutables con RLS; una exposición no se borra al eliminar un intento. En modo local, exposiciones e intentos son registros separados del historial exportable. En modo cloud futuro, la entrega conserva `priorExposure=unknown`: el cliente no puede afirmar independencia antes de una transacción verificable entre exposición e intento.
+
+Borradores Reading/Listening/notas Speaking: `slp:task-draft:v1:<identidad>:<destreza>:<versión>`. Incluyen ID estable de entrega, fecha local, respuestas o notas/ayuda; rechazan campos de audio, URL, duración o transcripción. La limpieza compara la copia exacta para no borrar cambios ajenos. Un borrador no es una muestra cerrada. Writing diagnóstico conserva su clave original para public-services-v1 y añade sufijos para otras tareas; Writing Lab sigue intacto.

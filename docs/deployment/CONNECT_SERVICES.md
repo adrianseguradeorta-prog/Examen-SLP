@@ -93,7 +93,7 @@ Una entrega cerrada y su fecha/versión son registros distintos del borrador. Un
 
 ## Séptimo incremento: recuperación y exposición local
 
-No se han conectado servicios. Reading/Listening/notas Speaking usan claves `slp:task-draft:v1:<identidad>:<destreza>:<versión>`; se guardan durante edición y solo se retiran tras entrega confirmada. Ningún borrador contiene audio. Reading/Listening requieren una escucha nueva después de recarga en el caso de Listening; no restauran contadores ni posición. Writing diagnóstico preserva la clave original y añade sufijos por tarea nueva. Writing Lab no se ha modificado.
+No se han conectado servicios. Reading/Listening/notas Speaking usan claves `slp:task-draft:v1:<identidad>:<destreza>:<versión>`; se guardan durante edición y solo se retiran tras entrega confirmada. Ningún borrador contiene audio. Listening requiere una escucha nueva después de recargar; no restauran contadores ni posición. Writing diagnóstico preserva la clave original y añade sufijos por tarea nueva. Writing Lab no se ha modificado.
 
 Las exposiciones `opened`/`solutions` son registros independientes del intento en el historial local y se incluyen en su exportación. Borrar una entrega no borra soluciones conocidas. La quinta migración prepara las versiones nuevas y `task_exposures`, con RLS e historial no editable. No se ha aplicado externamente. El servidor cloud no acepta una afirmación de independencia del cliente: guarda `priorExposure=unknown` hasta implementar la transacción de entrega/exposición y sincronización entre dispositivos. No hay importación automática de invitado.
 

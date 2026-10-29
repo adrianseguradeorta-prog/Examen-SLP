@@ -41,7 +41,7 @@ Writing Lab conserva intacta su recuperación por usuario/invitado y el control 
 
 Repositorio oficial: https://github.com/adrianseguradeorta-prog/Examen-SLP
 
-El usuario aprobó continuar con la implementación y pidió preparar el proyecto sin servicios creados. Versiones y lockfile fijados; checks CI y cuatro migraciones preparados (sin aplicación cloud). `.env.example` contiene solo nombres y valores vacíos. No guardar datos personales de estudio, grabaciones del usuario ni credenciales en Git. El único audio versionado es contenido didáctico original sintético, con [procedencia documentada](docs/content/LISTENING_V1.md). Los documentos expresan propuestas, salvo hechos acompañados de fuentes.
+El usuario aprobó continuar con la implementación y pidió preparar el proyecto sin servicios creados. Versiones y lockfile fijados; checks CI y cinco migraciones preparados (sin aplicación cloud). `.env.example` contiene solo nombres y valores vacíos. No guardar datos personales de estudio, grabaciones del usuario ni credenciales en Git. Los audios versionados son contenido didáctico original sintético, con [procedencia documentada](docs/content/LISTENING_V1.md). Los documentos expresan propuestas, salvo hechos acompañados de fuentes.
 
 
 ## Pruebas de navegador

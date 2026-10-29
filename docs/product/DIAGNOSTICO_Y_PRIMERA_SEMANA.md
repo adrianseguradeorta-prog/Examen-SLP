@@ -72,3 +72,6 @@ Usa **Hoy → Descargar historial local** para guardar un JSON de planes, activi
 ## 6. Qué sigue pendiente
 
 Evaluación cualificada de Writing/Speaking, calibración SLP, estimación longitudinal de nivel, conversación IA, banco editorial amplio, simulacros, motor adaptativo completo, sincronización entre dispositivos, importación de copias y uso completamente offline. No hay servicios externos conectados, gasto por IA ni despliegue. La aplicación local debe seguir en marcha para entregar y corregir. Para la primera semana reparte las muestras entre dos días; después alterna 15–25 minutos de Speaking con bloques de 10–20 minutos de otra destreza según Hoy. Registra el tiempo real y revisa errores al final; la carga semanal sigue siendo la que elegiste en Plan. Las pruebas automatizadas no sustituyen la validación en un navegador y en un iPhone físico.
+
+
+Al actualizar desde la entrega anterior, las muestras y borradores existentes se conservan. Las muestras antiguas sin trazabilidad suficiente no se presentan como nuevas evidencias independientes. Usa el selector de tareas para acceder a material distinto; borrar una entrega no hace que olvides sus soluciones. Los contadores describen tu historial de tareas, nunca un porcentaje de nivel 3.
