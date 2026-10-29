@@ -15,7 +15,9 @@ La primera orden instala lo necesario y requiere Internet; normalmente solo tend
 
 Deja esa ventana abierta y entra en **http://localhost:3000** desde el navegador del ordenador. No necesitas rellenar `.env.local` ni conectar servicios. Utiliza siempre el mismo navegador, perfil y dirección: cambiar `localhost` por otra dirección o cambiar el puerto abre un almacenamiento distinto. Si el puerto 3000 está ocupado, cierra la otra instancia antes de empezar.
 
-## 2. Primera sesión: unos 40 minutos
+## 2. Primera sesión breve: unos 40 minutos
+
+Si empiezas de cero, recomendamos primero [DIAGNÓSTICO Y PRIMERA SEMANA](DIAGNOSTICO_Y_PRIMERA_SEMANA.md): las cuatro muestras llevan unos 45–50 minutos y pueden dividirse en dos sesiones. La alternativa breve de abajo sigue siendo válida; Hoy continuará recordando las muestras pendientes.
 
 Abre **Hoy**. Encontrarás la siguiente práctica propuesta, su duración aproximada y el motivo. Para la primera sesión sigue esta secuencia:
 
@@ -38,12 +40,12 @@ Los días siguientes empieza en **Hoy**, sigue la propuesta, registra lo realiza
 |---|---|
 | Writing Lab | Borrador al escribir, también tras recargar/cerrar; mantiene el aislamiento existente por usuario/invitado |
 | Plan y actividades | Planes guardados, versiones, destreza, minutos, fecha y notas |
-| Diagnóstico | Respuestas y feedback Reading **después de entregar**; textos Writing **después de guardar la muestra** |
+| Diagnóstico | Respuestas y correcciones Reading/Listening tras entregar; Writing conserva tanto el borrador como la muestra cerrada; Speaking conserva realización y notas, nunca audio |
 | Error Bank | Observaciones manuales, ejemplos y seguimiento calculado a partir de ellos |
 | Biblioteca | No conserva las respuestas del ejercicio; registra sus minutos si quieres llevar seguimiento |
 | Speaking | No conserva audio ni evalúa la voz; registra tú los minutos y observaciones |
 
-Antes de entregar, los formularios del diagnóstico no tienen recuperación automática. Para escribir un texto que quieras interrumpir usa **Writing Lab**; si utilizas Writing del diagnóstico, guarda la muestra o descárgala antes de salir.
+Writing del diagnóstico ya recupera automáticamente su borrador en este navegador, separado de Writing Lab. Las respuestas Reading/Listening sin entregar y las notas Speaking sin registrar solo viven en la pestaña. El audio Speaking desaparece al salir o recargar, incluso si has registrado la realización.
 
 En **Hoy → Descargar historial local** puedes exportar planes, actividades, muestras y Error Bank a JSON. Writing se descarga por separado. La importación/restauración de ese JSON aún no está implementada.
 
@@ -51,8 +53,8 @@ Todo pertenece a este navegador. No hay sincronización con iPhone u otro ordena
 
 ## 5. Lo que todavía falta
 
-Conversación Teacher/Examiner con IA, corrección automática de Writing, evaluación de Speaking, diagnóstico completo, Listening evaluable, simulacros, sincronización entre dispositivos y adaptación automática de las fechas. Listening mantiene tiempo reservado en el plan, pero no dispone aún de un ejercicio evaluado.
+Conversación Teacher/Examiner con IA, corrección automática de Writing, evaluación de Speaking, estimación SLP calibrada, simulacros, sincronización entre dispositivos y adaptación automática de las fechas. Listening Lab ya ofrece un anuncio original sintético y cinco preguntas con explicaciones; repetirlo es repaso, no evidencia independiente.
 
 La prueba opcional de micrófono de 15 segundos ya existente solo permite escucharte temporalmente en esa pantalla: el audio no se guarda ni se envía. No es necesaria para la sesión guiada.
 
-La app local debe seguir ejecutándose para corregir Reading. No está validada en iPhone físico ni preparada para abrirse totalmente offline. Ningún resultado se presenta como certificación oficial SLP/STANAG.
+La app local debe seguir ejecutándose para corregir Reading/Listening y entregar muestras. No está validada en iPhone físico ni preparada para abrirse totalmente offline. Ningún resultado se presenta como certificación oficial SLP/STANAG.

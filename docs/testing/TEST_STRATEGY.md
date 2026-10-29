@@ -1,6 +1,10 @@
 # Estrategia de pruebas y gates
 
-Estado del quinto incremento: 62 pruebas Vitest pasan, junto con lint, TypeScript y build de producción. Se conservan las pruebas de recuperación Writing de la rama oficial. Las 18 pruebas nuevas cubren persistencia local por registro, reintentos, cuota, datos inválidos, separación respecto a cloud/Writing, plan, Error Bank, corrección de Reading mediante la ruta local y recomendaciones conservadoras. Son pruebas de dominio, contratos y PostgreSQL embebido; no E2E de navegador. La comprobación HTTP de la app compilada se intentó, pero el entorno impidió abrir un puerto local (`listen EPERM`). No hay QA visual ni iPhone físico. La matriz siguiente incluye objetivos futuros, no una afirmación de cobertura completa.
+Estado del sexto incremento: **82 pruebas Vitest en 12 archivos**, lint, TypeScript y build de producción pasan localmente. El incremento previo (práctica diaria) se comprobó primero con sus 62 pruebas y los mismos checks. Se conservan las pruebas originales de recuperación Writing; ese editor no se ha rehecho. Son pruebas de dominio, contratos y PostgreSQL embebido, no E2E de navegador ni validación contra servicios externos. No se afirma una nueva ejecución de GitHub Actions sin comprobarla.
+
+Cobertura añadida: corrección Listening por función, asset original y correspondencia de transcripción, cuatro estados diagnósticos, abstención con información parcial, cero asignación automática de SLP aun con repeticiones perfectas, muestras pendientes/recomendaciones concretas, restauración del borrador diagnóstico y aislamiento por identidad, cuota y borrador corrupto, entregas inmutables/reintentos, actividades separadas de muestras, rechazo de campos de audio/niveles, arranque invitado sin construir Supabase, identidad verificada, propietario esperado en API y migración con RLS. Grabador con dobles de MediaRecorder/MediaStream: denegación de permiso, permiso que llega tras desmontar, revocación de URLs/tracks, interrupciones, duración no finita, límite de cinco minutos y error de grabación; no fetch de audio.
+
+Limitaciones: las pruebas de restauración recrean el almacenamiento/adaptador; no simulan un cierre forzoso de Safari. No se ha escuchado/validado pedagógicamente el audio con evaluadores humanos. La comprobación HTTP de la app compilada del incremento previo no pudo abrir un puerto local (`listen EPERM`). No hay QA visual, interacción real con MediaRecorder ni iPhone físico. La matriz siguiente incluye objetivos futuros, no una afirmación de cobertura completa.
 
 | Área | Prueba significativa | Criterio de aceptación |
 |---|---|---|
@@ -37,3 +41,13 @@ Tests unitarios para reglas y transiciones; integración con PostgreSQL/RLS/Stor
 - Borrar evidencia determinante: recomputar resultado, no mantener certeza falsa.
 
 Liberación: gates técnicos verdes + revisión de calibración + pruebas físicas + recuperación ensayada + costes medidos. Mantener informe de versión, dispositivo, pasos, esperado, observado y evidencia de fallo. No marcar PASS por diseño escrito.
+
+
+## Revisión manual pendiente: diagnóstico sin servicios
+
+1. Sin variables Supabase/OpenAI, abrir Hoy y completar Reading/Writing/Listening/Speaking. Verificar teclado, navegación y feedback.
+2. Escribir Writing diagnóstico, recargar y cerrar/abrir. Comprobar restauración, entrega cerrada, nueva muestra, descarga y separación respecto a Writing Lab. Probar cuota bloqueada y conservar el texto antes de salir.
+3. Escuchar el MP3 completo en Chrome/Firefox/Safari; entregar cinco respuestas y comprobar explicación/transcripción, repetición marcada como repaso e historial tras recarga.
+4. Con permiso de micrófono grabar, detener, escuchar y registrar notas. Salir/recargar/descartar debe revocar el audio; confirmar que no se escribe ni se envía un blob. Comprobar interrupción y duración desconocida en dispositivos reales.
+5. Registrar minutos una sola vez, volver a Hoy y revisar la razón de la propuesta. Ningún resultado debe ascender el perfil declarado.
+6. Antes de futura conexión cloud: verificar dos cuentas reales, cambio de sesión en otra pestaña y navegación atrás sin mostrar borradores de otra identidad. Cualquier fallo de auth debe bloquear, nunca importar invitado.

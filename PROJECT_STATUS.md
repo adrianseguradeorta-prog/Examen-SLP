@@ -1,76 +1,75 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-29. Quinto incremento: práctica diaria utilizable sin servicios externos, autorizado por el usuario. Rama `feat/training-foundation`.
+Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destrezas y Listening local. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
 ## DONE
 
-- Investigación/diseño conservados con limitaciones y referencias.
-- Next.js/React/TypeScript con versiones fijas y lockfile.
-- Interfaz responsive, dashboard sin progreso inventado, light/dark, manifest inicial.
-- Cuatro clases originales, Reading de tres preguntas con feedback y seis chunks.
-- Speaking: selección de modos y prueba local de micrófono/reproducción, sin gasto IA.
-- Login/logout Supabase; Writing con contador, descarga, autosave servidor y detección de conflictos.
-- Migración PostgreSQL: borradores, versiones, RLS y función de guardado con revisión optimista.
-- Reglas iniciales de planificación y guarda longitudinal conservadora (no evaluador habilitado).
-- CI lint/typecheck/tests/build e instrucciones para conectar servicios.
-- Plan de 36 semanas guardado por versiones, carga de 6–7 h, calendario y señalización de semanas posteriores al examen.
-- Registro manual de actividades con resumen, deduplicación de reintentos y borrado por propietario.
-- Muestras iniciales de diagnóstico: Reading original con corrección servidor sin nivel SLP; Writing guardado pendiente de revisión.
-- Segunda migración de planes/actividades/muestras, validación de datos almacenados y permisos RLS.
-- 39 pruebas locales pasaban antes de este incremento, además de lint, TypeScript y build de producción.
-- Error Bank persistente manual: patrones deduplicados, ejemplos por sesión, frecuencia, estados y borrado con recálculo.
-- Recomendaciones de práctica según recurrencia, con abstención si el historial está incompleto.
-- Tercera migración con escritura atómica, aislamiento, reintentos y borrado en cascada.
-- Writing recupera borradores desde `localStorage` tras recarga o cierre, conserva cambios locales ante conflictos remotos y separa el almacenamiento por usuario autenticado o invitado.
-- Logout elimina la identidad local activa de Writing sin borrar los borradores de otros usuarios.
-- Pruebas unitarias añadidas para aislamiento de claves, recuperación local, selección local/remota y rechazo de datos locales inválidos.
-- Cuarto incremento validado en GitHub Actions: `npm ci`, lint, TypeScript, tests y build de producción pasan.
+### Base y práctica diaria conservadas
 
-- Pantalla Hoy: siguiente ejercicio con enlace, duración orientativa y explicación; primera sesión guiada de unos 40 minutos.
-- Modo local explícito cuando Supabase no está configurado: planes/versiones, actividades, muestras entregadas y Error Bank en el navegador, con validación de datos y reintentos sin duplicar registros.
-- Registro de práctica terminada desde Hoy o Plan: el usuario declara destreza y minutos reales; la recomendación utiliza el registro confirmado, no la apertura de pantallas.
-- Siguiente práctica según semana activa y reparto de minutos del plan; propuesta general si faltan datos, aviso si el calendario no está vigente y abstención ante historial parcial/inválido.
-- Diagnóstico Reading utilizable sin cuenta: cuatro preguntas originales, corrección en el servidor local, explicación por tipo de pregunta y orientación hacia otra lectura. No se asignan niveles; repetir soluciones no aporta evidencia independiente.
-- Speaking guiado: tres temas, cuatro preguntas fijas por tema, reflexión posterior y enlaces a registro/Error Bank. No graba, no escucha y no evalúa. Se conserva la prueba previa opcional de micrófono, exclusivamente temporal en memoria.
-- Exportación JSON del historial local desde Hoy; Writing mantiene su propia descarga y recuperación sin cambios respecto a la rama oficial validada.
-- 62 pruebas locales pasan (18 nuevas), lint, TypeScript y build de producción. Verificación de este incremento ejecutada localmente; no atribuirle un resultado nuevo de GitHub Actions sin comprobarlo.
-- Guía de usuario: docs/product/EMPEZAR_A_PRACTICAR.md.
+- Investigación, diseño y documentación de fuentes con límites explícitos.
+- Next.js/React/TypeScript con versiones fijas, lockfile, CI y diseño responsive claro/oscuro; manifest inicial.
+- Cuatro clases originales, Reading de Biblioteca, expresiones y Speaking guiado con preguntas fijas. Se conserva la prueba previa de micrófono de 15 segundos.
+- Writing Lab mantiene **sin cambios** la recuperación local validada en la rama oficial: usuario/invitado, cierre/recarga, copia descargable, autosave servidor preparado y conflictos de revisión explícitos. No se ha rehecho este editor.
+- Plan inicial de 36 semanas por versiones, carga de 6–7 horas, fecha del examen opcional y registro manual de actividad con reintentos idempotentes.
+- Error Bank manual, patrones deduplicados, frecuencia, estados por oportunidades y recomendaciones conservadoras; no detección IA.
+- Modo local explícito sin Supabase: planes, actividades, muestras entregadas y Error Bank en registros independientes del navegador. Nunca se usa como fallback silencioso ante un error cloud.
+- Hoy ofrece la siguiente práctica, explicación, enlace, registro de minutos y descarga JSON del historial local. Se conserva la sesión breve de 40 minutos y la guía EMPEZAR A PRACTICAR.
+- El incremento previo estaba terminado; se verificaron sus 62 tests, lint, TypeScript y build antes de ampliar el diagnóstico. No se duplicó su implementación.
+
+### Diagnóstico operativo en local
+
+- Flujo Reading → Writing → Listening → Speaking, resumen por destreza e historial de muestras con fecha y versión.
+- Reading mantiene las cuatro preguntas originales y conserva respuestas, corrección por función, fecha y versión. Una lectura no determina un nivel.
+- Writing diagnóstico recupera su borrador al recargar/cerrar. Reutiliza el parser de recuperación existente, con clave separada por identidad y de Writing Lab. Guarda en cada edición, ofrece descarga y conserva el texto ante fallos de entrega/almacenamiento. La entrega cierra una muestra inmutable; solo confirma el cierre tras ACK del adaptador. No hay evaluador automático.
+- Listening Lab funcional: MP3 original de unos 49,5 segundos, cinco preguntas, repetición/pausa, entrega, corrección, explicaciones y transcripción posterior. Audio sintetizado localmente con Flite/FFmpeg, sin API; guion, regeneración y aviso de licencia documentados. Guarda condiciones de práctica y distingue repetir soluciones conocidas de una muestra independiente. No es modo examen.
+- Speaking diagnóstico: prompts originales, preparación, grabación de hasta cinco minutos, reproducción y descarte. Audio exclusivamente en memoria; tracks cerrados y URL revocada al salir/descartar/regrabar. Sin subida ni conservación. Se registran realización declarada, ayuda, notas, interrupciones y duración del archivo solo si es fiable. No se evalúan pronunciación, fluidez ni SLP.
+- Resumen distingue perfil declarado 3.2.2.2, resultado de tarea, muestra pendiente de revisión y evidencia insuficiente. **Todas las estimaciones son nulas**. Historial incompleto o corrección sin detalle impiden inferir debilidades/resultado.
+- Hoy prioriza las muestras pendientes y después errores concretos de la última muestra Reading/Listening, hasta registrar práctica de esa destreza desde ese día. Luego sigue el reparto del plan, ahora con Listening funcional. No modifica las 36 semanas ni interpreta minutos como mejora.
+- Aislamiento diagnóstico por identidad; modo invitado sin construir cliente cloud. Preparado para verificar propietario en servidor y bloquear muestras/editor tras cambios de cuenta; las mutaciones cloud del diagnóstico incluyen propietario esperado. No se importan muestras de invitado automáticamente.
+- Cuarta migración preparada para Listening/metadatos Speaking, manteniendo RLS e inmutabilidad, sin tablas ni buckets de audio. Probada solo en PostgreSQL embebido, no aplicada a cloud.
+- Guía nueva: [DIAGNÓSTICO Y PRIMERA SEMANA](docs/product/DIAGNOSTICO_Y_PRIMERA_SEMANA.md). README, guía anterior, conexión, arquitectura, esquema y pruebas actualizados.
+
+### Validación
+
+- `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` pasan localmente.
+- 82 tests en 12 archivos: persistencia/restauración, identidades, cuota, entrega inmutable, Listening, estados/abstención, ausencia de niveles, actividades, selección diaria, permisos y migraciones PGlite. Grabación probada con dispositivos simulados: denegación, permisos tardíos, interrupciones, duración desconocida, límite temporal, fallo y liberación de recursos.
+- Se conservan las pruebas originales de Writing. No se han introducido llamadas de pago, WebRTC IA ni servicios externos.
+- Son los comandos del workflow CI ejecutados localmente; no se atribuye una nueva ejecución verde de GitHub Actions sin publicarla y comprobarla.
 
 ## IN PROGRESS
 
-- Base de producto; aún no es plataforma completa para uso diario durante nueve meses.
+- Base de práctica utilizable y recogida inicial de muestras. Aún no es una plataforma completa ni un diagnóstico SLP validado para nueve meses.
 
 ## TODO
 
-- Conectar Supabase/Vercel/OpenAI solo cuando el usuario lo autorice y configure secretos.
-- Completar diagnóstico de cuatro destrezas, perfil editable, adaptación automática del calendario, detección IA de errores, SRS, Listening, mocks e informes.
-- Voz WebRTC real, cuotas servidor, grabación privada, reconexión y evaluación posterior.
-- Borrado/exportación, recuperación de contraseña y backups antes de producción.
-- Offline completo de la aplicación (app shell/service worker); la recuperación local de borradores de Writing ya está implementada.
-- Contenido inicial completo, admin editorial, pruebas físicas y calibración humana.
+- Revisión de uso en navegador e iPhone físicos, permisos, reproducción MP3 y grabación/recuperación tras interrupciones reales.
+- Banco editorial amplio, revisión humana de materiales y calibración con evidencias oficiales cuando estén disponibles y sean utilizables legalmente.
+- Evaluadores Writing/Speaking, estimación longitudinal, perfil editable, motor adaptativo completo, SRS, mocks e informes.
+- Sincronización cloud, exportación/borrado de cuenta, backups e importación/restauración de copias antes de producción.
+- Conversación IA y reconexión solo en un incremento autorizado; almacenamiento de audio requiere decisión posterior expresa.
+- PWA/offline completo y administración editorial.
 
 ## KNOWN ISSUES
 
-- Sin servicios configurados: login y guardado cloud no probados contra Supabase gestionado. Aplicar las tres migraciones en orden cuando se conecte.
-- El plan mantiene las 36 semanas y la carga fijada; Hoy selecciona práctica según registros, pero no reprograma el calendario ni estima progresión de nivel. Actividades declaradas, fechas/resúmenes UTC y límites de historial explícitos.
-- Diagnóstico parcial y sin calibración: Reading ofrece feedback limitado a una muestra; Writing queda pendiente de revisión. Antes de entregar, el formulario diagnóstico no tiene autosave (descarga de texto disponible); usar Writing Lab para una escritura interrumpible.
-- Writing conserva localmente el borrador, pero un conflicto de revisión requiere decisión manual; no se sobrescribe automáticamente la copia local.
-- El almacenamiento local depende del navegador/dispositivo actual; la sincronización entre dispositivos requiere el backend.
-- Solo se recupera el borrador remoto más reciente; selector de historial pendiente.
-- Manifest inicial sin service worker ni iconos Apple completos: no declarar PWA validada.
-- Speaking ofrece preguntas fijas para hablar en voz alta y la prueba temporal de micrófono. No hay conversación IA, transcripción, evaluación ni almacenamiento de audio.
-- Normativa/convocatoria concreta y análisis de muestras pendientes según investigación.
-- No pruebas físicas iPhone ni QA visual de navegador realizadas. El smoke HTTP local quedó bloqueado por el entorno (`listen EPERM` al abrir 127.0.0.1:3100); no se declara validado por esa comprobación. Tests de contratos/rutas, lint, TypeScript y build sí pasan.
-- El modo local es un espacio personal de invitado del navegador, sin cifrado ni cuentas. No se importa a cloud automáticamente ni es fallback ante un error de autenticación. Borrar datos del sitio o usar navegación privada puede eliminar registros; Writing usa un espacio independiente.
-- Historial local exportable a JSON, pero importación/restauración todavía pendiente. No hay transacciones entre pestañas para operaciones compuestas de Error Bank: registrar/borrar observaciones desde una sola pestaña.
-- Error Bank depende de observaciones declaradas, no detección IA. Historial limitado por consulta: se omiten estados/recomendaciones si falta información.
+- **No se asigna SLP**: Reading/Listening son tareas breves no calibradas; Writing queda pendiente de revisión y Speaking no conserva audio revisable. Un resultado perfecto no prueba nivel 3.
+- Listening usa una sola voz sintética y un anuncio corto; no representa diversidad de acentos, conversación ni comprensión sostenida. Repetirlo es repaso.
+- Reading/Listening sin entregar y notas Speaking sin registrar solo viven en la pestaña. El audio oral se pierde al salir/recargar por diseño. Navegadores con duración no finita o interrupción muestran duración no disponible.
+- Writing diagnóstico se edita desde una sola pestaña; no hay resolución de ediciones simultáneas en ese nuevo borrador. Un aviso de cuota/bloqueo exige descargar una copia. Borrar una muestra cerrada del historial no elimina silenciosamente su copia aún visible en el editor.
+- Writing Lab conserva su control remoto de revisiones y conflictos, sin sincronización real mientras no se conecte Supabase. Selector de historial remoto pendiente.
+- Almacén local personal del navegador, sin cifrado ni cuentas locales: invitado es compartido en el mismo perfil. Borrar datos del sitio, navegación privada o cambiar origen/puerto/navegador puede eliminar u ocultar el progreso. No hay sincronización con iPhone ni importación automática a cloud.
+- Exportación JSON del historial local disponible; no incluye borradores ni audio. Importación pendiente. Error Bank y borrador diagnóstico deben editarse desde una sola pestaña.
+- El plan no reprograma fechas. El repaso de errores se considera registrado por destreza/día, no por una prueba de reparación. Historial limitado, fechas/resúmenes UTC y abstención con datos incompletos.
+- Sin Supabase gestionado, Auth/Storage y cambios de cuenta entre dispositivos no están validados contra un servicio real. Las cuatro migraciones son preparación futura.
+- No hay QA visual/E2E de navegador ni pruebas físicas iPhone realizadas. El smoke HTTP del incremento previo quedó bloqueado por el entorno (`listen EPERM` al abrir 127.0.0.1:3100); no se declara aprobado. Tests de contratos/rutas, lint, TypeScript y build sí pasan.
+- La aplicación local debe seguir ejecutándose para entregar/corregir. Sin service worker/offline completo ni iconos Apple completos; no declarar PWA validada.
+- Normativa/convocatoria concreta y análisis de muestras siguen pendientes según investigación.
 
 ## DECISIONS NEEDED
 
-- No nuevas aprobaciones menores para seguir. Usuario solicitó preparar sin cuentas cloud.
-- Antes de almacenar audio: confirmar conservación y privacidad.
-- Presupuesto IA pendiente de aclaración (documentos con 45/60 USD y propuesta 100/150 USD); no se ha elegido cifra ni modificado límites. Ninguna llamada de pago en este incremento.
+- Supabase, Vercel y OpenAI siguen sin conectar por instrucción del usuario. No desplegar.
+- Antes de conservar audio: acordar finalidad, retención y privacidad. En este incremento solo existe audio efímero del usuario.
+- Presupuesto IA pendiente de aclarar: documentos con 45/60 USD frente a propuesta 100/150 USD. No se ha escogido cifra, cambiado límites ni hecho llamadas de pago.
 
 ## NEXT STEPS
 
-Empezar con la guía EMPEZAR_A_PRACTICAR, recoger observaciones de uso y validar el flujo en navegador/iPhone real. Después ampliar contenido, diagnóstico y calendario según evidencias de práctica. Mantener Supabase, Vercel y OpenAI sin conectar hasta autorización expresa.
+Completar las cuatro muestras con la guía DIAGNÓSTICO Y PRIMERA SEMANA, registrar tiempo real y recoger observaciones de uso. Validar el flujo en navegador/iPhone físico antes de afirmar compatibilidad completa. Después ampliar contenido/revisión y adaptación con evidencias, manteniendo servicios externos desconectados hasta autorización.

@@ -80,3 +80,12 @@ RLS habilitada en toda tabla privada: `auth.uid() = user_id` para lectura y escr
 Índices: `(user_id, created_at DESC)` o fecha equivalente, `(user_id,status)`, `(user_id,due_at)`, `(user_id,skill,as_of DESC)`, `(user_id,session_id,sequence)`. Transacciones para entrega+job, evaluación+evidencias y snapshot+recomendación. No ejecutar LLM dentro de transacción abierta.
 
 Retención/borrado: [seguridad](../architecture/SECURITY.md). Cascada controlada para hijos, borrado de objetos en job durable antes de cierre; no perder lista de claves al borrar padre. Backups y archivos fuera de Git. Migraciones SQL versionadas y tests RLS se crearán solo después de aprobación.
+
+
+## Implementación disponible: muestras de cuatro destrezas
+
+El esquema extenso anterior sigue siendo diseño objetivo. Las cuatro migraciones en `supabase/migrations/` preparan la base implementada de borradores, planes, actividades, muestras y Error Bank; ninguna se ha aplicado a un servicio externo en este incremento. `202610290004_diagnostic_skills.sql` amplía las condiciones JSON de `diagnostic_submissions` para Listening/Speaking conservando las políticas RLS y la inmutabilidad. No añade columnas, buckets ni objetos de audio.
+
+Cada muestra guarda ID, propietario, fecha y payload con versión. Reading: respuestas; Listening: respuestas, modo práctica, inicios/reanudaciones, finales de reproducción y exposición declarada a transcripción/soluciones. Speaking: realización, ayuda, notas, interrupción, duración fiable opcional y `audioRetained=false`. Writing entregado es texto cerrado. Las rutas rechazan campos de audio y niveles enviados por el cliente; la migración limita a las formas admitidas, las validaciones completas permanecen en los schemas de servidor.
+
+En modo local estos contratos se conservan como registros independientes por identidad en `slp:practice:v1:<identidad>:`. El borrador diagnóstico Writing usa `slp:diagnostic:writing:v1:<identidad>` con ID de entrega estable, estado cerrado y metadatos de recuperación; no reemplaza las claves de Writing Lab. El cierre no implica sincronización cloud. Exportación incluye muestras cerradas, no borradores ni audio. No hay importación automática entre identidades.
