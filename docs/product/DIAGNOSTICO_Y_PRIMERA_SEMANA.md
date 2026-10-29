@@ -4,6 +4,8 @@ Esta versión permite empezar sin cuentas cloud ni claves API. Sirve para recoge
 
 ## 1. Entrar
 
+Obtén la versión actual desde [la rama feat/training-foundation en GitHub](https://github.com/adrianseguradeorta-prog/Examen-SLP/tree/feat/training-foundation). Puedes usar **Code → Download ZIP**, descomprimirla y abrir esa carpeta. No utilices `main` ni una descarga antigua anterior a estos incrementos.
+
 En el ordenador, necesitas Node.js 24. Abre una terminal en la carpeta **Examen-SLP** de esta entrega y ejecuta:
 
 ```sh

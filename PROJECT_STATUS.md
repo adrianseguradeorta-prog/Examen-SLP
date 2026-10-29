@@ -34,7 +34,9 @@ Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destre
 - `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` pasan localmente.
 - 82 tests en 12 archivos: persistencia/restauración, identidades, cuota, entrega inmutable, Listening, estados/abstención, ausencia de niveles, actividades, selección diaria, permisos y migraciones PGlite. Grabación probada con dispositivos simulados: denegación, permisos tardíos, interrupciones, duración desconocida, límite temporal, fallo y liberación de recursos.
 - Se conservan las pruebas originales de Writing. No se han introducido llamadas de pago, WebRTC IA ni servicios externos.
-- Son los comandos del workflow CI ejecutados localmente; no se atribuye una nueva ejecución verde de GitHub Actions sin publicarla y comprobarla.
+- Práctica diaria publicada primero en `9ecd7d1a2fa5c0023d3c08871f305d07900488ec` y CI remota verde antes de publicar el diagnóstico: [ejecución 40918524288](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/40918524288).
+- Diagnóstico/Listening publicados en `430a2a553ea27fda76abefd6f5066604dd5f64cf`; CI remota verde: [ejecución 40918994011](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/40918994011). Se verificaron `npm ci`, lint, TypeScript, tests y build en GitHub Actions, además de localmente.
+- Publicación mediante conector GitHub ante bloqueo del transporte Git del entorno. Los árboles de archivos de cada commit remoto se compararon con los validados localmente; coinciden exactamente. Rama local y remota alineadas, sin force push, merge a main ni despliegue.
 
 ## IN PROGRESS
 
@@ -72,4 +74,13 @@ Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destre
 
 ## NEXT STEPS
 
-Completar las cuatro muestras con la guía DIAGNÓSTICO Y PRIMERA SEMANA, registrar tiempo real y recoger observaciones de uso. Validar el flujo en navegador/iPhone físico antes de afirmar compatibilidad completa. Después ampliar contenido/revisión y adaptación con evidencias, manteniendo servicios externos desconectados hasta autorización.
+Siguiente incremento recomendado: validación de uso en navegador/iPhone físico y ampliación editorial mínima con tareas independientes, manteniendo los servicios desconectados. Primero completar las cuatro muestras con la guía DIAGNÓSTICO Y PRIMERA SEMANA, registrar tiempo real y recoger incidencias. Después reforzar revisión de evidencias y práctica antes de construir el motor adaptativo completo.
+
+
+## PROGRESO ORIENTATIVO DEL PROYECTO
+
+- Incremento solicitado (práctica diaria + diagnóstico inicial/Listening local): **100 % del alcance funcional solicitado**, implementado, publicado y con checks verdes. No equivale a diagnóstico SLP calibrado ni a compatibilidad física iPhone validada; esas limitaciones se mantienen arriba.
+- Aplicación web/PWA completa del prompt maestro: **aproximadamente 20–30 %**. Estimación manual de alcance y madurez, no cálculo por líneas de código, número de tests o nivel lingüístico. Investigación, arquitectura y una base local utilizable están disponibles; los mayores riesgos de voz, evaluación fiable y sincronización productiva siguen pendientes.
+- Esfuerzo técnico restante orientativo para una persona experimentada a tiempo completo: **12–20 semanas (480–800 horas)**, más disponibilidad/revisión de especialistas para calibración pedagógica. No es una fecha comprometida; revisar tras el prototipo de voz y pruebas reales. Supone aprobación posterior de los servicios y no incluye una app nativa.
+
+Distribución orientativa del trabajo restante: validación de uso y contenido inicial (1–2 semanas); cloud/sincronización, privacidad y recuperación (2–3); conversación oral fiable y control de costes (3–5); evaluación explicable/longitudinal y calibración asistida (3–5); adaptación, SRS, mocks, informes y administración editorial (3–5). Las pruebas e integración están incluidas en cada bloque. El siguiente incremento recomendado sigue siendo pequeño y local, no abordar todos esos bloques a la vez.

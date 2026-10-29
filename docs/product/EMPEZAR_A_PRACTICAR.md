@@ -4,6 +4,8 @@ Puedes empezar en el ordenador sin cuentas, claves API ni suscripciones. Esta ve
 
 ## 1. Arrancar
 
+Obtén la versión actual desde [la rama feat/training-foundation en GitHub](https://github.com/adrianseguradeorta-prog/Examen-SLP/tree/feat/training-foundation). Puedes usar **Code → Download ZIP**, descomprimirla y abrir esa carpeta. No utilices `main` ni una descarga antigua anterior a estos incrementos.
+
 Necesitas Node.js 24 instalado. En la carpeta **Examen-SLP de esta entrega**, abre una terminal y ejecuta:
 
 ```sh
