@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTraining } from "./use-training";
 import type { ErrorData } from "./error-bank";
@@ -8,9 +8,12 @@ import { nextPractice } from "@/lib/daily-practice";
 import { practiceRequest, PRACTICE_PREFIX } from "@/lib/local-practice";
 
 export function DailyPractice({ local }: { local: boolean }) {
-  const { data, error, loading } = useTraining(local);
+  const { data, error, loading, mutate } = useTraining(local);
   const [errors, setErrors] = useState<ErrorData | null>(null);
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const completionId = useRef("");
+  const [completionMessage, setCompletionMessage] = useState("");
   useEffect(() => {
     const abort = new AbortController();
     practiceRequest(local, "/api/errors", { signal: abort.signal })
@@ -60,9 +63,86 @@ export function DailyPractice({ local }: { local: boolean }) {
         )}
         <p>
           <Link href="/plan#activity">
-            Al terminar, registra los minutos reales en Plan y actividad →
+            Consultar plan e historial de actividades →
           </Link>
         </p>
+        <details>
+          <summary>He terminado una práctica: registrar minutos</summary>
+          <p>
+            Elige lo que acabas de practicar, aunque la recomendación haya
+            cambiado. No lo registres otra vez en Plan.
+          </p>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const f = new FormData(form);
+              completionId.current ||= crypto.randomUUID();
+              setSaving(true);
+              try {
+                await mutate({
+                  action: "activity",
+                  data: {
+                    id: completionId.current,
+                    skill: f.get("skill"),
+                    minutes: Number(f.get("minutes")),
+                    studied_on: new Date().toISOString().slice(0, 10),
+                    note: String(f.get("note")),
+                  },
+                });
+                completionId.current = "";
+                form.reset();
+                setCompletionMessage(
+                  "Práctica registrada. La propuesta siguiente utiliza los minutos guardados; no es una evaluación de nivel.",
+                );
+              } catch (e) {
+                setCompletionMessage(
+                  e instanceof Error ? e.message : "No se pudo registrar",
+                );
+              } finally {
+                setSaving(false);
+              }
+            }}
+          >
+            <label>
+              Destreza practicada
+              <select name="skill" defaultValue="" required disabled={saving}>
+                <option value="" disabled>
+                  Selecciona la que has practicado
+                </option>
+                {["reading", "speaking", "writing", "listening"].map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Minutos reales
+              <input
+                name="minutes"
+                type="number"
+                min="1"
+                max="180"
+                required
+                disabled={saving}
+              />
+            </label>
+            <label>
+              Qué has trabajado
+              <input
+                name="note"
+                maxLength={500}
+                disabled={saving}
+                placeholder="Ej.: lectura sobre alertas y justificación de inferencias"
+              />
+            </label>
+            <button className="button" disabled={!data || saving}>
+              {saving ? "Guardando…" : "Registrar práctica terminada"}
+            </button>
+          </form>
+          <p role="status">{completionMessage}</p>
+        </details>
       </section>
       <section className="card">
         <h2>Tu primera sesión · unos 40 minutos</h2>
