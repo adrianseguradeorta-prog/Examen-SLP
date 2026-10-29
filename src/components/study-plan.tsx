@@ -1,4 +1,5 @@
 "use client";
+import { LocalPracticeNotice } from "./local-practice-notice";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useTraining } from "./use-training";
@@ -8,8 +9,8 @@ import {
   activitySummary,
   type PlanInput,
 } from "@/lib/training";
-export function StudyPlan() {
-  const { data, error, loading, mutate, load } = useTraining();
+export function StudyPlan({ local = false }: { local?: boolean }) {
+  const { data, error, loading, mutate, load } = useTraining(local);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const planId = useRef("");
@@ -31,12 +32,18 @@ export function StudyPlan() {
   }
   return (
     <>
+      {local && <LocalPracticeNotice />}
       {error && (
         <div className="notice">
-          {error} <Link href="/settings">Conectar cuenta</Link>
+          {error} {!local && <Link href="/settings">Conectar cuenta</Link>}
         </div>
       )}
       <p role="status">{loading ? "Consultando tu entrenamiento…" : message}</p>
+      <p>
+        <Link className="text-link" href="/">
+          Ver mi siguiente práctica en Hoy →
+        </Link>
+      </p>
       <div className="two-col">
         <section className="card">
           <h2>Tu plan inicial</h2>
@@ -69,7 +76,9 @@ export function StudyPlan() {
                 await mutate({ action: "plan", data: p });
                 planId.current = "";
                 setMessage(
-                  "Plan guardado. Disponible desde tu cuenta en otros dispositivos.",
+                  local
+                    ? "Plan guardado en este navegador."
+                    : "Plan guardado. Disponible desde tu cuenta en otros dispositivos.",
                 );
               } catch (e) {
                 setMessage(
@@ -82,7 +91,12 @@ export function StudyPlan() {
           >
             <label>
               Fecha de inicio
-              <input type="date" name="start_date" required />
+              <input
+                type="date"
+                name="start_date"
+                defaultValue={today}
+                required
+              />
             </label>
             <label>
               Fecha del examen (opcional)
@@ -106,7 +120,7 @@ export function StudyPlan() {
           </p>
         </section>
         <section className="card">
-          <h2>Tu práctica registrada</h2>
+          <h2 id="activity">Tu práctica registrada</h2>
           <div className="metrics">
             <div>
               <strong>{summary.lastSevenDays}</strong>
@@ -178,7 +192,13 @@ export function StudyPlan() {
             </label>
             <label>
               Fecha
-              <input type="date" name="studied_on" max={today} required />
+              <input
+                type="date"
+                name="studied_on"
+                defaultValue={today}
+                max={today}
+                required
+              />
             </label>
             <label>
               Qué has trabajado
@@ -201,7 +221,9 @@ export function StudyPlan() {
             <h2>36 semanas de trabajo</h2>
             <span>
               {data?.plans[0]
-                ? "Guardado en cloud"
+                ? local
+                  ? "Guardado localmente"
+                  : "Guardado en cloud"
                 : "Vista previa · sin guardar"}
             </span>
           </div>
@@ -267,7 +289,7 @@ export function StudyPlan() {
           </div>
         ))}
         <button className="text-button" onClick={() => load()}>
-          Actualizar desde servidor
+          {local ? "Actualizar historial local" : "Actualizar desde servidor"}
         </button>
       </section>
       {Boolean(data?.plans.length) && (

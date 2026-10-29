@@ -1,4 +1,6 @@
 "use client";
+import { LocalPracticeNotice } from "./local-practice-notice";
+import { practiceRequest } from "@/lib/local-practice";
 import { useEffect, useRef, useState } from "react";
 import {
   categories,
@@ -7,27 +9,32 @@ import {
   type errorProgress,
   type recommendPractice,
 } from "@/lib/errors";
-type Data = {
+export type ErrorData = {
   patterns: (Pattern & { progress: ReturnType<typeof errorProgress> | null })[];
   observations: Observation[];
   recommendations: ReturnType<typeof recommendPractice>;
   truncated: boolean;
 };
-export function ErrorBank() {
-  const [data, setData] = useState<Data | null>(null);
+export function ErrorBank({ local = false }: { local?: boolean }) {
+  const [data, setData] = useState<ErrorData | null>(null);
   const [message, setMessage] = useState("Cargando observaciones…");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState("");
   const ids = useRef({ event: "", pattern: "" });
   async function load() {
-    const r = await fetch("/api/errors", { cache: "no-store" });
+    const r = await practiceRequest(local, "/api/errors", {
+      cache: "no-store",
+    });
     const j = await r.json();
     if (!r.ok) throw Error(j.error);
     setData(j);
   }
   useEffect(() => {
     const abort = new AbortController();
-    fetch("/api/errors", { signal: abort.signal, cache: "no-store" })
+    practiceRequest(local, "/api/errors", {
+      signal: abort.signal,
+      cache: "no-store",
+    })
       .then(async (r) => {
         const j = await r.json();
         if (!r.ok) throw Error(j.error);
@@ -41,7 +48,7 @@ export function ErrorBank() {
         if (!abort.signal.aborted) setMessage(e.message);
       });
     return () => abort.abort();
-  }, []);
+  }, [local]);
   async function remove(kind: string, id: string) {
     if (
       kind === "pattern" &&
@@ -50,7 +57,7 @@ export function ErrorBank() {
       return;
     setBusy(true);
     try {
-      const r = await fetch("/api/errors", {
+      const r = await practiceRequest(local, "/api/errors", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ kind, id }),
@@ -69,6 +76,7 @@ export function ErrorBank() {
   const current = data?.patterns.find((p) => p.id === selected);
   return (
     <>
+      {local && <LocalPracticeNotice />}
       <div className="notice">
         Observaciones registradas por ti. Los estados son reglas de seguimiento,
         no una evaluación oficial ni una detección automática de IA.
@@ -110,7 +118,7 @@ export function ErrorBank() {
               ids.current.pattern ||= crypto.randomUUID();
               setBusy(true);
               try {
-                const r = await fetch("/api/errors", {
+                const r = await practiceRequest(local, "/api/errors", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -186,7 +194,13 @@ export function ErrorBank() {
             </label>
             <label>
               Fecha
-              <input type="date" name="occurred_on" required />
+              <input
+                type="date"
+                name="occurred_on"
+                defaultValue={new Date().toISOString().slice(0, 10)}
+                max={new Date().toISOString().slice(0, 10)}
+                required
+              />
             </label>
             <label>
               Qué ocurrió

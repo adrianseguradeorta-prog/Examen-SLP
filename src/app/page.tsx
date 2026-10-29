@@ -1,3 +1,4 @@
+import { DailyPractice } from "@/components/daily-practice";
 import Link from "next/link";
 import { ArrowRight, Mic, Clock3, Target, Check } from "lucide-react";
 import { planWeek } from "@/lib/domain";
@@ -25,13 +26,15 @@ export default async function Home() {
           <span>
             {connected
               ? "Inicia sesión para recuperar tu entrenamiento."
-              : "Tu espacio está preparado. Conecta tu cuenta para empezar a guardar progreso."}
+              : "Puedes empezar sin cuenta: práctica e historial local disponibles en este navegador."}
           </span>
-          <Link href="/settings">
-            Configurar <ArrowRight size={15} />
+          <Link href={connected ? "/settings" : "/plan"}>
+            {connected ? "Configurar" : "Preparar mi plan"}{" "}
+            <ArrowRight size={15} />
           </Link>
         </div>
       )}
+      <DailyPractice local={!connected} />
       <section className="hero">
         <div>
           <div className="eyebrow">PRIORIDAD 01 / SPEAKING</div>
@@ -48,8 +51,7 @@ export default async function Home() {
             Abrir Speaking Lab <ArrowRight size={18} />
           </Link>
           <div className="hero-meta">
-            <Clock3 size={15} /> Sesiones de 15–25 min <span>•</span> Tres modos
-            de práctica
+            <Clock3 size={15} /> Práctica guiada de 15 min <span>•</span> Sin IA
           </div>
         </div>
         <div className="voice-art" aria-hidden="true">

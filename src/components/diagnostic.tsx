@@ -1,4 +1,5 @@
 "use client";
+import { LocalPracticeNotice } from "./local-practice-notice";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -7,8 +8,8 @@ import {
 } from "@/lib/diagnostic-content";
 import { useTraining } from "./use-training";
 import { wordCount } from "@/lib/domain";
-export function Diagnostic() {
-  const { data, error, loading, mutate } = useTraining();
+export function Diagnostic({ local = false }: { local?: boolean }) {
+  const { data, error, loading, mutate } = useTraining(local);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -58,9 +59,10 @@ export function Diagnostic() {
   }
   return (
     <>
+      {local && <LocalPracticeNotice />}
       {error && (
         <div className="notice">
-          {error} <Link href="/settings">Conectar cuenta</Link>
+          {error} {!local && <Link href="/settings">Conectar cuenta</Link>}
         </div>
       )}
       <div className="notice">
@@ -130,8 +132,8 @@ export function Diagnostic() {
         {lastReading && (
           <div className="feedback">
             <h3>
-              {lastReading.report.correct} / {lastReading.report.total}{" "}
-              respuestas correctas
+              Última muestra guardada: {lastReading.report.correct} /{" "}
+              {lastReading.report.total} respuestas correctas
             </h3>
             <p>{lastReading.report.message}</p>
             {lastReading.report.items?.map((item, i) => (
@@ -139,9 +141,20 @@ export function Diagnostic() {
                 <strong>
                   {i + 1}. {item.correct ? "Correcto" : "Revisar"}
                 </strong>{" "}
-                · {item.explanation}
+                · {task.questions[i]?.type} · {item.explanation}
               </p>
             ))}
+            <p>
+              Solo orienta sobre estas cuatro preguntas. Repetir el mismo texto
+              después de ver soluciones es repaso, no evidencia nueva.
+            </p>
+            <p>
+              <Link href="/library#reading">
+                Practicar otra lectura con justificación
+              </Link>{" "}
+              · <Link href="/speaking#practice">Continuar con Speaking</Link> ·{" "}
+              <Link href="/plan#activity">Registrar los minutos reales</Link>
+            </p>
           </div>
         )}
       </section>
@@ -157,6 +170,7 @@ export function Diagnostic() {
           lang="en"
           aria-label="Muestra escrita del diagnóstico"
           spellCheck={false}
+          maxLength={30000}
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={busy}
@@ -164,6 +178,12 @@ export function Diagnostic() {
         <p>
           {wordCount(text)} palabras · Este campo no tiene autosave; descarga
           una copia antes de salir.
+        </p>
+        <p>
+          <Link href="/writing">
+            Para una práctica que puedas interrumpir, abre Writing Lab con
+            recuperación automática.
+          </Link>
         </p>
         <button
           className="button"

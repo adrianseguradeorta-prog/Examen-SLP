@@ -1,3 +1,4 @@
+import { configured } from "@/lib/supabase";
 import { Diagnostic } from "@/components/diagnostic";
 export default function Page() {
   return (
@@ -5,7 +6,7 @@ export default function Page() {
       <div className="eyebrow">EVIDENCIA ANTES QUE ETIQUETAS</div>
       <h1>Tu diagnóstico inicial.</h1>
       <p>Recoge muestras independientes y descubre qué necesitas trabajar.</p>
-      <Diagnostic />
+      <Diagnostic local={!configured()} />
     </>
   );
 }

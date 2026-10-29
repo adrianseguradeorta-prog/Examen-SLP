@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { SpeakingPractice } from "./speaking-practice";
 import { Mic } from "lucide-react";
 export function Speaking() {
   const [mode, setMode] = useState("teacher");
@@ -42,7 +43,7 @@ export function Speaking() {
         );
         setAudio(url.current);
         setStatus(
-          "Prueba local lista. No se ha enviado ni guardado en la nube.",
+          "Prueba temporal en memoria. No se almacena ni se envía; se pierde al salir de esta pantalla.",
         );
       };
       r.start();
@@ -63,6 +64,11 @@ export function Speaking() {
   }
   return (
     <>
+      <SpeakingPractice />
+      <p className="muted">
+        Modos de conversación previstos: todavía no hay profesor ni examinador
+        de voz conectado. Los botones siguientes solo seleccionan el modo.
+      </p>
       <div className="mode-grid">
         {[
           [

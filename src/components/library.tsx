@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { lessons, reading, chunks } from "@/lib/content";
 export function Library() {
@@ -35,7 +36,7 @@ export function Library() {
             </article>
           ))}
       </div>
-      <section className="card">
+      <section className="card" id="reading">
         <div className="eyebrow">READING / INFERENCIA Y POSTURA</div>
         <h2>{reading.title}</h2>
         <p className="reading" lang="en">
@@ -79,6 +80,12 @@ export function Library() {
           Práctica de esta página; todavía no guarda intentos ni estima un nivel
           SLP.
         </p>
+        {show && (
+          <p>
+            <Link href="/plan#activity">Registrar los minutos de Reading</Link>{" "}
+            · <Link href="/">Volver a Hoy</Link>
+          </p>
+        )}
       </section>
       <section className="card">
         <h2>Expresiones para activar</h2>
