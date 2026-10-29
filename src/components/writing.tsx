@@ -236,7 +236,7 @@ export function Writing() {
         <button
           className="text-button"
           onClick={() => setSaveTick((t) => t + 1)}
-          disabled={conflict || !dirty.current}
+          disabled={conflict}
         >
           Reintentar sincronización
         </button>
