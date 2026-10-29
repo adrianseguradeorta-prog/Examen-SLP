@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ACTIVE_WRITING_USER_KEY } from "@/lib/writing-draft";
 export function Account({ connected }: { connected: boolean }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
@@ -60,6 +61,7 @@ export function Account({ connected }: { connected: boolean }) {
         className="text-button"
         onClick={async () => {
           await fetch("/api/auth", { method: "DELETE" });
+          localStorage.removeItem(ACTIVE_WRITING_USER_KEY);
           sessionStorage.clear();
           router.push("/");
           router.refresh();

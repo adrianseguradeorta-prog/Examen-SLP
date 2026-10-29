@@ -14,7 +14,7 @@ export async function GET() {
         { error: "No se pudo recuperar el borrador" },
         { status: 500 },
       )
-    : NextResponse.json({ draft: data?.[0] ?? null });
+    : NextResponse.json({ draft: data?.[0] ?? null, userId: c.user.id });
 }
 export async function PUT(request: Request) {
   const c = await context(request);
@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Otra versión está guardada. Descarga tu copia antes de recuperar la del servidor.",
+          "Otra versión está guardada. Tu copia local se conservará sin sobrescribirse.",
       },
       { status: 409 },
     );
