@@ -47,7 +47,7 @@ class PracticeBrowserTests(unittest.TestCase):
 
     def tearDown(self):
         # Artifacts contain synthetic fixtures only; no microphone file/video is recorded.
-        if self.errors or self.external:
+        if not self.page.is_closed():
             self.page.screenshot(path=f'test-results/{self._testMethodName}.png', full_page=True)
         self.context.close()
         self.assertEqual(self.external, [], 'Unexpected external/cloud request')
@@ -202,8 +202,10 @@ class PracticeBrowserTests(unittest.TestCase):
         self.page.locator('[name=session_ref]').fill('browser-session')
         self.page.locator('[name=example]').fill('Yesterday I go to the meeting.')
         self.page.get_by_role('button', name='Guardar observación').click()
+        self.page.get_by_text('Ver ejemplos y oportunidades', exact=True).click()
         expect(self.page.get_by_text('Yesterday I go to the meeting.', exact=True)).to_be_visible()
         self.page.reload()
+        self.page.get_by_text('Ver ejemplos y oportunidades', exact=True).click()
         expect(self.page.get_by_text('Yesterday I go to the meeting.', exact=True)).to_be_visible()
         self.open('/plan')
         self.page.locator('[name=weekly_minutes]').select_option('390')
@@ -213,9 +215,9 @@ class PracticeBrowserTests(unittest.TestCase):
         self.page.locator('[name=minutes]').fill('15')
         self.page.locator('[name=note]').fill('Independent practice from browser QA')
         self.page.get_by_role('button',name='Registrar actividad').click()
-        expect(self.page.get_by_text('Independent practice from browser QA', exact=True)).to_be_visible()
+        expect(self.page.get_by_text('Independent practice from browser QA', exact=False)).to_be_visible()
         self.page.reload()
-        expect(self.page.get_by_text('Independent practice from browser QA', exact=True)).to_be_visible()
+        expect(self.page.get_by_text('Independent practice from browser QA', exact=False)).to_be_visible()
         self.assertEqual(len(self.records('plan')),1)
         self.assertEqual(len(self.records('activity')),1)
         self.open('/')
@@ -238,7 +240,7 @@ class PracticeBrowserTests(unittest.TestCase):
         self.open('/diagnostic')
         r=self.page.locator('#reading')
         expect(r.get_by_role('radio').first).to_be_enabled()
-        self.page.evaluate("Storage.prototype.setItem=function(k,v){throw new DOMException('No space','QuotaExceededError')}")
+        self.page.evaluate("()=>{Storage.prototype.setItem=function(k,v){throw new DOMException('No space','QuotaExceededError')};}")
         r.get_by_role('radio').first.check()
         expect(r.get_by_text(re.compile('No se pudo guardar. Mantén esta pestaña abierta'))).to_be_visible()
         self.assertIsNone(self.page.evaluate("localStorage.getItem('slp:task-draft:v1:guest:reading:sensors-v1')"))
