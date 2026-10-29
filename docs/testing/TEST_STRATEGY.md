@@ -1,6 +1,6 @@
 # Estrategia de pruebas y gates
 
-En esta entrega documental no hay aplicación ni tests ejecutables. Se comprueban enlaces internos, diff, ausencia de secretos evidentes y commits; no confundir eso con validación funcional.
+Estado del quinto incremento: 62 pruebas Vitest pasan, junto con lint, TypeScript y build de producción. Se conservan las pruebas de recuperación Writing de la rama oficial. Las 18 pruebas nuevas cubren persistencia local por registro, reintentos, cuota, datos inválidos, separación respecto a cloud/Writing, plan, Error Bank, corrección de Reading mediante la ruta local y recomendaciones conservadoras. Son pruebas de dominio, contratos y PostgreSQL embebido; no E2E de navegador. La comprobación HTTP de la app compilada se intentó, pero el entorno impidió abrir un puerto local (`listen EPERM`). No hay QA visual ni iPhone físico. La matriz siguiente incluye objetivos futuros, no una afirmación de cobertura completa.
 
 | Área | Prueba significativa | Criterio de aceptación |
 |---|---|---|

@@ -1,6 +1,6 @@
-# Conectar servicios — primer incremento
+# Práctica local y conexión futura de servicios
 
-Estado: la aplicación compila sin credenciales. El usuario confirmó que todavía no tiene los proyectos y solicitó preparar código e instrucciones. No se han contratado servicios ni desplegado la aplicación.
+Estado: la aplicación compila sin credenciales. El usuario confirmó que todavía no tiene los proyectos y solicitó preparar código e instrucciones. No se han contratado servicios ni desplegado la aplicación. El incremento actual funciona sin conectar Supabase/Vercel/OpenAI. Las instrucciones de conexión siguientes son para una fase futura autorizada, no un requisito para practicar.
 
 ## 1. Ejecutar localmente
 
@@ -8,11 +8,10 @@ Node.js 24 y npm. Desde el repositorio:
 
 ```sh
 npm ci
-cp .env.example .env.local
 npm run dev
 ```
 
-Abrir http://localhost:3000. Sin claves se pueden consultar clases, practicar Reading, escribir/descargar un texto y hacer una prueba local de micrófono. No hay datos ficticios de progreso. Sin Supabase el borrador permanece solo en la pestaña; descargar antes de salir.
+Abrir http://localhost:3000. Sin claves se pueden consultar clases, practicar Reading, escribir/descargar un texto y hacer una prueba local de micrófono. No hay datos ficticios de progreso. Writing recupera el borrador local tras recarga/cierre. Plan, actividades, diagnóstico entregado y Error Bank también funcionan en modo local sin cuenta. Ver [EMPEZAR A PRACTICAR](../product/EMPEZAR_A_PRACTICAR.md). No hace falta crear `.env.local` para este modo.
 
 ## 2. Supabase
 
@@ -37,7 +36,7 @@ Hobby solo si el uso y condiciones vigentes lo permiten; no hay contratación au
 
 ## 4. OpenAI — reservado para siguiente integración
 
-Crear proyecto API con facturación y límites; suscripción ChatGPT no incluye automáticamente gasto de API. Configurar clave solo como secreto servidor. Objetivo acordado 45 USD/mes, límite operativo propuesto 60 USD para el conjunto; los límites de proveedores deben configurarse por separado.
+No crear cuentas ni configurar facturación en este incremento. Presupuesto pendiente de aclaración: los documentos discrepan entre 45/60 USD y 100/150 USD. No se adopta cifra ni se modifican límites. No realizar llamadas con coste antes de aclararlo; este flujo local no necesita OpenAI.
 
 Las variables OPENAI_* están reservadas: **añadir una clave no habilita conversación en esta versión**. Falta construir y probar el control de presupuesto, sesiones WebRTC, grabación fragmentada privada, reconexión y evaluación. La prueba local de micrófono no llama a OpenAI ni genera gasto. No usar una clave estándar en navegador.
 
@@ -53,7 +52,7 @@ Lint, typecheck, tests de dominio y migración/RLS sobre PostgreSQL embebido PGl
 - Las claves Reading no se importan en componentes cliente. Tras ver soluciones, repetir sirve de repaso, no de evidencia independiente.
 - Comprobar con dos cuentas que historial, muestras y planes no se cruzan. Reintentar la misma operación no debe duplicar registros. La API rechaza reutilizar un identificador con otro contenido.
 - Se puede borrar cada actividad, plan o muestra desde su pantalla. Borrado de cuenta completa, backups y exportación global siguen pendientes.
-- El texto del diagnóstico no tiene autosave; ofrece descarga y aviso al salir. No hay garantía de recuperación después de cerrar forzosamente iOS. Para escritura con autosave usar Writing Lab con Supabase conectado.
+- El texto del diagnóstico no tiene autosave; ofrece descarga y aviso al salir. No hay garantía de recuperación después de cerrar forzosamente iOS. Para escritura con recuperación automática usar Writing Lab, también sin Supabase.
 
 Verificación local del segundo incremento: 28 pruebas (dominio, SQL/RLS y contratos API), lint, TypeScript y build. No equivale a validación contra un proyecto Supabase real o iPhone físico.
 
@@ -66,3 +65,16 @@ Los patrones se deduplican por usuario, categoría y texto normalizado. La escri
 Los estados NEW/RECURRING/IMPROVING/CONTROLLED se derivan de sesiones, oportunidades sin ayuda y separación temporal. El mismo día del último error no acredita reparación independiente. No practicar no cuenta como mejora. Las recomendaciones usan categorías y recurrencia; no reprograman todavía el calendario. Si el historial recibido es parcial (máximo 500 patrones/1.000 observaciones por consulta), se omiten estados y recomendaciones hasta implementar paginación completa.
 
 Verificación ampliada: 39 pruebas de dominio, API y PostgreSQL embebido; lint, TypeScript y build. Los controles no sustituyen pruebas contra Supabase gestionado ni iPhone físico.
+
+
+## Quinto incremento: modo de práctica local
+
+Se selecciona explícitamente en las páginas cuando `configured()` indica que Supabase no está configurado. El modo cloud existente se mantiene; un 401/503 de cloud nunca cambia silenciosamente al historial local. El espacio personal sin cuenta utiliza claves `slp:practice:v1:guest:` independientes de Writing. Al configurar servicios en el futuro será necesario reconstruir la aplicación y decidir una migración explícita; el historial local no se envía automáticamente.
+
+Cada plan, actividad, muestra entregada y observación se guarda como registro validado/versionado separado. Un identificador no puede reutilizarse con otro contenido; falta de cuota o bloqueo de almacenamiento da error, no éxito. Registros dañados no se borran automáticamente y obligan a abstenerse de recomendaciones basadas en todo el historial. Usar una pestaña para registrar/borrar patrones: no se implementan transacciones entre pestañas para esas operaciones compuestas.
+
+Reading se corrige mediante `/api/practice/diagnostic`, una ruta sin estado del servidor Next.js local. No usa base de datos ni IA; las claves no se importan al cliente y solo se devuelven explicaciones después de entregar una muestra válida. La app local debe seguir ejecutándose para corregir. Writing del diagnóstico solo se conserva después de entregar; el editor Writing Lab mantiene su recuperación existente sin cambios.
+
+Hoy utiliza el plan más reciente, su semana activa y los minutos de cada destreza registrados en ese periodo. Sin plan usa una propuesta base de siete días. Falta de muestra Reading propone empezar por el diagnóstico; errores de la primera muestra sugieren otra lectura hasta que haya práctica de Reading registrada desde ese día. El resto se distribuye entre Speaking, Writing y Reading según la carga restante; empates favorecen Speaking. Error Bank añade un foco solo con observaciones de la misma destreza y datos completos. Fechas no vigentes, datos insuficientes o parciales impiden afirmar personalización suficiente. Nada de esto estima un nivel ni cambia el calendario automáticamente.
+
+La exportación JSON de Hoy incluye este historial local, no los borradores de Writing; estos se descargan desde su editor. No hay importación ni copia cloud. La navegación privada, borrado del sitio, cambio de puerto/origen o cambio de navegador afectan a la disponibilidad de las copias. No usar un perfil compartido para textos privados.

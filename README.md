@@ -2,7 +2,9 @@
 
 Plataforma personal propuesta para preparar inglés STANAG 6001: perfil inicial declarado 3.2.2.2 → objetivo 3.3.3.3, durante aproximadamente nueve meses, 6–7 horas semanales y prioridad Speaking.
 
-**Estado: primer incremento implementado y compilable; no desplegado ni conectado a servicios cloud.** Las estimaciones futuras no certificarán oficialmente un SLP. Ninguna arquitectura o suscripción queda contratada con esta entrega.
+**Estado: primera práctica diaria utilizable localmente; sin despliegue ni servicios cloud conectados.** Las estimaciones futuras no certificarán oficialmente un SLP. Ninguna arquitectura o suscripción queda contratada con esta entrega.
+
+Para empezar hoy: [EMPEZAR A PRACTICAR](docs/product/EMPEZAR_A_PRACTICAR.md). Incluye primera sesión, registro de actividad y precauciones para conservar tus textos.
 
 ## Documentación
 
@@ -29,7 +31,7 @@ Node.js 24. Ejecutar `npm ci` y `npm run dev`. Validar con `npm run lint`, `npm 
 
 [Instrucciones de conexión a Supabase/Vercel/OpenAI](docs/deployment/CONNECT_SERVICES.md).
 
-Implementado: interfaz responsive, clases originales, Reading con feedback, prueba local de micrófono, login Supabase y borradores Writing versionados con RLS. Sin credenciales, guardado cloud no disponible. Añadido: Error Bank manual persistente con estados basados en oportunidades y recomendaciones, y plan versionado de 36 semanas, registro manual de actividades y muestras iniciales de diagnóstico Reading/Writing con historial y borrado. Aún pendientes: voz conversacional, evaluadores, diagnóstico completo de cuatro skills, SRS, detección automática de errores, mocks, informes y despliegue. Manifest inicial, sin service worker/offline completo ni pruebas físicas iPhone.
+Implementado: interfaz responsive, clases originales, Reading con feedback, prueba local de micrófono, login Supabase y borradores Writing versionados con RLS. Sin credenciales funcionan Hoy, plan y actividades locales, diagnóstico Reading con feedback, muestras entregadas y Error Bank local. Writing mantiene su recuperación local por usuario/invitado. Guardado cloud no disponible. Añadido: Error Bank manual persistente con estados basados en oportunidades y recomendaciones, y plan versionado de 36 semanas, registro manual de actividades y muestras iniciales de diagnóstico Reading/Writing con historial y borrado. Aún pendientes: voz conversacional, evaluadores, diagnóstico completo de cuatro skills, SRS, detección automática de errores, mocks, informes y despliegue. Manifest inicial, sin service worker/offline completo ni pruebas físicas iPhone.
 
 ## Desarrollo posterior
 

@@ -60,3 +60,10 @@ Exam attempts fijan contenido y política al comenzar; feedback y claves solo de
 Panel sencillo con rol editor validado en servidor, no SQL libre: formularios por tipo, preview, revisión, publicación y archivo. Rúbricas necesitan revisión explícita y nueva versión; no editar criterios de evaluaciones históricas. Búsqueda PostgreSQL full-text y filtros skill/level/topic/source/type; favoritos privados.
 
 Importaciones futuras: upload privado limitado por tamaño/MIME, análisis antivirus/aislado, extracción asíncrona, OCR opcional con coste explícito, revisión humana y derechos antes de publicación. El archivo es dato no confiable, nunca prompt de sistema. Dedupe mediante hash y metadatos antes de embeddings.
+
+
+## Incremento operativo de práctica sin servicios (2026-10-29)
+
+Modo personal local explícito, seleccionado por el servidor cuando no existe configuración Supabase. `practiceRequest` conserva el transporte cloud existente y añade un adaptador local separado, nunca un fallback ante fallo de auth. Registros individuales validados/versionados para planes, actividades, muestras entregadas y observaciones; no usa ni modifica claves de recuperación Writing. Es un espacio de invitado del navegador, no un sustituto de la futura cuenta sincronizada. PostgreSQL sigue siendo la fuente de verdad de datos cloud; migrar datos locales requerirá decisión explícita.
+
+`nextPractice` es una regla determinista de selección, no un evaluador: calendario activo, carga declarada por skill, muestra Reading y observaciones manuales. Con datos incompletos se ofrece práctica general; no se ascienden niveles, no se cambia la fecha del examen y no se simulan ayudas de IA. Reading se corrige en una ruta local sin estado con las claves existentes. Las pantallas reutilizan los contratos de entrenamiento y Error Bank; el flujo de Writing validado en la rama oficial se conserva intacto.
