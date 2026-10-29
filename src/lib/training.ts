@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { readingTasks, listeningTasks, writingTasks } from "./task-catalog";
+import { speakingTasks } from "./speaking-content";
 export const skillSchema = z.enum([
   "listening",
   "speaking",
@@ -35,7 +37,8 @@ export const readingInput = z
   .object({
     id: z.uuid(),
     kind: z.literal("reading"),
-    version: z.literal("sensors-v1"),
+    version: z.enum(["sensors-v1", "training-time-v1", "repair-cafe-v1"]),
+    priorExposure: z.enum(["none", "solutions", "unknown"]).optional(),
     answers: z.array(z.number().int().min(0).max(2)).length(4),
   })
   .strict();
@@ -43,7 +46,11 @@ export const writingInput = z
   .object({
     id: z.uuid(),
     kind: z.literal("writing"),
-    version: z.literal("public-services-v1"),
+    version: z.enum([
+      "public-services-v1",
+      "learning-budget-v1",
+      "shared-energy-v1",
+    ]),
     text: z.string().trim().min(30).max(30000),
   })
   .strict();
@@ -51,7 +58,12 @@ export const listeningInput = z
   .object({
     id: z.uuid(),
     kind: z.literal("listening"),
-    version: z.literal("library-evenings-v1"),
+    version: z.enum([
+      "library-evenings-v1",
+      "energy-meeting-v1",
+      "mentoring-v1",
+    ]),
+    priorExposure: z.enum(["none", "solutions", "unknown"]).optional(),
     answers: z.array(z.number().int().min(0).max(2)).length(5),
     mode: z.literal("practice"),
     playCount: z.number().int().min(1).max(1000),
@@ -65,7 +77,12 @@ export const speakingInput = z
   .object({
     id: z.uuid(),
     kind: z.literal("speaking"),
-    version: z.literal("community-decision-v1"),
+    version: z.enum([
+      "community-decision-v1",
+      "technology-decisions-v1",
+      "energy-resilience-v1",
+      "leadership-work-v1",
+    ]),
     completed: z.literal(true),
     durationSeconds: z.number().min(1).max(600).nullable(),
     durationReliable: z.boolean(),
@@ -150,3 +167,23 @@ export function activitySummary(activities: Activity[], today: string) {
     ).size,
   };
 }
+
+export const taskExposureInput = z
+  .object({
+    id: z.uuid(),
+    skill: skillSchema,
+    version: z.string(),
+    stage: z.enum(["opened", "solutions"]),
+  })
+  .strict()
+  .refine(
+    (x) =>
+      ({
+        reading: readingTasks,
+        listening: listeningTasks,
+        writing: writingTasks,
+        speaking: speakingTasks,
+      })[x.skill].some((t) => t.version === x.version),
+    "Tarea desconocida",
+  );
+export type TaskExposure = z.infer<typeof taskExposureInput>;

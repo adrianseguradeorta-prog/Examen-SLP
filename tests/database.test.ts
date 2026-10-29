@@ -25,6 +25,12 @@ beforeAll(async () => {
       "utf8",
     ),
   );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/202610290005_independent_tasks.sql",
+      "utf8",
+    ),
+  );
 }, 30000);
 afterAll(async () => {
   await db.close();
@@ -255,4 +261,28 @@ it("rolls back a pattern if the first event claims success without an error", as
   expect(
     (await db.query("select * from public.error_patterns")).rows,
   ).toHaveLength(0);
+});
+it("preserves task exposure across attempt deletion and isolates owners", async () => {
+  await asUser(alice);
+  await db.query(
+    "insert into public.task_exposures(id,user_id,skill,version,stage) values ($1,$2,'reading','training-time-v1','solutions')",
+    ["12121212-1212-4212-a212-121212121212", alice],
+  );
+  await db.query("delete from public.diagnostic_submissions");
+  expect(
+    (await db.query("select * from public.task_exposures")).rows,
+  ).toHaveLength(1);
+  await expect(
+    db.query("update public.task_exposures set stage='opened'"),
+  ).rejects.toThrow(/permission denied/);
+  await asUser(bob);
+  expect(
+    (await db.query("select * from public.task_exposures")).rows,
+  ).toHaveLength(0);
+  await expect(
+    db.query(
+      "insert into public.task_exposures(id,user_id,skill,version,stage) values ($1,$2,'reading','training-time-v1','opened')",
+      ["13131313-1313-4313-a313-131313131313", alice],
+    ),
+  ).rejects.toThrow(/row-level security/);
 });

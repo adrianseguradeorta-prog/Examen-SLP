@@ -1,6 +1,7 @@
 import type { Submission, DiagnosticReport } from "./training";
-import { diagnosticReading } from "./diagnostic-content";
-import { listeningTask } from "./listening-content";
+import { comprehensionTask } from "./task-catalog";
+import { additionalGrading } from "./additional-grading";
+
 import {
   listeningKeys,
   listeningExplanations,
@@ -30,12 +31,13 @@ export function diagnosticReport(s: Submission): DiagnosticReport {
       message:
         "Texto conservado. Pendiente de evaluación; no se asigna nivel por longitud o vocabulario.",
     };
-  const answerKeys = s.kind === "listening" ? listeningKeys : keys;
-  const why = s.kind === "listening" ? listeningExplanations : explanations;
-  const questions =
-    s.kind === "listening"
-      ? listeningTask.questions
-      : diagnosticReading.questions;
+  const extra = additionalGrading[s.version];
+  const answerKeys =
+    extra?.keys ?? (s.kind === "listening" ? listeningKeys : keys);
+  const why =
+    extra?.explanations ??
+    (s.kind === "listening" ? listeningExplanations : explanations);
+  const questions = comprehensionTask(s.kind, s.version)!.questions;
   return {
     kind: s.kind,
     estimatedLevel: null,
@@ -47,7 +49,9 @@ export function diagnosticReport(s: Submission): DiagnosticReport {
       explanation: why[i],
       type: questions[i].type,
     })),
-    ...(s.kind === "listening" ? { transcript: listeningTranscript } : {}),
+    ...(s.kind === "listening"
+      ? { transcript: extra?.transcript ?? listeningTranscript }
+      : {}),
     message:
       "Muestra breve no calibrada. Los aciertos orientan la práctica, pero no determinan un nivel SLP.",
   };
