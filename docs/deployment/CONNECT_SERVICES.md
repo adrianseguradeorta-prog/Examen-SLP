@@ -16,7 +16,7 @@ Abrir http://localhost:3000. Sin claves se pueden consultar clases, practicar Re
 ## 2. Supabase
 
 1. Crear cuenta y proyecto en región UE. Free basta para probar; decidir Pro al comenzar uso diario con requisitos de respaldo.
-2. Ejecutar en orden `supabase/migrations/202610280001_foundation.sql` , `supabase/migrations/202610280002_training.sql`, `supabase/migrations/202610280003_error_bank.sql` y `supabase/migrations/202610290004_diagnostic_skills.sql` en SQL Editor de un proyecto nuevo. Si ya aplicaste alguna, ejecutar solamente las pendientes, en orden. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
+2. Ejecutar en orden `supabase/migrations/202610280001_foundation.sql` , `supabase/migrations/202610280002_training.sql`, `supabase/migrations/202610280003_error_bank.sql` , `supabase/migrations/202610290004_diagnostic_skills.sql` y `supabase/migrations/202610290005_independent_tasks.sql` en SQL Editor de un proyecto nuevo. Si ya aplicaste alguna, ejecutar solamente las pendientes, en orden. Conservar historial de migraciones; no volver a ejecutar sin comprobar lo aplicado.
 3. En Authentication, desactivar registro público y crear el usuario personal desde la administración. El login actual es email/contraseña; recuperación de contraseña y MFA todavía pendientes de interfaz.
 4. Copiar Project URL y publishable key a `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en `.env.local` o secretos del hosting. La publishable key está diseñada para cliente; la protección efectiva son RLS y los permisos SQL.
 5. Configurar Site URL y URLs de redirección del despliegue. No poner secret/service-role key en variables públicas. El código actual NO necesita esa clave privilegiada.
@@ -89,3 +89,12 @@ El servidor selecciona modo local invitado si Supabase no está configurado. Si 
 Listening sirve el MP3 original estático del repositorio. Las respuestas se corrigen en el servidor Next local y se guardan solo tras confirmarse la escritura; ver licencia/procedencia en `docs/content/LISTENING_V1.md`. Speaking nunca envía el blob ni su URL: solo realización declarada, ayuda, notas, interrupciones y duración del archivo cuando el navegador proporciona un valor finito fiable. El audio se revoca al salir/descartar/regrabar. No hay evaluador ni conversación IA.
 
 Una entrega cerrada y su fecha/versión son registros distintos del borrador. Una entrega fallida no cierra Writing; un identificador ya usado con otro contenido se rechaza. No se marcan borradores como sincronizados por guardarlos localmente. No hay resolución simultánea de varias pestañas para el nuevo borrador diagnóstico: editarlo desde una sola pestaña. El control de revisiones del Writing Lab continúa intacto.
+
+
+## Séptimo incremento: recuperación y exposición local
+
+No se han conectado servicios. Reading/Listening/notas Speaking usan claves `slp:task-draft:v1:<identidad>:<destreza>:<versión>`; se guardan durante edición y solo se retiran tras entrega confirmada. Ningún borrador contiene audio. Reading/Listening requieren una escucha nueva después de recarga en el caso de Listening; no restauran contadores ni posición. Writing diagnóstico preserva la clave original y añade sufijos por tarea nueva. Writing Lab no se ha modificado.
+
+Las exposiciones `opened`/`solutions` son registros independientes del intento en el historial local y se incluyen en su exportación. Borrar una entrega no borra soluciones conocidas. La quinta migración prepara las versiones nuevas y `task_exposures`, con RLS e historial no editable. No se ha aplicado externamente. El servidor cloud no acepta una afirmación de independencia del cliente: guarda `priorExposure=unknown` hasta implementar la transacción de entrega/exposición y sincronización entre dispositivos. No hay importación automática de invitado.
+
+E2E se ejecuta en un servidor Next de producción sin variables de servicios; Python/Playwright es solo dependencia de pruebas. Ver README y PHYSICAL_QA.md; no es requisito para usar la aplicación ni autoriza un despliegue.

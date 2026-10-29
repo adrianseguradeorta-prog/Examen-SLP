@@ -1,6 +1,6 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destrezas y Listening local. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
+Actualizado: 2026-10-29. Séptimo incremento: uso frecuente, recuperación y contenido independiente; validación de navegador en curso. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
 ## DONE
 
@@ -38,9 +38,21 @@ Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destre
 - Diagnóstico/Listening publicados en `430a2a553ea27fda76abefd6f5066604dd5f64cf`; CI remota verde: [ejecución 40918994011](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/40918994011). Se verificaron `npm ci`, lint, TypeScript, tests y build en GitHub Actions, además de localmente.
 - Publicación mediante conector GitHub ante bloqueo del transporte Git del entorno. Los árboles de archivos de cada commit remoto se compararon con los validados localmente; coinciden exactamente. Rama local y remota alineadas, sin force push, merge a main ni despliegue.
 
+### Uso frecuente: implementación preparada
+
+- Borradores de Reading/Listening guardados al seleccionar respuestas y recuperados por identidad/tarea tras recarga, cambio de ruta o reapertura. Entrega confirmada retira solo su copia pendiente; cuota/datos inválidos/cambio en otra pestaña no se anuncian como guardado.
+- Notas Speaking y ayuda declarada recuperables; grabaciones y duración temporal siguen efímeras. Tras recargar se exige otra grabación antes de entregar.
+- Writing Lab intacto; Writing diagnóstico añade tres tareas con borradores separados conservando la clave original.
+- Banco versionado: 3 Reading, 3 Listening originales con audio, 3 Writing diagnósticos y 4 tareas Speaking/16 prompts reutilizando contenido existente. Biblioteca y Writing Lab siguen disponibles como práctica adicional.
+- Apertura y soluciones conocidas registradas por identidad/tarea, separadas de las entregas. Las exposiciones sobreviven al borrado de resultados; repeticiones y datos antiguos no aumentan la evidencia independiente. Máximo una primera muestra por versión; ninguna estimación SLP.
+- Hoy continúa material abierto o propone tareas nuevas dentro del reparto de minutos. Incluye orientación para la primera semana y mantiene el plan provisional/abstención.
+- Quinta migración preparada para nuevas versiones/exposiciones, no aplicada a cloud. Independencia cloud se mantiene desconocida hasta implementar transacción/sincronización verificadas.
+- Suite Playwright/Chromium contra producción, con Python unittest, sin servicios externos y con micrófono simulado. Ejecución remota pendiente de comprobar antes de cerrar este incremento.
+- Procedimiento físico PC/iPhone en docs/testing/PHYSICAL_QA.md; **todos los ensayos físicos PENDIENTES**.
+
 ## IN PROGRESS
 
-- Base de práctica utilizable y recogida inicial de muestras. Aún no es una plataforma completa ni un diagnóstico SLP validado para nueve meses.
+- Base de práctica utilizable y recogida inicial de muestras. Aún no es una plataforma completa ni un diagnóstico SLP validado para nueve meses. Falta cerrar la validación remota del incremento de uso frecuente.
 
 ## TODO
 
@@ -54,15 +66,15 @@ Actualizado: 2026-10-29. Sexto incremento: diagnóstico inicial de cuatro destre
 ## KNOWN ISSUES
 
 - **No se asigna SLP**: Reading/Listening son tareas breves no calibradas; Writing queda pendiente de revisión y Speaking no conserva audio revisable. Un resultado perfecto no prueba nivel 3.
-- Listening usa una sola voz sintética y un anuncio corto; no representa diversidad de acentos, conversación ni comprensión sostenida. Repetirlo es repaso.
-- Reading/Listening sin entregar y notas Speaking sin registrar solo viven en la pestaña. El audio oral se pierde al salir/recargar por diseño. Navegadores con duración no finita o interrupción muestran duración no disponible.
+- Listening dispone de tres anuncios cortos y una sola voz sintética; no representa diversidad de acentos, conversación ni comprensión sostenida. Repetirlo es repaso.
+- Reading/Listening sin entregar y notas Speaking sin registrar ahora se guardan por tarea/identidad en el navegador. No se guarda la posición del reproductor; al volver se exige escucharlo de nuevo. El audio oral se pierde al salir/recargar por diseño. Navegadores con duración no finita o interrupción muestran duración no disponible.
 - Writing diagnóstico se edita desde una sola pestaña; no hay resolución de ediciones simultáneas en ese nuevo borrador. Un aviso de cuota/bloqueo exige descargar una copia. Borrar una muestra cerrada del historial no elimina silenciosamente su copia aún visible en el editor.
 - Writing Lab conserva su control remoto de revisiones y conflictos, sin sincronización real mientras no se conecte Supabase. Selector de historial remoto pendiente.
 - Almacén local personal del navegador, sin cifrado ni cuentas locales: invitado es compartido en el mismo perfil. Borrar datos del sitio, navegación privada o cambiar origen/puerto/navegador puede eliminar u ocultar el progreso. No hay sincronización con iPhone ni importación automática a cloud.
 - Exportación JSON del historial local disponible; no incluye borradores ni audio. Importación pendiente. Error Bank y borrador diagnóstico deben editarse desde una sola pestaña.
 - El plan no reprograma fechas. El repaso de errores se considera registrado por destreza/día, no por una prueba de reparación. Historial limitado, fechas/resúmenes UTC y abstención con datos incompletos.
 - Sin Supabase gestionado, Auth/Storage y cambios de cuenta entre dispositivos no están validados contra un servicio real. Las cuatro migraciones son preparación futura.
-- No hay QA visual/E2E de navegador ni pruebas físicas iPhone realizadas. El smoke HTTP del incremento previo quedó bloqueado por el entorno (`listen EPERM` al abrir 127.0.0.1:3100); no se declara aprobado. Tests de contratos/rutas, lint, TypeScript y build sí pasan.
+- Las pruebas físicas siguen pendientes. Se ha añadido E2E Chromium; se está comprobando su ejecución remota. El smoke HTTP del incremento previo quedó bloqueado por el entorno (`listen EPERM` al abrir 127.0.0.1:3100); no se declara aprobado. Tests de contratos/rutas, lint, TypeScript y build sí pasan.
 - La aplicación local debe seguir ejecutándose para entregar/corregir. Sin service worker/offline completo ni iconos Apple completos; no declarar PWA validada.
 - Normativa/convocatoria concreta y análisis de muestras siguen pendientes según investigación.
 

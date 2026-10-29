@@ -22,3 +22,10 @@ Aprobar D02/D03/D05 no autoriza cualquier servicio futuro: D04 requiere concreta
 ## Actualización autorizada — 2026-10-28
 
 El usuario respondió «Perfecto, continua con el programa» tras propuesta de objetivo $45/mes y límite operativo $60/mes. Confirmó no tener proyectos y pidió preparar proyecto e instrucciones. Se inicia implementación local en repositorio oficial, sin contratar ni desplegar servicios. La aprobación sustituye la puerta de parada inicial; no implica servicios de pago creados ni validación de metodología. Retención todavía no aplicada: no se guardan audios cloud.
+
+## 2026-10-29 — recuperación y QA de uso frecuente
+
+- Recuperación de respuestas Reading/Listening y notas Speaking en claves separadas por identidad, destreza y versión. Entregas cerradas siguen inmutables; limpiar borrador solo tras confirmación. No persistir audio ni estado del reproductor. Writing Lab se conserva intacto; Writing diagnóstico añade separación por tarea preservando su clave original.
+- Exposición separada de resultados: abrir no prueba atención; borrar un intento no borra conocimiento de soluciones. Como máximo una primera muestra por versión, sin ascenso SLP. Historial parcial/antiguo: abstención. Entrega cloud independiente requiere transacción futura; de momento se conserva «unknown» en servidor.
+- Playwright con Python y `unittest`: una dependencia de pruebas (`playwright==1.62.0`), disponible en el entorno, sin añadir dependencias al runtime Next. Se ejecuta contra build de producción en CI, con micrófono sintético y peticiones externas bloqueadas. La alternativa Node sería más homogénea con el frontend, pero requiere otro paquete; se prioriza una dependencia verificable y pequeña en alcance. Python solo se exige a quien ejecute E2E, no para estudiar.
+- Los puertos loopback están bloqueados en el executor local (`listen EPERM`); no se afirma E2E local aprobado. La validación real de navegador se ejecuta en GitHub Actions. QA físico permanece pendiente en PHYSICAL_QA.md.

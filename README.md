@@ -4,6 +4,8 @@ Plataforma personal propuesta para preparar inglés STANAG 6001: perfil inicial 
 
 **Estado: práctica diaria, diagnóstico inicial de cuatro destrezas y Listening utilizables localmente; sin despliegue ni servicios cloud conectados.** Las estimaciones futuras no certificarán oficialmente un SLP. Ninguna arquitectura o suscripción queda contratada con esta entrega.
 
+Banco actual: tres tareas independientes de Reading, Listening y Writing diagnóstico; cuatro tareas Speaking con 16 prompts. Respuestas pendientes y notas recuperables por tarea; repeticiones separadas de evidencia nueva. [Contenido y reglas](docs/content/BANK_V1.md).
+
 Para empezar hoy: [DIAGNÓSTICO Y PRIMERA SEMANA](docs/product/DIAGNOSTICO_Y_PRIMERA_SEMANA.md). Si prefieres comenzar con una sesión breve, consulta [EMPEZAR A PRACTICAR](docs/product/EMPEZAR_A_PRACTICAR.md).
 
 ## Documentación
@@ -40,3 +42,8 @@ Writing Lab conserva intacta su recuperación por usuario/invitado y el control 
 Repositorio oficial: https://github.com/adrianseguradeorta-prog/Examen-SLP
 
 El usuario aprobó continuar con la implementación y pidió preparar el proyecto sin servicios creados. Versiones y lockfile fijados; checks CI y cuatro migraciones preparados (sin aplicación cloud). `.env.example` contiene solo nombres y valores vacíos. No guardar datos personales de estudio, grabaciones del usuario ni credenciales en Git. El único audio versionado es contenido didáctico original sintético, con [procedencia documentada](docs/content/LISTENING_V1.md). Los documentos expresan propuestas, salvo hechos acompañados de fuentes.
+
+
+## Pruebas de navegador
+
+La aplicación no necesita Python para usarse. Para ejecutar E2E se requiere Python >=3.11: `python3 -m pip install -r e2e/requirements.txt`, `python3 -m playwright install chromium`, `npm run build` y `npm run test:e2e`. CI instala además las dependencias del navegador. Se usa Chromium real automatizado con micrófono sintético; no acredita dispositivos físicos. [QA físico pendiente](docs/testing/PHYSICAL_QA.md).

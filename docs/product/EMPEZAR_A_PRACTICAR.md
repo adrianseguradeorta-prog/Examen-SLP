@@ -47,7 +47,7 @@ Los días siguientes empieza en **Hoy**, sigue la propuesta, registra lo realiza
 | Biblioteca | No conserva las respuestas del ejercicio; registra sus minutos si quieres llevar seguimiento |
 | Speaking | No conserva audio ni evalúa la voz; registra tú los minutos y observaciones |
 
-Writing del diagnóstico ya recupera automáticamente su borrador en este navegador, separado de Writing Lab. Las respuestas Reading/Listening sin entregar y las notas Speaking sin registrar solo viven en la pestaña. El audio Speaking desaparece al salir o recargar, incluso si has registrado la realización.
+Writing del diagnóstico ya recupera automáticamente su borrador en este navegador, separado de Writing Lab. Las respuestas Reading/Listening sin entregar y las notas Speaking sin registrar ya se recuperan por tarea/identidad. El reproductor comienza de nuevo después de recargar. El audio Speaking desaparece al salir o recargar, incluso si has registrado la realización.
 
 En **Hoy → Descargar historial local** puedes exportar planes, actividades, muestras y Error Bank a JSON. Writing se descarga por separado. La importación/restauración de ese JSON aún no está implementada.
 

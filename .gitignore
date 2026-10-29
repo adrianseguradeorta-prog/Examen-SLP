@@ -20,3 +20,6 @@ recordings/
 research-downloads/
 
 *.tsbuildinfo
+
+__pycache__/
+.venv/
