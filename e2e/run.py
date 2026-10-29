@@ -14,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 os.chdir(ROOT)
 Path('test-results').mkdir(exist_ok=True)
 env = os.environ.copy()
+config_files = ['.env', '.env.local', '.env.production', '.env.production.local']
+if any((ROOT / name).exists() for name in config_files) or any(
+        value and key.startswith(('SUPABASE_', 'NEXT_PUBLIC_SUPABASE_', 'OPENAI_'))
+        for key, value in env.items()):
+    raise RuntimeError('E2E requires a clean local-only checkout/build without service environment files or variables. No server was started.')
 for key in tuple(env):
     if key.startswith(('SUPABASE_', 'NEXT_PUBLIC_SUPABASE_', 'OPENAI_')):
         env.pop(key)
