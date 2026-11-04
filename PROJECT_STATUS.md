@@ -1,8 +1,8 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-30. Octavo incremento: perfil, adaptación local, SRS y copias completas. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
+Actualizado: 2026-11-04. Octavo incremento: perfil, adaptación local, SRS y copias completas. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
-## Octavo incremento — validado localmente, publicación en curso
+## Octavo incremento — DONE: publicado y CI remota verde
 
 - HEAD de partida remoto verificado: `199f5f1be029ad134621c72d173768f5bb7c465d`. Se conserva el séptimo incremento y Writing Lab sin rehacerlo.
 - Perfil editable y versiones: declarado/objetivo separados, fecha opcional, disponibilidad 30–1.260 min, prioridad, zona horaria y días orientativos. Aislamiento por identidad y confirmación de guardado local.
@@ -13,7 +13,8 @@ Actualizado: 2026-10-30. Octavo incremento: perfil, adaptación local, SRS y cop
 - Backup completo versionado de identidad, con borradores/exposiciones y sin audio/credenciales. Validación estricta, 5 MiB, vista previa, reemplazo confirmado, rollback/recuperación por diario y borrado selectivo sin `localStorage.clear()`. Otras identidades quedan intactas.
 - **Validación local:** lint y TypeScript sin errores; **136 tests Vitest / 16 archivos**; build producción; **18 E2E Chromium**, manteniendo las 12 anteriores. Pruebas con micrófono simulado, no QA físico. Restricción de puerto local resuelta mediante permiso de red del proceso de pruebas; guard sin servicios intacto.
 - Guías: [MI SEMANA ADAPTADA](docs/product/MI_SEMANA_ADAPTADA.md), [COPIA DE SEGURIDAD](docs/product/COPIA_DE_SEGURIDAD.md), [arquitectura local](docs/architecture/LOCAL_ADAPTATION.md). Documentación de conexión actualizada sin conectar nada.
-- CI remota de este incremento: pendiente de publicar y verificar; no se declara completado todavía.
+- Publicado en `25eda84fcc18e632732a251d597c3fcfaf133e70` mediante cuatro commits lógicos. Árboles remotos comparados con los validados localmente: coinciden. Rama local/remota alineada sin force push ni cambios a main.
+- **CI remota verde:** [ejecución 41831824649](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/41831824649), sobre ese SHA: npm ci, lint, TypeScript, **136 tests / 16 archivos**, build y **18 E2E** completados con éxito. Esta actualización documental registra la evidencia; no cambia código de aplicación.
 
 ## DONE
 
@@ -89,7 +90,7 @@ Actualizado: 2026-10-30. Octavo incremento: perfil, adaptación local, SRS y cop
 - Copia completa con borradores disponible en Perfil y copias; el JSON antiguo de Hoy sigue siendo parcial y no importable. Copias sin cifrar, máximo 5 MiB, misma identidad y reemplazo, no merge. Cerrar otras pestañas al restaurar/borrar; quota/corrupción pueden bloquear recuperación y requieren conservar una copia externa. Error Bank y borrador diagnóstico se editan desde una pestaña.
 - El plan no reprograma fechas; días habituales orientativos. Perfil/Hoy/actividad nuevos usan zona elegida; entregas históricas conservan UTC. Adaptación conservadora con umbral de 50 muestras/1.000 actividades; futuro soporte longitudinal/paginación pendiente. Reconocimiento y uso son declarados, no verificados.
 - Sin Supabase gestionado, Auth/Storage y cambios de cuenta entre dispositivos no están validados contra un servicio real. Las cinco migraciones son preparación futura.
-- Las pruebas físicas siguen pendientes. Las 18 E2E Chromium pasan ahora localmente con permiso para el puerto; los bloqueos EPERM de intentos anteriores no se confunden con pruebas aprobadas. CI remota del octavo incremento aún pendiente en este commit.
+- Las pruebas físicas siguen pendientes. Las 18 E2E Chromium pasan ahora localmente con permiso para el puerto; los bloqueos EPERM de intentos anteriores no se confunden con pruebas aprobadas. CI remota del octavo incremento verificada y enlazada arriba.
 - La aplicación local debe seguir ejecutándose para entregar/corregir. Sin service worker/offline completo ni iconos Apple completos; no declarar PWA validada.
 - Normativa/convocatoria concreta y análisis de muestras siguen pendientes según investigación.
 
@@ -109,7 +110,7 @@ Estimación manual de alcance y madurez; no se calcula por líneas de código, n
 
 | Área | Progreso orientativo | Trabajo pendiente principal |
 |---|---|---|
-| Incremento actual | █████████░ 90 % | Implementación y validación local completas; falta publicación/CI remota |
+| Incremento actual | ██████████ 100 % | Alcance local implementado, publicado y CI remota verificada; QA físico pendiente explícito |
 | Práctica local y UX | ████████░░ 80 % | Uso sostenido y accesibilidad |
 | Contenido y administración | ██░░░░░░░░ 20 % | Banco amplio y revisión editorial |
 | Cloud, sincronización y seguridad | ██░░░░░░░░ 20 % | Auth real, permisos, conflictos y operación |
