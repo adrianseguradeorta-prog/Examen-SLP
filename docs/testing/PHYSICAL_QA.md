@@ -51,3 +51,12 @@ Registro: SHA ______ · fecha ______ · persona ______ · dispositivo/SO ______ 
 ## Ante un fallo
 
 Dejar la pestaña abierta si aún contiene texto no confirmado. Descargar Writing o copiar respuestas/notas antes de tocar los datos del sitio. No borrar almacenamiento ni alternar orígenes para intentar recuperar una copia. Registrar el fallo y el SHA, repetir con texto de prueba y corregir antes de marcar PASS. La evidencia física se añadirá a esta tabla solo después de recibir resultados reales.
+
+## Perfil, adaptación y restauración — octavo incremento
+
+| Ensayo físico | Estado | Observaciones |
+|---|---|---|
+| PC: editar perfil, recargar, aceptar/rechazar semana, registrar práctica y revisar Hoy | PENDIENTE | Sin acceso físico verificado |
+| iPhone: reconocer/producir una expresión y recuperar su historial al reabrir | PENDIENTE | Sin acceso físico verificado |
+| PC/iPhone: descargar copia completa, verificar archivo, restaurar sobre datos de prueba | PENDIENTE | Exportar primero datos propios; cerrar otras pestañas |
+| PC/iPhone: memoria/cuota reducida, aviso de fallo y conservación de trabajo | PENDIENTE | Las simulaciones automatizadas no acreditan almacenamiento físico |

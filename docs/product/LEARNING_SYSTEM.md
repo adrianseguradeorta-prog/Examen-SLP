@@ -1,5 +1,7 @@
 # Aprendizaje, adaptación y analítica — diseño
 
+**Implementación actual:** [rules-v1 local](../architecture/LOCAL_ADAPTATION.md) y [guía de uso](MI_SEMANA_ADAPTADA.md). Las reglas de diseño siguientes son objetivos posteriores salvo donde coincidan con esa implementación. El SRS actual registra reconocimiento/producción declarados, sin afirmar dominio validado.
+
 ## Semana inicial: 390 minutos
 
 Speaking 180; Writing 80; Reading 60; Listening 40; revisión/vocabulario 30. Clases y revisión de feedback se incluyen en esos bloques para evitar doble cómputo. De los 180 min de Speaking, presupuesto inicial: 120 min de conversación en vivo y 60 de preparación/revisión/repetición. Cambiar esta mezcla cambia costes.

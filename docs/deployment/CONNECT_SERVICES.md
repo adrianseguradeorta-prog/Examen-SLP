@@ -98,3 +98,9 @@ No se han conectado servicios. Reading/Listening/notas Speaking usan claves `slp
 Las exposiciones `opened`/`solutions` son registros independientes del intento en el historial local y se incluyen en su exportación. Borrar una entrega no borra soluciones conocidas. La quinta migración prepara las versiones nuevas y `task_exposures`, con RLS e historial no editable. No se ha aplicado externamente. El servidor cloud no acepta una afirmación de independencia del cliente: guarda `priorExposure=unknown` hasta implementar la transacción de entrega/exposición y sincronización entre dispositivos. No hay importación automática de invitado.
 
 E2E se ejecuta en un servidor Next de producción sin variables de servicios; Python/Playwright es solo dependencia de pruebas. Ver README y PHYSICAL_QA.md; no es requisito para usar la aplicación ni autoriza un despliegue.
+
+## Octavo incremento: perfil, adaptación, SRS y recuperación locales
+
+No necesita variables ni nuevas conexiones. Perfil y copias, propuesta semanal y Vocabulario/SRS usan almacenamiento local aislado por identidad. Las copias completas versionadas se exportan/restauran desde Ajustes; el JSON antiguo de Hoy sigue siendo solo exportación parcial. Incluyen borradores, nunca audio ni credenciales. Consultar [guía de copias](../product/COPIA_DE_SEGURIDAD.md).
+
+No se han añadido/aplicado migraciones cloud para estas entidades. Su sincronización, permisos, conflictos y migración explícita requieren otro incremento autorizado. No activar servicios para probar estas funciones. Writing Lab mantiene sus contratos remotos; una copia local no confirma sincronización servidor. El presupuesto IA sigue pendiente (45/60 frente a 100/150 USD), sin llamadas ni cambios de límites.

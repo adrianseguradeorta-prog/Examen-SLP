@@ -1,19 +1,19 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-10-29. Séptimo incremento: uso frecuente, recuperación, contenido independiente y QA automatizado de navegador. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
+Actualizado: 2026-10-30. Octavo incremento: perfil, adaptación local, SRS y copias completas. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
+## Octavo incremento — validado localmente, publicación en curso
 
-## Octavo incremento — EN CURSO (2026-10-30)
-
-Trabajo local sobre `199f5f1be029ad134621c72d173768f5bb7c465d`, HEAD remoto confirmado antes de editar. **Todavía no publicado ni validado por CI remota.**
-
-- Implementados modelos de perfil editable/versionado, propuesta semanal conservadora con aceptación/rechazo/reversión, SRS separado por reconocimiento/producción y primera integración con Hoy/Plan/Error Bank.
-- Implementados backup versionado, validación previa, reemplazo explícito con diario de recuperación y borrado por identidad/área. Falta completar revisión y cobertura de casos extremos antes de declarar terminado.
-- Writing Lab y su recuperación original no se han rehecho.
-- Validación local actual: lint y TypeScript pasan; **120 tests Vitest en 15 archivos**; build de producción pasa.
-- E2E intentado: el guard de seguridad rechaza el entorno por configuración/variables de servicios presentes. No inició servidor ni realizó llamadas. No se han inspeccionado ni publicado valores secretos. Hay que ejecutar en checkout/entorno limpio sin configuración de servicios, sin desactivar este guard.
-- Pendiente: nuevas E2E de perfil/SRS/restauración; ejecutar las 12 anteriores; ampliar tests de adaptación (dos muestras, repeticiones, asistencia, límites) y restauración (cuota, campos inesperados, borrado selectivo); revisar coherencia de fechas y presupuestos; documentación final; publicación y CI remota verde.
-- No hay servicios conectados, despliegue, llamadas pagadas ni QA físico. Las estimaciones de progreso anteriores describen el séptimo incremento, no acreditan la terminación del octavo.
+- HEAD de partida remoto verificado: `199f5f1be029ad134621c72d173768f5bb7c465d`. Se conserva el séptimo incremento y Writing Lab sin rehacerlo.
+- Perfil editable y versiones: declarado/objetivo separados, fecha opcional, disponibilidad 30–1.260 min, prioridad, zona horaria y días orientativos. Aislamiento por identidad y confirmación de guardado local.
+- Motor puro rules-v1 sin IA: dos últimas muestras independientes de comprensión con dificultad repetida en ocho semanas; transferencia máxima de 20 min desde margen flexible, mínimos conservados, abstención e historial intacto. No nivel inferido por porcentajes/minutos.
+- Propuestas semanales explicadas con razones/evidencia, aceptar/rechazar/revertir, versión anterior e invalidación por perfil/plan/semana. No reprograma las 36 semanas ni comprime deuda.
+- Hoy integra diagnóstico pendiente, reparación recurrente, SRS vencido, dificultad repetida y reparto/rotación; limita la sesión al tiempo disponible. Resumen semanal: actividad/minutos declarados, cobertura, independencia, errores y revisiones.
+- Vocabulario/SRS funcional, 1/3/7/14/30, historial conservado, reconocimiento/producción separados y ayuda explícita. Error Bank → tarjeta solo por decisión y validación manual; transferencia a tarea. Nunca marca dominio automático.
+- Backup completo versionado de identidad, con borradores/exposiciones y sin audio/credenciales. Validación estricta, 5 MiB, vista previa, reemplazo confirmado, rollback/recuperación por diario y borrado selectivo sin `localStorage.clear()`. Otras identidades quedan intactas.
+- **Validación local:** lint y TypeScript sin errores; **136 tests Vitest / 16 archivos**; build producción; **18 E2E Chromium**, manteniendo las 12 anteriores. Pruebas con micrófono simulado, no QA físico. Restricción de puerto local resuelta mediante permiso de red del proceso de pruebas; guard sin servicios intacto.
+- Guías: [MI SEMANA ADAPTADA](docs/product/MI_SEMANA_ADAPTADA.md), [COPIA DE SEGURIDAD](docs/product/COPIA_DE_SEGURIDAD.md), [arquitectura local](docs/architecture/LOCAL_ADAPTATION.md). Documentación de conexión actualizada sin conectar nada.
+- CI remota de este incremento: pendiente de publicar y verificar; no se declara completado todavía.
 
 ## DONE
 
@@ -73,8 +73,8 @@ Trabajo local sobre `199f5f1be029ad134621c72d173768f5bb7c465d`, HEAD remoto conf
 
 - Revisión de uso en navegador e iPhone físicos, permisos, reproducción MP3 y grabación/recuperación tras interrupciones reales.
 - Banco editorial amplio, revisión humana de materiales y calibración con evidencias oficiales cuando estén disponibles y sean utilizables legalmente.
-- Evaluadores Writing/Speaking, estimación longitudinal, perfil editable, motor adaptativo completo, SRS, mocks e informes.
-- Sincronización cloud, exportación/borrado de cuenta, backups e importación/restauración de copias antes de producción.
+- Evaluadores Writing/Speaking, estimación longitudinal, adaptación validada más amplia, mocks e informes. Perfil, reglas locales y SRS v1 operativos.
+- Sincronización cloud y exportación/borrado de cuenta. Copias/restauración y borrado local ya operativos; backups cloud y migración de entidades nuevas pendientes.
 - Conversación IA y reconexión solo en un incremento autorizado; almacenamiento de audio requiere decisión posterior expresa.
 - PWA/offline completo y administración editorial.
 
@@ -86,10 +86,10 @@ Trabajo local sobre `199f5f1be029ad134621c72d173768f5bb7c465d`, HEAD remoto conf
 - Writing diagnóstico se edita desde una sola pestaña; no hay resolución de ediciones simultáneas en ese nuevo borrador. Un aviso de cuota/bloqueo exige descargar una copia. Borrar una muestra cerrada del historial no elimina silenciosamente su copia aún visible en el editor.
 - Writing Lab conserva su control remoto de revisiones y conflictos, sin sincronización real mientras no se conecte Supabase. Selector de historial remoto pendiente.
 - Almacén local personal del navegador, sin cifrado ni cuentas locales: invitado es compartido en el mismo perfil. Borrar datos del sitio, navegación privada o cambiar origen/puerto/navegador puede eliminar u ocultar el progreso. No hay sincronización con iPhone ni importación automática a cloud.
-- Exportación JSON del historial local disponible; no incluye borradores ni audio. Importación pendiente. Error Bank y borrador diagnóstico deben editarse desde una sola pestaña.
-- El plan no reprograma fechas. El repaso de errores se considera registrado por destreza/día, no por una prueba de reparación. Historial limitado, fechas/resúmenes UTC y abstención con datos incompletos.
+- Copia completa con borradores disponible en Perfil y copias; el JSON antiguo de Hoy sigue siendo parcial y no importable. Copias sin cifrar, máximo 5 MiB, misma identidad y reemplazo, no merge. Cerrar otras pestañas al restaurar/borrar; quota/corrupción pueden bloquear recuperación y requieren conservar una copia externa. Error Bank y borrador diagnóstico se editan desde una pestaña.
+- El plan no reprograma fechas; días habituales orientativos. Perfil/Hoy/actividad nuevos usan zona elegida; entregas históricas conservan UTC. Adaptación conservadora con umbral de 50 muestras/1.000 actividades; futuro soporte longitudinal/paginación pendiente. Reconocimiento y uso son declarados, no verificados.
 - Sin Supabase gestionado, Auth/Storage y cambios de cuenta entre dispositivos no están validados contra un servicio real. Las cinco migraciones son preparación futura.
-- Las pruebas físicas siguen pendientes. E2E Chromium pasa en CI remota; no se ha ejecutado satisfactoriamente en el executor local por la restricción de puertos. El smoke HTTP del incremento previo quedó bloqueado por el entorno (`listen EPERM` al abrir 127.0.0.1:3100); no se declara aprobado. Tests de contratos/rutas, lint, TypeScript y build sí pasan.
+- Las pruebas físicas siguen pendientes. Las 18 E2E Chromium pasan ahora localmente con permiso para el puerto; los bloqueos EPERM de intentos anteriores no se confunden con pruebas aprobadas. CI remota del octavo incremento aún pendiente en este commit.
 - La aplicación local debe seguir ejecutándose para entregar/corregir. Sin service worker/offline completo ni iconos Apple completos; no declarar PWA validada.
 - Normativa/convocatoria concreta y análisis de muestras siguen pendientes según investigación.
 
@@ -101,7 +101,7 @@ Trabajo local sobre `199f5f1be029ad134621c72d173768f5bb7c465d`, HEAD remoto conf
 
 ## NEXT STEPS
 
-Siguiente bloque recomendado: completar PHYSICAL_QA.md y una semana real de uso, corregir las incidencias observadas y revisar humanamente audio/preguntas. Después, con autorización, preparar sincronización segura y recuperación entre dispositivos; conversación IA y evaluación requieren presupuesto y metodología resueltos. No conectar servicios automáticamente.
+Siguiente incremento prioritario: piloto físico PC/iPhone y una semana real de uso de perfil, adaptación, SRS y restauración; corregir incidencias observadas antes de integrar servicios. Mantener QA físico pendiente hasta disponer de evidencias. Presupuesto IA y conservación de audio siguen sin decidir.
 
 ## PROGRESO ORIENTATIVO DEL PROYECTO
 
@@ -109,15 +109,15 @@ Estimación manual de alcance y madurez; no se calcula por líneas de código, n
 
 | Área | Progreso orientativo | Trabajo pendiente principal |
 |---|---|---|
-| Incremento actual | ██████████ 100 % | Alcance local implementado, publicado y CI verificada; QA físico deliberadamente pendiente |
-| Práctica local y UX | ███████░░░ 70 % | Uso sostenido, accesibilidad y recuperación completa/importación |
-| Contenido y administración | ██░░░░░░░░ 20 % | Banco amplio, revisión editorial y editor sin código |
-| Cloud, sincronización y seguridad | ██░░░░░░░░ 20 % | Auth real, conflictos entre dispositivos, backups/exportación/borrado |
-| Voz conversacional IA | █░░░░░░░░░ 10 % | WebRTC, reconexión, latencia, cuotas y experiencia de entrevista |
-| Evaluación y calibración | █░░░░░░░░░ 10 % | Revisión cualificada, evidencias longitudinales y calibración conservadora |
-| Adaptación y SRS | ██░░░░░░░░ 20 % | Repaso espaciado, activación y adaptación validada más allá de reglas iniciales |
-| Simulacros e informes | █░░░░░░░░░ 10 % | Condiciones verificadas, mocks completos y analítica explicable |
-| QA, PWA y operación | ███░░░░░░░ 30 % | Dispositivos físicos, Safari, offline, integración cloud y operación productiva |
-| Aplicación completa | ███░░░░░░░ ≈25–30 % | Principal incertidumbre: voz, evaluación fiable y sincronización productiva |
+| Incremento actual | █████████░ 90 % | Implementación y validación local completas; falta publicación/CI remota |
+| Práctica local y UX | ████████░░ 80 % | Uso sostenido y accesibilidad |
+| Contenido y administración | ██░░░░░░░░ 20 % | Banco amplio y revisión editorial |
+| Cloud, sincronización y seguridad | ██░░░░░░░░ 20 % | Auth real, permisos, conflictos y operación |
+| Voz conversacional IA | █░░░░░░░░░ 10 % | Conversación, reconexión, latencia y cuotas |
+| Evaluación y calibración | █░░░░░░░░░ 10 % | Revisión cualificada y evidencias longitudinales |
+| Adaptación y SRS | ██████░░░░ 60 % | Validación pedagógica, retención, sincronización y límites de historial |
+| Simulacros e informes | █░░░░░░░░░ 10 % | Mocks completos y reportes periódicos |
+| QA, PWA y operación | ████░░░░░░ 40 % | Dispositivos físicos, Safari, offline y operación productiva |
+| Aplicación completa | ████░░░░░░ ≈35 % | Voz, evaluación fiable y sincronización siguen siendo las mayores incertidumbres |
 
-Esfuerzo técnico restante actualizado: **11–19 semanas (440–760 horas)** para una persona experimentada a tiempo completo, más disponibilidad y revisión de especialistas para calibración. Es una estimación de planificación, no fecha comprometida; revisar tras probar voz y dispositivos reales. Supone autorización posterior de servicios y no incluye app nativa. El presupuesto IA sigue sin decidirse y no se ha realizado ningún gasto de integración.
+Estimación manual conservadora de alcance, no métrica calculada ni avance lingüístico. Esfuerzo técnico restante: **400–680 horas / 10–17 semanas** a tiempo completo, más revisión de especialistas para calibración. No es fecha comprometida; depende de autorización futura de servicios y pruebas físicas. No incluye app nativa. No se ha realizado gasto de IA ni cambiado el presupuesto.

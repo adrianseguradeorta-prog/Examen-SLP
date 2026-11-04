@@ -55,3 +55,9 @@ Liberación: gates técnicos verdes + revisión de calibración + pruebas físic
 4. Con permiso de micrófono grabar, detener, escuchar y registrar notas. Salir/recargar/descartar debe revocar el audio; confirmar que no se escribe ni se envía un blob. Comprobar interrupción y duración desconocida en dispositivos reales.
 5. Registrar minutos una sola vez, volver a Hoy y revisar la razón de la propuesta. Ningún resultado debe ascender el perfil declarado.
 6. Antes de futura conexión cloud: verificar dos cuentas reales, cambio de sesión en otra pestaña y navegación atrás sin mostrar borradores de otra identidad. Cualquier fallo de auth debe bloquear, nunca importar invitado.
+
+## Octavo incremento — verificación local 2026-10-30
+
+Lint, TypeScript, **136 tests Vitest en 16 archivos**, build y **18 E2E Chromium** pasan. Se conservan 97 pruebas unitarias y 12 E2E anteriores. Nuevas pruebas: perfil/zonas/identidades, límites y abstención adaptativa, versiones/aceptación/rechazo/reversión, SRS/producción/ayuda, backup → borrado → restauración, corrupción/campos inesperados/tamaño/cuota/diario y aislamiento. Navegador: perfil editable, decisiones semanales, cambio de Hoy tras registrar tiempo, SRS, Error Bank → producción, copia completa y rechazo de archivo peligroso.
+
+El guard E2E sigue rechazando configuración cloud y no se ha desactivado. En este executor había solo una variable de metadatos `OPENAI_CLUSTER`: se omitió exclusivamente del proceso de prueba (`env -u OPENAI_CLUSTER`); no había archivos .env de servicio. El acceso adicional al puerto local resolvió `listen EPERM`. Se utilizó Chromium instalado con `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium`; en CI se instala el Chromium de Playwright como antes. No se enviaron peticiones de servicio. QA físico sigue pendiente.

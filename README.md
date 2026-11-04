@@ -2,11 +2,13 @@
 
 Plataforma personal propuesta para preparar inglés STANAG 6001: perfil inicial declarado 3.2.2.2 → objetivo 3.3.3.3, durante aproximadamente nueve meses, 6–7 horas semanales y prioridad Speaking.
 
-**Estado: práctica diaria, diagnóstico inicial de cuatro destrezas y Listening utilizables localmente; sin despliegue ni servicios cloud conectados.** Las estimaciones futuras no certificarán oficialmente un SLP. Ninguna arquitectura o suscripción queda contratada con esta entrega.
+**Estado: práctica diaria, diagnóstico de cuatro destrezas, adaptación local con aceptación semanal, perfil editable, SRS y copias restaurables; sin despliegue ni servicios cloud conectados.** Las estimaciones futuras no certificarán oficialmente un SLP. Ninguna arquitectura o suscripción queda contratada con esta entrega.
 
 Banco actual: tres tareas independientes de Reading, Listening y Writing diagnóstico; cuatro tareas Speaking con 16 prompts. Respuestas pendientes y notas recuperables por tarea; repeticiones separadas de evidencia nueva. [Contenido y reglas](docs/content/BANK_V1.md).
 
 Para empezar hoy: [DIAGNÓSTICO Y PRIMERA SEMANA](docs/product/DIAGNOSTICO_Y_PRIMERA_SEMANA.md). Si prefieres comenzar con una sesión breve, consulta [EMPEZAR A PRACTICAR](docs/product/EMPEZAR_A_PRACTICAR.md).
+
+Para uso regular: [MI SEMANA ADAPTADA](docs/product/MI_SEMANA_ADAPTADA.md) y [COPIA DE SEGURIDAD](docs/product/COPIA_DE_SEGURIDAD.md). Perfil → Plan → Hoy → SRS/Error Bank → copia semanal.
 
 ## Documentación
 
@@ -35,7 +37,7 @@ Node.js 24. Ejecutar `npm ci` y `npm run dev`. Validar con `npm run lint`, `npm 
 
 Sin credenciales funcionan Hoy, plan de 36 semanas, actividades, Error Bank, clases, Reading, Writing y Speaking guiado. El diagnóstico reúne Reading corregido, Writing con borrador recuperable y entrega cerrada, Listening original con audio/preguntas/corrección y Speaking con grabación y reproducción **solo en memoria**. La constancia oral conserva notas y duración cuando es fiable, nunca audio. El resumen distingue el perfil declarado de los resultados concretos; no asigna niveles SLP. Hoy prioriza muestras pendientes y propone repaso con errores observados, sin reprogramar el calendario.
 
-Writing Lab conserva intacta su recuperación por usuario/invitado y el control de revisiones preparado para cloud. Los borradores diagnósticos usan claves independientes por identidad. Persistencia local no significa sincronización entre dispositivos. Pendientes: evaluadores calibrados, conversación IA, SRS, mocks, banco editorial amplio, cloud y pruebas físicas de iPhone. Manifest inicial, sin offline completo.
+Writing Lab conserva intacta su recuperación por usuario/invitado y el control de revisiones preparado para cloud. Los borradores diagnósticos usan claves independientes por identidad. Persistencia local no significa sincronización entre dispositivos. Pendientes: evaluadores calibrados, conversación IA, mocks, banco editorial amplio, cloud y pruebas físicas de iPhone. Manifest inicial, sin offline completo.
 
 ## Desarrollo posterior
 

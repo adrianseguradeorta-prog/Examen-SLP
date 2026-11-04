@@ -89,3 +89,7 @@ La entrega local confirma el resultado cerrado antes de limpiar la copia pendien
 Hoy prioriza muestras faltantes, revisión de errores observados sin repaso registrado, tareas abiertas sin entrega y material nuevo dentro del reparto de minutos. Cuando se agota el pequeño banco, ofrece repaso etiquetado; no reprograma 36 semanas ni interpreta repetición como progreso de nivel.
 
 Pruebas de navegador: Playwright Python/unittest con Chromium real y dispositivo de audio sintético, servidor de producción, origen local único, contextos aislados y solicitudes externas del navegador bloqueadas. El runner rechaza configuraciones de servicios presentes antes de arrancar. El runtime de la app sigue siendo Next/TypeScript. QA físico es una lista separada, siempre pendiente hasta disponer de resultados observados.
+
+## Octavo incremento implementado
+
+[Adaptación local y recuperación](LOCAL_ADAPTATION.md) documenta los contratos efectivamente implementados: perfil versionado, decisiones semanales, SRS, exportación/restauración y diario de rollback. Es independiente de los servicios futuros descritos arriba; ninguna conexión ni despliegue forma parte de este incremento.

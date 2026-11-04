@@ -29,3 +29,11 @@ El usuario respondió «Perfecto, continua con el programa» tras propuesta de o
 - Exposición separada de resultados: abrir no prueba atención; borrar un intento no borra conocimiento de soluciones. Como máximo una primera muestra por versión, sin ascenso SLP. Historial parcial/antiguo: abstención. Entrega cloud independiente requiere transacción futura; de momento se conserva «unknown» en servidor.
 - Playwright con Python y `unittest`: una dependencia de pruebas (`playwright==1.62.0`), disponible en el entorno, sin añadir dependencias al runtime Next. Se ejecuta contra build de producción en CI, con micrófono sintético y peticiones externas bloqueadas. La alternativa Node sería más homogénea con el frontend, pero requiere otro paquete; se prioriza una dependencia verificable y pequeña en alcance. Python solo se exige a quien ejecute E2E, no para estudiar.
 - Los puertos loopback están bloqueados en el executor local (`listen EPERM`); no se afirma E2E local aprobado. La validación real de navegador se ejecuta en GitHub Actions. QA físico permanece pendiente en PHYSICAL_QA.md.
+
+## 2026-10-30 — Adaptación y copias locales v1
+
+- Mantener calendario 36 semanas y Writing Lab; añadir documento local por identidad, validado y con revisión optimista, para perfil/decisiones/SRS. No introducir backend ni cambiar presupuesto.
+- Cambios de minutos requieren aceptación; evidencia de dificultad en dos tareas independientes recientes, máximo 20 min del margen flexible. Preservar mínimos, abstenerse ante datos parciales. Reglas internas no oficiales.
+- SRS 1/3/7/14/30 con producción separada, confirmación manual al enlazar un error y sin etiqueta de dominio automático.
+- Restauración por reemplazo confirmado, sin merge. Copia completa validada de hasta 5 MiB, journal de recuperación; conservar exposiciones al borrar solo progreso. Cerrar otras pestañas, no prometer atomicidad distribuida ni recuperación si el navegador borra el sitio.
+- Mantener 12 E2E anteriores y añadir 6 recorridos. Chromium con micrófono simulado; no QA físico ni Safari/iPhone.

@@ -49,7 +49,7 @@ Los días siguientes empieza en **Hoy**, sigue la propuesta, registra lo realiza
 
 Writing del diagnóstico ya recupera automáticamente su borrador en este navegador, separado de Writing Lab. Las respuestas Reading/Listening sin entregar y las notas Speaking sin registrar ya se recuperan por tarea/identidad. El reproductor comienza de nuevo después de recargar. El audio Speaking desaparece al salir o recargar, incluso si has registrado la realización.
 
-En **Hoy → Descargar historial local** puedes exportar planes, actividades, muestras y Error Bank a JSON. Writing se descarga por separado. La importación/restauración de ese JSON aún no está implementada.
+En **Hoy → Descargar historial local** puedes exportar planes, actividades, muestras y Error Bank a JSON. Writing se descarga por separado. Ese JSON antiguo no es restaurable. Usa **Perfil y copias → Exportar copia completa** para incluir borradores y restaurarlos posteriormente.
 
 Todo pertenece a este navegador. No hay sincronización con iPhone u otro ordenador, cifrado local ni copia cloud. Evita navegación privada, no borres los datos del sitio y no uses un perfil compartido para textos privados. Usa una pestaña para registrar/borrar observaciones. Un aviso de falta de almacenamiento significa que no se ha confirmado el guardado.
 
@@ -60,3 +60,7 @@ Conversación Teacher/Examiner con IA, corrección automática de Writing, evalu
 La prueba opcional de micrófono de 15 segundos ya existente solo permite escucharte temporalmente en esa pantalla: el audio no se guarda ni se envía. No es necesaria para la sesión guiada.
 
 La app local debe seguir ejecutándose para corregir Reading/Listening y entregar muestras. No está validada en iPhone físico ni preparada para abrirse totalmente offline. Ningún resultado se presenta como certificación oficial SLP/STANAG.
+
+## Entrenamiento regular y copias completas
+
+Ya puedes editar disponibilidad y perfil, aceptar/rechazar una semana adaptada, usar SRS y restaurar una copia completa. Sigue [MI SEMANA ADAPTADA](MI_SEMANA_ADAPTADA.md) y [COPIA DE SEGURIDAD](COPIA_DE_SEGURIDAD.md). El perfil editable tiene prioridad sobre la carga del calendario base en Hoy. Ninguna regla asigna nivel SLP.
