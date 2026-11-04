@@ -5,9 +5,17 @@ import Link from "next/link";
 import type { TrainingData } from "./use-training";
 import { taskHref } from "@/lib/task-rotation";
 import { diagnosticSummary } from "@/lib/diagnostic-summary";
-export function DiagnosticSummary({ data, local = false, owner = "guest" }: { data: TrainingData | null; local?:boolean; owner?:string }) {
-  const {coach}=useCoach(local,owner);
-  const profile=currentProfile(coach);
+export function DiagnosticSummary({
+  data,
+  local = false,
+  owner = "guest",
+}: {
+  data: TrainingData | null;
+  local?: boolean;
+  owner?: string;
+}) {
+  const { coach } = useCoach(local, owner);
+  const profile = currentProfile(coach);
   return (
     <section id="summary">
       <h2>Cuatro destrezas, evidencia separada</h2>
@@ -21,7 +29,10 @@ export function DiagnosticSummary({ data, local = false, owner = "guest" }: { da
         {diagnosticSummary(data).map((s) => (
           <article className="card" key={s.skill}>
             <h3>{s.skill}</h3>
-            <p>Declarado: {profile.declared[s.skill]} · objetivo {profile.target[s.skill]}</p>
+            <p>
+              Declarado: {profile.declared[s.skill]} · objetivo{" "}
+              {profile.target[s.skill]}
+            </p>
             <strong>{s.status}</strong>
             <p>{s.reason}</p>
             {s.last && (

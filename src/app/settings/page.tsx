@@ -1,3 +1,4 @@
+import { DiagnosticBoundary } from "@/components/diagnostic-boundary";
 import { TrainingProfile } from "@/components/training-profile";
 import { LocalBackup } from "@/components/local-backup";
 import { Account } from "@/components/account";
@@ -7,11 +8,21 @@ export default function Settings() {
     <>
       <div className="eyebrow">TU ESPACIO PERSONAL</div>
       <h1>Perfil y copias</h1>
-      {!configured() && <><TrainingProfile/><LocalBackup/></>}
-      <p>La misma cuenta, tu progreso en todos tus dispositivos.</p>
+      {!configured() && (
+        <>
+          <DiagnosticBoundary owner="guest">
+            <TrainingProfile />
+            <LocalBackup />
+          </DiagnosticBoundary>
+        </>
+      )}
+      <p>
+        Perfil y copias disponibles sin cuenta. La sincronización entre
+        dispositivos sigue pendiente.
+      </p>
       <Account connected={configured()} />
       <section className="card">
-        <h2>Activar la plataforma</h2>
+        <h2>Integraciones futuras · pendientes de autorización</h2>
         <ol className="instructions">
           <li>
             Crear proyecto Supabase en una región UE y aplicar la migración del

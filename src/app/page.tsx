@@ -16,7 +16,10 @@ export default async function Home() {
       <div className="page-title">
         <div>
           <h1>Tu inglés, un paso más allá.</h1>
-          <p>Tu objetivo, tu disponibilidad y evidencia real para elegir la práctica.</p>
+          <p>
+            Tu objetivo, tu disponibilidad y evidencia real para elegir la
+            práctica.
+          </p>
         </div>
         <span className="pill">
           <Target size={15} /> Objetivo 3333

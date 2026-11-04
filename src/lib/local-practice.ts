@@ -115,7 +115,15 @@ export function createLocalPracticeRequest(
           ]),
         ).values(),
       ];
-      const today = localDate(now(), currentProfile(readCoach(store,owner).data).timeZone);
+      let today = now().toISOString().slice(0, 10);
+      try {
+        today = localDate(
+          now(),
+          currentProfile(readCoach(store, owner).data).timeZone,
+        );
+      } catch {
+        warnings.push("invalid_local_profile");
+      }
       if (method === "GET") {
         if (path === "/api/training")
           return json({

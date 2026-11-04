@@ -1,4 +1,6 @@
 "use client";
+import { useCoach } from "./use-coach";
+import { currentProfile, localDate } from "@/lib/coach-model";
 import { LocalPracticeNotice } from "./local-practice-notice";
 import { useRef, useState } from "react";
 import Link from "next/link";
@@ -17,7 +19,10 @@ export function StudyPlan({ local = false }: { local?: boolean }) {
   const activityId = useRef("");
   const [preview, setPreview] = useState<PlanInput | null>(null);
   const plan = data?.plans[0] ?? preview;
-  const today = new Date().toISOString().slice(0, 10);
+  const { coach } = useCoach(local);
+  const today = local
+    ? localDate(new Date(), currentProfile(coach).timeZone)
+    : new Date().toISOString().slice(0, 10);
   const summary = activitySummary(data?.activities ?? [], today);
   async function remove(kind: string, id: string) {
     setBusy(true);
@@ -124,7 +129,7 @@ export function StudyPlan({ local = false }: { local?: boolean }) {
           <div className="metrics">
             <div>
               <strong>{summary.lastSevenDays}</strong>
-              <span>min · últimos 7 días UTC</span>
+              <span>min · últimos 7 días</span>
             </div>
             <div>
               <strong>{summary.total}</strong>
@@ -234,8 +239,10 @@ export function StudyPlan({ local = false }: { local?: boolean }) {
               : "Fecha de examen por definir"}
           </p>
           <p className="muted">
-            Plan de partida, todavía no adaptado a evaluaciones. Si una semana
-            cae después del examen, aparece marcada para revisar el calendario.
+            Calendario base histórico. En modo local, la disponibilidad del
+            perfil y la semana aceptada se consultan arriba y tienen prioridad
+            en Hoy. Si una semana cae después del examen, aparece marcada para
+            revisar el calendario.
           </p>
           <div className="table-scroll">
             <table>

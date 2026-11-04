@@ -65,7 +65,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               AS
             </Link>
           </header>
-          <main>{configured()?children:<LocalStorageGuard>{children}</LocalStorageGuard>}</main>
+          <main>
+            {configured() ? (
+              children
+            ) : (
+              <LocalStorageGuard>{children}</LocalStorageGuard>
+            )}
+          </main>
           <footer>
             SLP 3333 TRAINER{" "}
             <span>

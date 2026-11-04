@@ -1,4 +1,6 @@
 "use client";
+import { useCoach } from "./use-coach";
+import { currentProfile, localDate } from "@/lib/coach-model";
 import Link from "next/link";
 import { LocalPracticeNotice } from "./local-practice-notice";
 import { practiceRequest } from "@/lib/local-practice";
@@ -17,6 +19,10 @@ export type ErrorData = {
   truncated: boolean;
 };
 export function ErrorBank({ local = false }: { local?: boolean }) {
+  const { coach } = useCoach(local);
+  const today = local
+    ? localDate(new Date(), currentProfile(coach).timeZone)
+    : new Date().toISOString().slice(0, 10);
   const [data, setData] = useState<ErrorData | null>(null);
   const [message, setMessage] = useState("Cargando observaciones…");
   const [busy, setBusy] = useState(false);
@@ -198,8 +204,8 @@ export function ErrorBank({ local = false }: { local?: boolean }) {
               <input
                 type="date"
                 name="occurred_on"
-                defaultValue={new Date().toISOString().slice(0, 10)}
-                max={new Date().toISOString().slice(0, 10)}
+                defaultValue={today}
+                max={today}
                 required
               />
             </label>
@@ -252,7 +258,13 @@ export function ErrorBank({ local = false }: { local?: boolean }) {
                 {p.status} · {p.frequency} observaciones de error
               </p>
               <p lang="en">{p.prompt}</p>
-              {local && <Link href={`/vocabulary?pattern=${encodeURIComponent(p.id)}#add`}>Preparar una revisión de esta corrección →</Link>}
+              {local && (
+                <Link
+                  href={`/vocabulary?pattern=${encodeURIComponent(p.id)}#add`}
+                >
+                  Preparar una revisión de esta corrección →
+                </Link>
+              )}
               <p className="small">
                 Después, registra qué ocurrió en una nueva sesión. Un consejo
                 mostrado no equivale a una actividad completada.
