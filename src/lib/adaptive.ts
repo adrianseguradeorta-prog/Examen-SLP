@@ -1,6 +1,6 @@
 import type { TrainingData } from "@/components/use-training";
 import type { ErrorData } from "@/components/error-bank";
-import { skills, currentProfile, type Budget, type Coach, type Profile, type Skill, type WeekVersion } from "./coach-model";
+import { skills, currentProfile, type Budget, type Coach, type Profile, type WeekVersion } from "./coach-model";
 import { addDays } from "./training";
 import { independentSamples, nextTask, taskHref, taskState } from "./task-rotation";
 import { comprehensionTask } from "./task-catalog";

@@ -1,3 +1,5 @@
+import { readCoach } from "./coach-store";
+import { currentProfile, localDate } from "./coach-model";
 import { z } from "zod";
 import {
   activityInput,
@@ -41,7 +43,7 @@ const recordSchema = z.discriminatedUnion("kind", [
   }),
   z.object({ kind: z.literal("observation"), data: observationInput }),
 ]);
-const storedSchema = z.object({
+export const storedSchema = z.object({
   version: z.literal(1),
   created_at: z.iso.datetime(),
   record: recordSchema,
@@ -113,7 +115,7 @@ export function createLocalPracticeRequest(
           ]),
         ).values(),
       ];
-      const today = now().toISOString().slice(0, 10);
+      const today = localDate(now(), currentProfile(readCoach(store,owner).data).timeZone);
       if (method === "GET") {
         if (path === "/api/training")
           return json({

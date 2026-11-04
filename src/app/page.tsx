@@ -1,21 +1,22 @@
+import { ProfileSummary } from "@/components/training-profile";
 import { DailyPractice } from "@/components/daily-practice";
 import Link from "next/link";
 import { ArrowRight, Mic, Clock3, Target, Check } from "lucide-react";
-import { planWeek } from "@/lib/domain";
+
 import { configured, database } from "@/lib/supabase";
 export default async function Home() {
   const connected = configured();
   const user = connected
     ? (await (await database()).auth.getUser()).data.user
     : null;
-  const plan = planWeek();
+
   return (
     <>
       <div className="eyebrow">EL CAMINO HACIA TU OBJETIVO</div>
       <div className="page-title">
         <div>
           <h1>Tu inglés, un paso más allá.</h1>
-          <p>De 3.2.2.2 a 3.3.3.3. Hoy empezamos por tu voz.</p>
+          <p>Tu objetivo, tu disponibilidad y evidencia real para elegir la práctica.</p>
         </div>
         <span className="pill">
           <Target size={15} /> Objetivo 3333
@@ -64,51 +65,8 @@ export default async function Home() {
           <span>FIND YOUR VOICE</span>
         </div>
       </section>
-      <div className="section-title">
-        <h2>Tu punto de partida</h2>
-        <span>Perfil declarado · pendiente de diagnóstico</span>
-      </div>
-      <div className="skill-grid">
-        {[
-          ["Listening", "3", "Mantener"],
-          ["Speaking", "2", "Prioridad"],
-          ["Reading", "2", "Desarrollar"],
-          ["Writing", "2", "Desarrollar"],
-        ].map(([s, n, t]) => (
-          <article className="skill-card" key={s}>
-            <span>
-              {s}
-              <small>{t}</small>
-            </span>
-            <strong>
-              {n}
-              <em>→ 3</em>
-            </strong>
-            <p>Sin evaluación registrada</p>
-          </article>
-        ))}
-      </div>
+      <ProfileSummary local={!connected} />
       <div className="two-col">
-        <section className="card">
-          <div className="section-title">
-            <h2>
-              <Link href="/plan">Una semana con intención →</Link>
-            </h2>
-            <span>Plan inicial</span>
-          </div>
-          <p className="muted">
-            6 h 30 min · Propuesta inicial. Consulta tu plan guardado.
-          </p>
-          {Object.entries(plan).map(([s, m]) => (
-            <div className="plan-row" key={s}>
-              <span>{s === "review" ? "Repaso y vocabulario" : s}</span>
-              <div className="plan-track">
-                <i style={{ width: `${(m / 180) * 100}%` }} />
-              </div>
-              <b>{m} min</b>
-            </div>
-          ))}
-        </section>
         <section className="card">
           <div className="eyebrow">TU SIGUIENTE PASO</div>
           <h2>Construye una base sólida.</h2>

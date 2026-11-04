@@ -2,6 +2,19 @@
 
 Actualizado: 2026-10-29. Séptimo incremento: uso frecuente, recuperación, contenido independiente y QA automatizado de navegador. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
+
+## Octavo incremento — EN CURSO (2026-10-30)
+
+Trabajo local sobre `199f5f1be029ad134621c72d173768f5bb7c465d`, HEAD remoto confirmado antes de editar. **Todavía no publicado ni validado por CI remota.**
+
+- Implementados modelos de perfil editable/versionado, propuesta semanal conservadora con aceptación/rechazo/reversión, SRS separado por reconocimiento/producción y primera integración con Hoy/Plan/Error Bank.
+- Implementados backup versionado, validación previa, reemplazo explícito con diario de recuperación y borrado por identidad/área. Falta completar revisión y cobertura de casos extremos antes de declarar terminado.
+- Writing Lab y su recuperación original no se han rehecho.
+- Validación local actual: lint y TypeScript pasan; **120 tests Vitest en 15 archivos**; build de producción pasa.
+- E2E intentado: el guard de seguridad rechaza el entorno por configuración/variables de servicios presentes. No inició servidor ni realizó llamadas. No se han inspeccionado ni publicado valores secretos. Hay que ejecutar en checkout/entorno limpio sin configuración de servicios, sin desactivar este guard.
+- Pendiente: nuevas E2E de perfil/SRS/restauración; ejecutar las 12 anteriores; ampliar tests de adaptación (dos muestras, repeticiones, asistencia, límites) y restauración (cuota, campos inesperados, borrado selectivo); revisar coherencia de fechas y presupuestos; documentación final; publicación y CI remota verde.
+- No hay servicios conectados, despliegue, llamadas pagadas ni QA físico. Las estimaciones de progreso anteriores describen el séptimo incremento, no acreditan la terminación del octavo.
+
 ## DONE
 
 ### Base y práctica diaria conservadas

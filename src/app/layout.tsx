@@ -1,3 +1,5 @@
+import { LocalStorageGuard } from "@/components/local-storage-guard";
+import { configured } from "@/lib/supabase";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -33,9 +35,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ["/diagnostic", "Diagnóstico", Compass],
               ["/plan", "Plan y actividad", BookOpen],
               ["/errors", "Error Bank", PenLine],
+              ["/vocabulary", "Vocabulario y SRS", BookOpen],
               ["/writing", "Writing Lab", PenLine],
               ["/library", "Biblioteca", BookOpen],
-              ["/settings", "Cuenta y conexión", Settings],
+              ["/settings", "Perfil y copias", Settings],
             ].map(([href, label, Icon]) => {
               const I = Icon as typeof Compass;
               return (
@@ -62,7 +65,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               AS
             </Link>
           </header>
-          <main>{children}</main>
+          <main>{configured()?children:<LocalStorageGuard>{children}</LocalStorageGuard>}</main>
           <footer>
             SLP 3333 TRAINER{" "}
             <span>

@@ -4,11 +4,16 @@ import Link from "next/link";
 import { useTraining } from "./use-training";
 import type { ErrorData } from "./error-bank";
 import { LocalPracticeNotice } from "./local-practice-notice";
+import { adaptivePractice } from "@/lib/adaptive";
+import { currentProfile, localDate } from "@/lib/coach-model";
+import { useCoach } from "./use-coach";
 import { nextPractice } from "@/lib/daily-practice";
 import { practiceRequest, PRACTICE_PREFIX } from "@/lib/local-practice";
 
 export function DailyPractice({ local }: { local: boolean }) {
   const { data, error, loading, mutate } = useTraining(local);
+  const {coach,ready:coachReady,error:coachError}=useCoach(local);
+  const today=localDate(new Date(),currentProfile(coach).timeZone);
   const [errors, setErrors] = useState<ErrorData | null>(null);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -25,14 +30,12 @@ export function DailyPractice({ local }: { local: boolean }) {
       });
     return () => abort.abort();
   }, [local]);
-  const next = nextPractice(
-    data,
-    errors,
-    new Date().toISOString().slice(0, 10),
-  );
+  const next = local && coachReady ? adaptivePractice(data,errors,coach,today) : nextPractice(data,errors,today);
   return (
     <>
       {local && <LocalPracticeNotice />}
+      {coachError&&<p role="alert">{coachError}</p>}
+      {local&&<p><Link href="/plan#adaptive">Revisar mi semana adaptada →</Link> · <Link href="/vocabulary">Vocabulario y SRS →</Link> · <Link href="/settings#backup">Copia de seguridad →</Link></p>}
       <section className="card" aria-label="Práctica siguiente">
         <div className="eyebrow">
           TU SIGUIENTE PRÁCTICA {next.week ? `· SEMANA ${next.week}` : ""}
@@ -86,7 +89,7 @@ export function DailyPractice({ local }: { local: boolean }) {
                     id: completionId.current,
                     skill: f.get("skill"),
                     minutes: Number(f.get("minutes")),
-                    studied_on: new Date().toISOString().slice(0, 10),
+                    studied_on: local ? today : new Date().toISOString().slice(0,10),
                     note: String(f.get("note")),
                   },
                 });

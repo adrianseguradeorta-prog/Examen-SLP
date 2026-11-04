@@ -43,7 +43,7 @@ export function Diagnostic({
         <Link href="/listening">3. Listening</Link> ·{" "}
         <Link href="#speaking">4. Speaking</Link>
       </nav>
-      <DiagnosticSummary data={data} />
+      <DiagnosticSummary data={data} local={local} owner={owner} />
       <p role="status">{loading ? "Recuperando muestras…" : message}</p>
       <ReadingPractice
         key={readingVersion}

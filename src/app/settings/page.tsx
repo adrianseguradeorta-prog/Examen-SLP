@@ -1,10 +1,13 @@
+import { TrainingProfile } from "@/components/training-profile";
+import { LocalBackup } from "@/components/local-backup";
 import { Account } from "@/components/account";
 import { configured } from "@/lib/supabase";
 export default function Settings() {
   return (
     <>
       <div className="eyebrow">TU ESPACIO PERSONAL</div>
-      <h1>Cuenta y conexión</h1>
+      <h1>Perfil y copias</h1>
+      {!configured() && <><TrainingProfile/><LocalBackup/></>}
       <p>La misma cuenta, tu progreso en todos tus dispositivos.</p>
       <Account connected={configured()} />
       <section className="card">

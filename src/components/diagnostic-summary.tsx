@@ -1,13 +1,18 @@
+"use client";
+import { useCoach } from "./use-coach";
+import { currentProfile } from "@/lib/coach-model";
 import Link from "next/link";
 import type { TrainingData } from "./use-training";
 import { taskHref } from "@/lib/task-rotation";
 import { diagnosticSummary } from "@/lib/diagnostic-summary";
-export function DiagnosticSummary({ data }: { data: TrainingData | null }) {
+export function DiagnosticSummary({ data, local = false, owner = "guest" }: { data: TrainingData | null; local?:boolean; owner?:string }) {
+  const {coach}=useCoach(local,owner);
+  const profile=currentProfile(coach);
   return (
     <section id="summary">
       <h2>Cuatro destrezas, evidencia separada</h2>
       <p>
-        Perfil declarado 3.2.2.2 · objetivo 3.3.3.3. No es un resultado de esta
+        Perfil declarado editable en Perfil y copias. No es un resultado de esta
         aplicación. Estimación provisional:{" "}
         <strong>evidencia insuficiente</strong>. Nunca constituye certificación
         oficial.
@@ -16,7 +21,7 @@ export function DiagnosticSummary({ data }: { data: TrainingData | null }) {
         {diagnosticSummary(data).map((s) => (
           <article className="card" key={s.skill}>
             <h3>{s.skill}</h3>
-            <p>Declarado: {s.declared}</p>
+            <p>Declarado: {profile.declared[s.skill]} · objetivo {profile.target[s.skill]}</p>
             <strong>{s.status}</strong>
             <p>{s.reason}</p>
             {s.last && (

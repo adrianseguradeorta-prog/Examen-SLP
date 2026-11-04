@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { LocalPracticeNotice } from "./local-practice-notice";
 import { practiceRequest } from "@/lib/local-practice";
 import { useEffect, useRef, useState } from "react";
@@ -251,6 +252,7 @@ export function ErrorBank({ local = false }: { local?: boolean }) {
                 {p.status} · {p.frequency} observaciones de error
               </p>
               <p lang="en">{p.prompt}</p>
+              {local && <Link href={`/vocabulary?pattern=${encodeURIComponent(p.id)}#add`}>Preparar una revisión de esta corrección →</Link>}
               <p className="small">
                 Después, registra qué ocurrió en una nueva sesión. Un consejo
                 mostrado no equivale a una actividad completada.
