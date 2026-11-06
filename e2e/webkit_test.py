@@ -37,6 +37,7 @@ class WebKitPilotTests(unittest.TestCase):
     def test_mobile_layout_keyboard_focus_and_profile(self):
         for path in ['/','/plan','/settings','/vocabulary','/errors','/diagnostic','/listening','/speaking','/writing']:
             self.page.goto(BASE+path)
+            self.page.wait_for_load_state('networkidle')
             expect(self.page.locator('main h1')).to_be_visible()
             self.page.wait_for_function("!document.body.innerText.includes('Comprobando el espacio local')")
             self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),path)
@@ -77,7 +78,9 @@ class WebKitPilotTests(unittest.TestCase):
             self.page.wait_for_function("document.querySelector('audio').currentTime > 0.1")
             self.page.locator('audio').evaluate('a=>a.pause()')
     def test_microphone_denial_keeps_notes(self):
-        self.context.add_init_script("Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{throw new DOMException('Denied in WebKit simulation','NotAllowedError')}})")
+        # Linux WebKit may omit MediaRecorder; this stub only reaches the denied-permission branch.
+        # It must never record or stand in for a physical microphone test.
+        self.context.add_init_script("if(!window.MediaRecorder)window.MediaRecorder=class{constructor(){throw Error('Unexpected recording in denial test')}}; Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{throw new DOMException('Denied in WebKit simulation','NotAllowedError')}})")
         self.page.goto(BASE+'/diagnostic#speaking')
         s=self.page.locator('#speaking')
         s.get_by_role('textbox').fill('These are my independent notes.')
