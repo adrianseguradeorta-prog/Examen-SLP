@@ -3,14 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
     "format": "prettier --write src tests package.json tsconfig.json",
-    "test:e2e": "python3 e2e/run.py"
+    "test:e2e": "python3 e2e/run.py",
+    "lan:addresses": "node scripts/local-pilot.mjs addresses",
+    "lan:prepare": "node scripts/local-pilot.mjs prepare",
+    "lan:build": "node scripts/local-pilot.mjs build",
+    "lan": "node scripts/local-pilot.mjs start"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
