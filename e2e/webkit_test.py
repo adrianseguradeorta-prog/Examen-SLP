@@ -73,9 +73,14 @@ class WebKitPilotTests(unittest.TestCase):
         expect(self.page.get_by_role('radio').first).to_be_checked()
         for version in ['library-evenings-v1','energy-meeting-v1','mentoring-v1']:
             self.page.get_by_label('Tarea de listening').select_option(version)
+            expect(self.page.locator('audio')).to_have_attribute('src',f'/audio/{version}.mp3')
             self.page.wait_for_function("document.querySelector('audio').duration > 30")
             self.page.locator('audio').evaluate('async a=>{await a.play();}')
-            self.page.wait_for_function("document.querySelector('audio').currentTime > 0.1")
+            try:
+                self.page.wait_for_function("document.querySelector('audio').currentTime > 0.1")
+            except Exception:
+                state=self.page.locator('audio').evaluate('a=>({src:a.currentSrc,time:a.currentTime,paused:a.paused,ready:a.readyState,error:a.error?.message})')
+                self.fail(f'Audio did not progress for {version}: {state}')
             self.page.locator('audio').evaluate('a=>a.pause()')
     def test_microphone_denial_keeps_notes(self):
         # Linux WebKit may omit MediaRecorder; this stub only reaches the denied-permission branch.
