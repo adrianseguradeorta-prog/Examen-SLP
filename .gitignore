@@ -18,3 +18,16 @@ backups/
 uploads/
 recordings/
 research-downloads/
+
+*.tsbuildinfo
+
+__pycache__/
+.venv/
+
+# Local pilot certificates/configuration (never commit private keys)
+.local-https*/
+certificates/
+*.p12
+*.pfx
+*.crt
+*.cer
