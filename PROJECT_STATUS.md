@@ -2,7 +2,7 @@
 
 Actualizado: 2026-11-06. Noveno incremento: preparación del piloto local PC/iPhone. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
 
-## Noveno incremento — implementado, CI remota pendiente
+## Noveno incremento — DONE: preparación publicada y CI remota verde
 
 - Partida comprobada local/remota: `434effed6b42cf091610ee1f64167fa929f4e701`. No se han rehecho perfil, adaptación, SRS, Error Bank, diagnóstico ni copias.
 - Lanzador HTTPS LAN en Node sin nuevas dependencias de aplicación: selecciona IPv4 privada real, valida certificado/IP/clave/fecha, mantiene Next en loopback y HTTPS en esa interfaz:3443; rechaza pares públicos/Host/Origin ajenos. Preparación con mkcert, compilación explícita sin servicios, claves/configuración ignoradas por Git. No crea túneles ni abre router/firewall. Inicio habitual limitado a loopback.
@@ -11,8 +11,10 @@ Actualizado: 2026-11-06. Noveno incremento: preparación del piloto local PC/iPh
 - Correcciones concretas de uso: checkboxes fuera del estilo de inputs de ancho completo; controles táctiles de 44 px, campos de 16 px, límites de desbordamiento, sidebar desplazable, foco visible, salto al contenido y contraste de texto secundario/objetivo. Corregido mensaje obsoleto que afirmaba que no existía restauración.
 - Revisión técnica de 3 Reading, 3 Listening, 3 Writing y 4 Speaking/16 prompts: preguntas/claves/explicaciones coherentes; transcripciones iguales a guiones y audios reproducibles con igualdad de PCM decodificado. Sin cambios al banco/versiones. [Auditoría y límites](docs/testing/CONTENT_AUDIT_V1.md); no calibración humana.
 - [PILOTO_7_DIAS](docs/testing/PILOTO_7_DIAS.md): 390 minutos orientativos ajustables al perfil, práctica principal PC, datos de prueba iPhone, copias con fecha, restauración aislada y plantilla de incidencias. Todos los ensayos físicos continúan PENDIENTES.
-- Validado localmente: lint, TypeScript, **147 tests / 18 archivos**, build. E2E local intentado y bloqueado por `listen EPERM`; no se considera aprobado. Instalación local de WebKit se interrumpió con el entorno offline. CI conserva las 18 E2E anteriores y añade conflicto Writing, 5 WebKit móviles y un ensayo HTTPS con certificado temporal: **25 pruebas configuradas**, ejecución remota pendiente.
+- Validado localmente: lint, TypeScript, **147 tests / 18 archivos**, build. E2E local intentado y bloqueado por `listen EPERM`; no se considera aprobado. Instalación local de WebKit se interrumpió con el entorno offline. CI conserva las 18 E2E anteriores y añade conflicto Writing, 5 WebKit móviles y un ensayo HTTPS con certificado temporal: **25 pruebas ejecutadas y aprobadas en CI remota** (19 Chromium, 5 WebKit Linux y 1 HTTPS).
 - No conexiones Supabase/Vercel/OpenAI, APIs pagadas, despliegue, cuentas nuevas ni conservación de audio. Certificados temporales de pruebas no se publican ni instalan en confianza del sistema.
+- **CI remota verde sobre `cacce395346b9bd02c5f0525a0cef65beabf22dd`:** [ejecución 42215928635](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/42215928635). npm ci, lint, TypeScript, 147 Vitest/18 archivos, build y 25 E2E completados. Los fallos iniciales de la suite nueva se resolvieron esperando el cambio real de audio, evitando navegación interrumpida y haciendo determinista el permiso denegado simulado. Runner Linux con salida de audio virtual; no micrófono físico. Se conservaron todas las pruebas anteriores.
+- Commits publicados en `feat/training-foundation`, árboles local/remoto idénticos, sin merge a main ni force push. Este cierre documental registra una ejecución ya concluida; su CI se comprueba también antes de entregar al usuario. El piloto físico de siete días aún no se ha realizado.
 
 ## Octavo incremento — DONE: publicado y CI remota verde
 
@@ -122,7 +124,7 @@ Estimación manual de alcance y madurez; no se calcula por líneas de código, n
 
 | Área | Progreso orientativo | Trabajo pendiente principal |
 |---|---|---|
-| Incremento actual | █████████░ 90 % | Preparación implementada; CI remota y publicación por verificar, piloto físico pendiente |
+| Incremento actual (preparación) | ██████████ 100 % | Publicado y validado automáticamente; ejecución del piloto físico PENDIENTE |
 | Práctica local y UX | ████████░░ 80 % | Uso sostenido y accesibilidad |
 | Contenido y administración | ██░░░░░░░░ 20 % | Banco amplio y revisión editorial |
 | Cloud, sincronización y seguridad | ██░░░░░░░░ 20 % | Auth real, permisos, conflictos y operación |
