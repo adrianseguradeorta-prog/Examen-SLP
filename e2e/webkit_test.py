@@ -85,12 +85,13 @@ class WebKitPilotTests(unittest.TestCase):
     def test_microphone_denial_keeps_notes(self):
         # Linux WebKit may omit MediaRecorder; this stub only reaches the denied-permission branch.
         # It must never record or stand in for a physical microphone test.
-        self.context.add_init_script("if(!window.MediaRecorder)window.MediaRecorder=class{constructor(){throw Error('Unexpected recording in denial test')}}; Object.defineProperty(navigator.mediaDevices,'getUserMedia',{value:async()=>{throw new DOMException('Denied in WebKit simulation','NotAllowedError')}})")
+        self.context.add_init_script("if(!window.MediaRecorder)window.MediaRecorder=class{constructor(){throw Error('Unexpected recording in denial test')}}; window.__deniedCalls=0; Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{window.__deniedCalls++; const e=new Error('Denied in WebKit simulation');e.name='NotAllowedError';throw e;}}})")
         self.page.goto(BASE+'/diagnostic#speaking')
         s=self.page.locator('#speaking')
         s.get_by_role('textbox').fill('These are my independent notes.')
         s.get_by_role('button',name='Iniciar grabación efímera').click()
         expect(s.get_by_text('Denied in WebKit simulation')).to_be_visible()
+        self.assertEqual(self.page.evaluate('window.__deniedCalls'),1)
         self.page.reload()
         expect(s.get_by_role('textbox')).to_have_value('These are my independent notes.')
     def test_backup_roundtrip_and_corrupt_file(self):
