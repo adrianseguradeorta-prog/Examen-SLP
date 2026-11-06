@@ -1,6 +1,18 @@
 # PROJECT_STATUS
 
-Actualizado: 2026-11-04. Octavo incremento: perfil, adaptación local, SRS y copias completas. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
+Actualizado: 2026-11-06. Noveno incremento: preparación del piloto local PC/iPhone. Rama `feat/training-foundation`. Sin servicios conectados ni despliegue.
+
+## Noveno incremento — implementado, CI remota pendiente
+
+- Partida comprobada local/remota: `434effed6b42cf091610ee1f64167fa929f4e701`. No se han rehecho perfil, adaptación, SRS, Error Bank, diagnóstico ni copias.
+- Lanzador HTTPS LAN en Node sin nuevas dependencias de aplicación: selecciona IPv4 privada real, valida certificado/IP/clave/fecha, mantiene Next en loopback y HTTPS en esa interfaz:3443; rechaza pares públicos/Host/Origin ajenos. Preparación con mkcert, compilación explícita sin servicios, claves/configuración ignoradas por Git. No crea túneles ni abre router/firewall. Inicio habitual limitado a loopback.
+- [HTTPS_LOCAL](docs/testing/HTTPS_LOCAL.md): instalación, confianza y retirada de certificados, red, permisos Safari, cambios de origen y límites de almacenamiento independiente PC/iPhone. Instalación en dispositivos del usuario PENDIENTE.
+- Corregida sobrescritura de Writing diagnóstico desde otra pestaña: comparación de copia esperada, bloqueo, descarga del texto anterior y recuperación tras recargar. Writing Lab original intacto.
+- Correcciones concretas de uso: checkboxes fuera del estilo de inputs de ancho completo; controles táctiles de 44 px, campos de 16 px, límites de desbordamiento, sidebar desplazable, foco visible, salto al contenido y contraste de texto secundario/objetivo. Corregido mensaje obsoleto que afirmaba que no existía restauración.
+- Revisión técnica de 3 Reading, 3 Listening, 3 Writing y 4 Speaking/16 prompts: preguntas/claves/explicaciones coherentes; transcripciones iguales a guiones y audios reproducibles con igualdad de PCM decodificado. Sin cambios al banco/versiones. [Auditoría y límites](docs/testing/CONTENT_AUDIT_V1.md); no calibración humana.
+- [PILOTO_7_DIAS](docs/testing/PILOTO_7_DIAS.md): 390 minutos orientativos ajustables al perfil, práctica principal PC, datos de prueba iPhone, copias con fecha, restauración aislada y plantilla de incidencias. Todos los ensayos físicos continúan PENDIENTES.
+- Validado localmente: lint, TypeScript, **147 tests / 18 archivos**, build. E2E local intentado y bloqueado por `listen EPERM`; no se considera aprobado. Instalación local de WebKit se interrumpió con el entorno offline. CI conserva las 18 E2E anteriores y añade conflicto Writing, 5 WebKit móviles y un ensayo HTTPS con certificado temporal: **25 pruebas configuradas**, ejecución remota pendiente.
+- No conexiones Supabase/Vercel/OpenAI, APIs pagadas, despliegue, cuentas nuevas ni conservación de audio. Certificados temporales de pruebas no se publican ni instalan en confianza del sistema.
 
 ## Octavo incremento — DONE: publicado y CI remota verde
 
@@ -84,7 +96,7 @@ Actualizado: 2026-11-04. Octavo incremento: perfil, adaptación local, SRS y cop
 - **No se asigna SLP**: Reading/Listening son tareas breves no calibradas; Writing queda pendiente de revisión y Speaking no conserva audio revisable. Un resultado perfecto no prueba nivel 3.
 - Listening dispone de tres anuncios cortos y una sola voz sintética; no representa diversidad de acentos, conversación ni comprensión sostenida. Repetirlo es repaso.
 - Reading/Listening sin entregar y notas Speaking sin registrar ahora se guardan por tarea/identidad en el navegador. No se guarda la posición del reproductor; al volver se exige escucharlo de nuevo. El audio oral se pierde al salir/recargar por diseño. Navegadores con duración no finita o interrupción muestran duración no disponible.
-- Writing diagnóstico se edita desde una sola pestaña; no hay resolución de ediciones simultáneas en ese nuevo borrador. Un aviso de cuota/bloqueo exige descargar una copia. Borrar una muestra cerrada del historial no elimina silenciosamente su copia aún visible en el editor.
+- Writing diagnóstico bloquea ediciones detectadas en otra pestaña y conserva el texto para descargar; no fusiona copias simultáneas. Un aviso de cuota/bloqueo exige descargar una copia. Borrar una muestra cerrada del historial no elimina silenciosamente su copia aún visible en el editor.
 - Writing Lab conserva su control remoto de revisiones y conflictos, sin sincronización real mientras no se conecte Supabase. Selector de historial remoto pendiente.
 - Almacén local personal del navegador, sin cifrado ni cuentas locales: invitado es compartido en el mismo perfil. Borrar datos del sitio, navegación privada o cambiar origen/puerto/navegador puede eliminar u ocultar el progreso. No hay sincronización con iPhone ni importación automática a cloud.
 - Copia completa con borradores disponible en Perfil y copias; el JSON antiguo de Hoy sigue siendo parcial y no importable. Copias sin cifrar, máximo 5 MiB, misma identidad y reemplazo, no merge. Cerrar otras pestañas al restaurar/borrar; quota/corrupción pueden bloquear recuperación y requieren conservar una copia externa. Error Bank y borrador diagnóstico se editan desde una pestaña.
@@ -102,7 +114,7 @@ Actualizado: 2026-11-04. Octavo incremento: perfil, adaptación local, SRS y cop
 
 ## NEXT STEPS
 
-Siguiente incremento prioritario: piloto físico PC/iPhone y una semana real de uso de perfil, adaptación, SRS y restauración; corregir incidencias observadas antes de integrar servicios. Mantener QA físico pendiente hasta disponer de evidencias. Presupuesto IA y conservación de audio siguen sin decidir.
+Siguiente incremento prioritario: ejecutar el piloto preparado con PC/iPhone físicos, recoger incidencias y corregir los fallos reproducibles antes de integrar servicios. Mantener QA físico pendiente hasta disponer de evidencias. Presupuesto IA y conservación de audio siguen sin decidir.
 
 ## PROGRESO ORIENTATIVO DEL PROYECTO
 
@@ -110,7 +122,7 @@ Estimación manual de alcance y madurez; no se calcula por líneas de código, n
 
 | Área | Progreso orientativo | Trabajo pendiente principal |
 |---|---|---|
-| Incremento actual | ██████████ 100 % | Alcance local implementado, publicado y CI remota verificada; QA físico pendiente explícito |
+| Incremento actual | █████████░ 90 % | Preparación implementada; CI remota y publicación por verificar, piloto físico pendiente |
 | Práctica local y UX | ████████░░ 80 % | Uso sostenido y accesibilidad |
 | Contenido y administración | ██░░░░░░░░ 20 % | Banco amplio y revisión editorial |
 | Cloud, sincronización y seguridad | ██░░░░░░░░ 20 % | Auth real, permisos, conflictos y operación |
@@ -118,7 +130,7 @@ Estimación manual de alcance y madurez; no se calcula por líneas de código, n
 | Evaluación y calibración | █░░░░░░░░░ 10 % | Revisión cualificada y evidencias longitudinales |
 | Adaptación y SRS | ██████░░░░ 60 % | Validación pedagógica, retención, sincronización y límites de historial |
 | Simulacros e informes | █░░░░░░░░░ 10 % | Mocks completos y reportes periódicos |
-| QA, PWA y operación | ████░░░░░░ 40 % | Dispositivos físicos, Safari, offline y operación productiva |
+| QA, PWA y operación | █████░░░░░ 45 % | Dispositivos físicos, Safari, offline y operación productiva |
 | Aplicación completa | ████░░░░░░ ≈35 % | Voz, evaluación fiable y sincronización siguen siendo las mayores incertidumbres |
 
 Estimación manual conservadora de alcance, no métrica calculada ni avance lingüístico. Esfuerzo técnico restante: **400–680 horas / 10–17 semanas** a tiempo completo, más revisión de especialistas para calibración. No es fecha comprometida; depende de autorización futura de servicios y pruebas físicas. No incluye app nativa. No se ha realizado gasto de IA ni cambiado el presupuesto.

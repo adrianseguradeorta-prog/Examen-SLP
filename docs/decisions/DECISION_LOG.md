@@ -37,3 +37,10 @@ El usuario respondió «Perfecto, continua con el programa» tras propuesta de o
 - SRS 1/3/7/14/30 con producción separada, confirmación manual al enlazar un error y sin etiqueta de dominio automático.
 - Restauración por reemplazo confirmado, sin merge. Copia completa validada de hasta 5 MiB, journal de recuperación; conservar exposiciones al borrar solo progreso. Cerrar otras pestañas, no prometer atomicidad distribuida ni recuperación si el navegador borra el sitio.
 - Mantener 12 E2E anteriores y añadir 6 recorridos. Chromium con micrófono simulado; no QA físico ni Safari/iPhone.
+
+## 2026-11-06 — Piloto HTTPS local y validación WebKit
+
+- Usar mkcert como herramienta de usuario para confianza local y un proxy TLS de Node (sin dependencia npm), con Next en producción loopback. No dev server expuesto, túneles ni router público. Certificados ignorados, no sustituidos automáticamente y retirada documentada.
+- Mantener progreso principal en localhost PC; iPhone con datos de prueba porque HTTPS/origen/dispositivo no sincronizan.
+- Corregir conflictos demostrables de Writing diagnóstico y controles/contraste; conservar Writing Lab. Añadir WebKit de Linux a CI, separado explícitamente de QA físico iOS.
+- Revisar el banco existente y probar reproducibilidad de audios; ninguna etiqueta de calibración ni material masivo. Preparar siete días adaptables al tiempo disponible.

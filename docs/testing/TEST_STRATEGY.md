@@ -63,3 +63,9 @@ Lint, TypeScript, **136 tests Vitest en 16 archivos**, build y **18 E2E Chromium
 El guard E2E sigue rechazando configuración cloud y no se ha desactivado. En este executor había solo una variable de metadatos `OPENAI_CLUSTER`: se omitió exclusivamente del proceso de prueba (`env -u OPENAI_CLUSTER`); no había archivos .env de servicio. El acceso adicional al puerto local resolvió `listen EPERM`. Se utilizó Chromium instalado con `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium`; en CI se instala el Chromium de Playwright como antes. No se enviaron peticiones de servicio. QA físico sigue pendiente.
 
 Publicación verificada el 2026-11-04: commit `25eda84fcc18e632732a251d597c3fcfaf133e70`, [CI 41831824649](https://github.com/adrianseguradeorta-prog/Examen-SLP/actions/runs/41831824649) completada con éxito. Logs remotos confirman 136 Vitest/16 archivos y 18 E2E; no se omitieron pruebas ni se conectaron servicios.
+
+## Incremento 9 — piloto local
+
+147 tests Vitest / 18 archivos. Nuevas comprobaciones de claves/tipos/transcripciones del contenido, rechazo de configuración de servicios y controles de red del lanzador, y conflicto de borradores Writing. Suite E2E configurada: 19 Chromium (18 previas + conflicto Writing), 5 WebKit Linux con viewport móvil y 1 integración HTTPS con certificado temporal explícitamente confiado por el cliente de prueba. No se modifica la confianza del sistema ni se conservan claves en artefactos. CI instala ambos navegadores; no se omiten pruebas por falta de WebKit.
+
+Lint, typecheck, tests y build pasan localmente; E2E local bloqueado por permiso de puerto (EPERM). Resultados de la suite ampliada pendientes de CI en esta versión documental. WebKit automatizado no equivale a Safari/iPhone físico. [QA físico](PHYSICAL_QA.md), [piloto](PILOTO_7_DIAS.md) y [auditoría de contenido](CONTENT_AUDIT_V1.md).

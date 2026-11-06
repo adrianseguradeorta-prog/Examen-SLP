@@ -104,3 +104,7 @@ E2E se ejecuta en un servidor Next de producción sin variables de servicios; Py
 No necesita variables ni nuevas conexiones. Perfil y copias, propuesta semanal y Vocabulario/SRS usan almacenamiento local aislado por identidad. Las copias completas versionadas se exportan/restauran desde Ajustes; el JSON antiguo de Hoy sigue siendo solo exportación parcial. Incluyen borradores, nunca audio ni credenciales. Consultar [guía de copias](../product/COPIA_DE_SEGURIDAD.md).
 
 No se han añadido/aplicado migraciones cloud para estas entidades. Su sincronización, permisos, conflictos y migración explícita requieren otro incremento autorizado. No activar servicios para probar estas funciones. Writing Lab mantiene sus contratos remotos; una copia local no confirma sincronización servidor. El presupuesto IA sigue pendiente (45/60 frente a 100/150 USD), sin llamadas ni cambios de límites.
+
+## Piloto LAN sin servicios
+
+El incremento 9 añade [HTTPS local](../testing/HTTPS_LOCAL.md) sin despliegue. Usa `npm run lan:prepare -- IP_PRIVADA`, `npm run lan:build` y `npm run lan` siguiendo la preparación de mkcert de la guía. Nunca introducir claves cloud ni subir certificados privados. El teléfono y localhost mantienen almacenes distintos; no hay sincronización.

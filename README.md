@@ -10,6 +10,10 @@ Para empezar hoy: [DIAGNÓSTICO Y PRIMERA SEMANA](docs/product/DIAGNOSTICO_Y_PRI
 
 Para uso regular: [MI SEMANA ADAPTADA](docs/product/MI_SEMANA_ADAPTADA.md) y [COPIA DE SEGURIDAD](docs/product/COPIA_DE_SEGURIDAD.md). Perfil → Plan → Hoy → SRS/Error Bank → copia semanal.
 
+## Piloto local PC/iPhone
+
+Empieza con [PILOTO DE 7 DÍAS](docs/testing/PILOTO_7_DIAS.md). Para Safari en la misma red, sigue [HTTPS LOCAL](docs/testing/HTTPS_LOCAL.md): `lan:addresses`, `lan:prepare`, `lan:build` y `lan`. Certificados privados fuera de Git, sin túneles, sin despliegue. PC mantiene `http://localhost:3000`; iPhone necesita HTTPS confiable y guarda datos separados. Pruebas físicas pendientes.
+
 ## Documentación
 
 - [Entrega ejecutiva](docs/product/EXECUTIVE_SUMMARY.md)

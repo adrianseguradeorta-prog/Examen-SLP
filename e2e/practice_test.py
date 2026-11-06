@@ -386,3 +386,21 @@ class PracticeBrowserTests(unittest.TestCase):
         self.assertTrue(item['validatedByUser'])
         self.assertIsNotNone(item['patternId'])
         self.assertEqual(item['reviews'][0]['mode'],'production')
+
+    def test_diagnostic_writing_second_tab_cannot_overwrite_newer_text(self):
+        self.open('/diagnostic#writing')
+        editor=self.page.get_by_role('textbox',name='Muestra escrita del diagnóstico')
+        editor.fill(TEXT)
+        other=self.context.new_page()
+        self.watch(other)
+        other.goto(BASE+'/diagnostic#writing')
+        newer=TEXT+' The second tab adds this independent sentence.'
+        other.get_by_role('textbox',name='Muestra escrita del diagnóstico').fill(newer)
+        expect(editor).to_be_disabled()
+        expect(self.page.get_by_text('Este borrador cambió en otra pestaña. Descarga tu texto y recarga antes de continuar.',exact=True)).to_be_visible()
+        with self.page.expect_download() as download:
+            self.page.get_by_role('button',name='Descargar texto',exact=True).click()
+        self.assertEqual(Path(download.value.path()).read_text(),TEXT)
+        other.close()
+        self.page.reload()
+        expect(editor).to_have_value(newer)

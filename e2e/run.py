@@ -1,4 +1,4 @@
-"""Run real Chromium against the production server, with all cloud settings disabled.
+"""Run Chromium and WebKit against the production server, with all cloud settings disabled.
 Requires Python >=3.11 and requirements.txt. No paid/external service is used by the app.
 """
 import os

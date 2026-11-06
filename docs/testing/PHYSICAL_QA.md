@@ -6,7 +6,7 @@
 
 1. Descargar la rama `feat/training-foundation` y anotar el SHA probado, fecha, persona, dispositivo, sistema operativo y versión exacta del navegador. Usar notas/textos de prueba, sin información sensible.
 2. En PC, con Node.js 24: `npm ci`, después `npm run dev`. Dejar la terminal abierta. Abrir `http://localhost:3000`. No configurar Supabase, Vercel u OpenAI. Usar siempre el mismo origen/puerto y un perfil normal, no incógnito.
-3. Para iPhone se necesita **una dirección HTTPS local de la app con certificado confiable en Safari**, accesible desde la misma red. `localhost` en el teléfono no apunta al PC. Una IP doméstica con HTTP no habilita correctamente las APIs seguras de micrófono/identificadores. Aún no se proporciona ni se ha validado ese acceso: prepararlo en una sesión de QA local con certificado de confianza, sin despliegue ni servicios cloud. Hasta disponer de él, mantener los ensayos iPhone como PENDIENTES. No declarar un rechazo por origen inseguro como prueba de que el grabador falla en HTTPS.
+3. Para iPhone se necesita **una dirección HTTPS local de la app con certificado confiable en Safari**, accesible desde la misma red. `localhost` en el teléfono no apunta al PC. Una IP doméstica con HTTP no habilita correctamente las APIs seguras de micrófono/identificadores. El acceso está preparado por el lanzador y las instrucciones de [HTTPS_LOCAL.md](HTTPS_LOCAL.md); su instalación y prueba en el PC/iPhone del usuario siguen pendientes, sin despliegue ni servicios cloud. Hasta disponer de él, mantener los ensayos iPhone como PENDIENTES. No declarar un rechazo por origen inseguro como prueba de que el grabador falla en HTTPS.
 4. El almacenamiento de la dirección HTTPS del teléfono será distinto del `localhost` del ordenador. No se espera sincronización. Crear muestras de prueba por separado.
 5. Marcar PASS solo después de ejecutar todos los pasos de la fila y observar el resultado. Marcar FAIL si falla y anotar pasos, mensajes, hora, versión y si se pudo recuperar el trabajo. Si no se pudo ejecutar, mantener PENDIENTE y explicar el motivo. No adjuntar grabaciones personales.
 
@@ -26,15 +26,15 @@ Registro: SHA ______ · fecha ______ · persona ______ · dispositivo/SO ______ 
 | Micrófono: denegar permiso, recuperar permiso en el navegador y volver a grabar | Error comprensible, notas conservadas, posible reintento | PENDIENTE | No ejecutado físicamente |
 | Speaking: grabar 30–60 s, detener, escuchar con altavoces y auriculares | Audio audible; duración solo si fiable; registrar notas sin conservar audio | PENDIENTE | No comparar micrófono físico con simulación |
 | Speaking: escribir notas, recargar y cerrar/reabrir antes de entregar | Notas recuperadas; audio ausente; exige nueva grabación para entregar | PENDIENTE | No ejecutado físicamente |
-| Dos pestañas: editar Reading/Listening en la segunda y volver a la primera | Primera bloquea la copia antigua y pide recargar; no pisa respuestas | PENDIENTE | Writing diagnóstico sigue recomendado en una pestaña |
+| Dos pestañas: editar Reading/Listening en la segunda y volver a la primera | Primera bloquea la copia antigua y pide recargar; no pisa respuestas | PENDIENTE | Writing diagnóstico también bloquea una copia modificada en otra pestaña |
 | Error Bank/Plan: guardar observación, plan y actividad, recargar | Registros conservados y minutos no duplicados | PENDIENTE | No ejecutado físicamente |
-| Exportar historial desde Hoy y texto desde Writing | Descargas legibles; el JSON no contiene audio ni borradores pendientes | PENDIENTE | No hay importación todavía |
+| Exportar historial desde Hoy y texto desde Writing | Descargas legibles; el JSON no contiene audio ni borradores pendientes | PENDIENTE | Exportación antigua parcial; para restaurar usar Perfil y copias → copia completa |
 
 ## iPhone / Safari
 
 | Ensayo y procedimiento | Resultado esperado | Estado: PENDIENTE / PASS / FAIL | Observaciones |
 |---|---|---|---|
-| Abrir URL HTTPS local confiable en Safari | Hoy y formularios utilizables; sin advertencia de origen inseguro | PENDIENTE | Acceso HTTPS local aún por preparar |
+| Abrir URL HTTPS local confiable en Safari | Hoy y formularios utilizables; sin advertencia de origen inseguro | PENDIENTE | Procedimiento HTTPS disponible; ensayo físico pendiente |
 | Reading/Listening: responder, recargar, ir a Hoy y volver | Respuestas pendientes recuperadas en el mismo origen | PENDIENTE | No ejecutado físicamente |
 | Writing: escribir en ambos editores, cerrar pestaña, reabrir URL | Texto recuperado; mensajes de guardado coherentes | PENDIENTE | Probar también cierre de Safari desde selector de apps |
 | Permiso de micrófono: denegar y conceder desde Safari/Ajustes | Sin pérdida de notas; mensaje y reintento utilizables | PENDIENTE | No ejecutado físicamente |
@@ -60,3 +60,7 @@ Dejar la pestaña abierta si aún contiene texto no confirmado. Descargar Writin
 | iPhone: reconocer/producir una expresión y recuperar su historial al reabrir | PENDIENTE | Sin acceso físico verificado |
 | PC/iPhone: descargar copia completa, verificar archivo, restaurar sobre datos de prueba | PENDIENTE | Exportar primero datos propios; cerrar otras pestañas |
 | PC/iPhone: memoria/cuota reducida, aviso de fallo y conservación de trabajo | PENDIENTE | Las simulaciones automatizadas no acreditan almacenamiento físico |
+
+## Piloto de siete días
+
+Sigue [PILOTO_7_DIAS.md](PILOTO_7_DIAS.md) y utiliza su plantilla de incidencia. WebKit automatizado en Linux y un viewport móvil no acreditan Safari físico. Todas las filas anteriores siguen PENDIENTES hasta recibir evidencia del usuario.
