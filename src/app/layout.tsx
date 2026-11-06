@@ -21,6 +21,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body>
+        <a className="skip-link" href="#main-content">
+          Saltar al contenido
+        </a>
         <aside className="sidebar">
           <Link className="brand" href="/">
             SLP<span>3333</span>
@@ -65,7 +68,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               AS
             </Link>
           </header>
-          <main>
+          <main id="main-content" tabIndex={-1}>
             {configured() ? (
               children
             ) : (

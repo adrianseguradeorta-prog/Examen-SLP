@@ -186,7 +186,7 @@ export function DailyPractice({ local }: { local: boolean }) {
           Cuando se agoten, las repeticiones seguirán siendo útiles como
           práctica, pero no aumentarán la evidencia independiente.
         </p>
-        <Link href="/plan">Ajustar inicio y horas semanales →</Link>
+        <Link href="/plan">Consultar plan y disponibilidad →</Link>
       </section>
       <section className="card">
         <h2>Tu primera sesión · unos 40 minutos</h2>
@@ -252,7 +252,7 @@ export function DailyPractice({ local }: { local: boolean }) {
                 a.click();
                 URL.revokeObjectURL(url);
                 setMessage(
-                  "Historial exportado. Writing se descarga por separado desde su editor. La importación aún no está implementada.",
+                  "Historial parcial exportado. Para incluir borradores y poder restaurar, usa Perfil y copias → Exportar copia completa.",
                 );
               } catch {
                 setMessage(

@@ -313,3 +313,32 @@ it("persists four closed samples separately by identity and rejects changing an 
     (await (await reopened("/api/training")).json()).activities,
   ).toHaveLength(1);
 });
+
+import { compareAndSaveDiagnosticDraft } from "../src/lib/diagnostic-draft";
+it("refuses a stale Writing diagnostic save and preserves the other tab's text", () => {
+  const s = new MemoryStore(),
+    d = newDiagnosticDraft(
+      "guest",
+      () => crypto.randomUUID(),
+      () => date,
+    );
+  const original = compareAndSaveDiagnosticDraft(
+    s,
+    { ...d, text: "Original draft" },
+    null,
+  );
+  const updated = compareAndSaveDiagnosticDraft(
+    s,
+    { ...d, text: "New text from the other tab" },
+    original,
+  );
+  expect(() =>
+    compareAndSaveDiagnosticDraft(
+      s,
+      { ...d, text: "Stale overwrite" },
+      original,
+    ),
+  ).toThrow(/otra pestaña/);
+  expect(s.getItem(diagnosticDraftKey("guest"))).toBe(updated);
+  expect(s.getItem(diagnosticDraftKey("other"))).toBeNull();
+});

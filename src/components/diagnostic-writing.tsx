@@ -8,7 +8,7 @@ import {
   diagnosticDraftKey,
   newDiagnosticDraft,
   parseDiagnosticDraft,
-  saveDiagnosticDraft,
+  compareAndSaveDiagnosticDraft,
   type DiagnosticDraft,
 } from "@/lib/diagnostic-draft";
 export function DiagnosticWriting({
@@ -31,6 +31,8 @@ export function DiagnosticWriting({
   const [downloaded, setDownloaded] = useState(false);
   const [message, setMessage] = useState("Recuperando borrador diagnóstico…");
   const mounted = useRef(true);
+  const expectedRaw = useRef<string | null>(null);
+  const [locked, setLocked] = useState(false);
   useEffect(() => {
     mounted.current = true;
     let cancelled = false;
@@ -39,6 +41,7 @@ export function DiagnosticWriting({
       try {
         const raw = localStorage.getItem(diagnosticDraftKey(owner, version));
         const restored = parseDiagnosticDraft(raw, owner, version);
+        expectedRaw.current = raw;
         if (raw && !restored)
           throw Error(
             "La copia local tiene un formato inválido; se conserva sin sobrescribir. No se ha abierto el editor.",
@@ -64,7 +67,21 @@ export function DiagnosticWriting({
         );
       }
     });
+    const changed = (e: StorageEvent) => {
+      if (
+        (!e.key || e.key === diagnosticDraftKey(owner, version)) &&
+        e.newValue !== expectedRaw.current
+      ) {
+        setLocked(true);
+        setDurable(false);
+        setMessage(
+          "Este borrador cambió en otra pestaña. Descarga tu texto y recarga antes de continuar.",
+        );
+      }
+    };
+    window.addEventListener("storage", changed);
     return () => {
+      window.removeEventListener("storage", changed);
       cancelled = true;
       mounted.current = false;
     };
@@ -84,7 +101,11 @@ export function DiagnosticWriting({
     setDownloaded(false);
     setDraft(next);
     try {
-      saveDiagnosticDraft(localStorage, next);
+      expectedRaw.current = compareAndSaveDiagnosticDraft(
+        localStorage,
+        next,
+        expectedRaw.current,
+      );
       setDurable(true);
       setMessage(
         "Borrador guardado en este navegador; todavía no es una muestra entregada.",
@@ -103,7 +124,7 @@ export function DiagnosticWriting({
         skill="writing"
         version={version}
         data={data}
-        disabled={busy}
+        disabled={busy || locked || (!!draft?.text && !durable)}
       />
       <h2>{diagnosticWriting.title}</h2>
       <p lang="en">{diagnosticWriting.prompt}</p>
@@ -123,7 +144,7 @@ export function DiagnosticWriting({
         lang="en"
         spellCheck={false}
         maxLength={30000}
-        disabled={!draft || !data || busy || closed}
+        disabled={!draft || !data || busy || closed || locked}
         value={data ? (draft?.text ?? "") : ""}
         onChange={(e) =>
           draft &&
@@ -144,12 +165,27 @@ export function DiagnosticWriting({
       <button
         className="button"
         disabled={
-          !draft || busy || closed || !data || draft.text.trim().length < 30
+          !draft ||
+          busy ||
+          closed ||
+          locked ||
+          !data ||
+          draft.text.trim().length < 30
         }
         onClick={async () => {
           if (!draft) return;
           setBusy(true);
           try {
+            if (
+              localStorage.getItem(diagnosticDraftKey(owner, version)) !==
+              expectedRaw.current
+            ) {
+              setLocked(true);
+              setDurable(false);
+              throw Error(
+                "Este borrador cambió en otra pestaña. Descarga tu texto y recarga antes de entregar.",
+              );
+            }
             await mutate({
               action: "submission",
               data: {
@@ -163,7 +199,11 @@ export function DiagnosticWriting({
             const done = { ...draft, closed: true, dirty: false };
             setDraft(done);
             try {
-              saveDiagnosticDraft(localStorage, done);
+              expectedRaw.current = compareAndSaveDiagnosticDraft(
+                localStorage,
+                done,
+                expectedRaw.current,
+              );
               setDurable(true);
             } catch {
               setDurable(false);
@@ -206,7 +246,7 @@ export function DiagnosticWriting({
       {closed && (
         <button
           className="text-button"
-          disabled={busy || !data}
+          disabled={busy || !data || locked}
           onClick={() => {
             // Do not replace the only copy if the closed sample cannot be found in history.
             if (
@@ -225,7 +265,11 @@ export function DiagnosticWriting({
               version,
             );
             try {
-              saveDiagnosticDraft(localStorage, next);
+              expectedRaw.current = compareAndSaveDiagnosticDraft(
+                localStorage,
+                next,
+                expectedRaw.current,
+              );
               setDraft(next);
               setDownloaded(false);
               setDurable(true);
@@ -243,7 +287,8 @@ export function DiagnosticWriting({
         </button>
       )}
       <p className="small muted">
-        Usa una pestaña para este borrador. La muestra entregada es inmutable;
+        Si otra pestaña modifica este borrador se bloquea la copia anterior;
+        descarga tu texto antes de recargar. La muestra entregada es inmutable;
         crear otra no modifica la anterior. Writing Lab y este borrador tienen
         claves separadas. Sin revisión cualificada no se asigna SLP.
       </p>

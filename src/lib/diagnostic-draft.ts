@@ -66,3 +66,18 @@ export function saveDiagnosticDraft(
     JSON.stringify(draft),
   );
 }
+
+// Check the exact copy read by this editor; never overwrite a newer tab's draft.
+export function compareAndSaveDiagnosticDraft(
+  store: Pick<Storage, "getItem" | "setItem">,
+  draft: DiagnosticDraft,
+  expected: string | null,
+) {
+  const key = diagnosticDraftKey(draft.userKey, draft.task);
+  if (store.getItem(key) !== expected)
+    throw Error(
+      "Este borrador cambió en otra pestaña. Descarga tu texto y recarga antes de continuar.",
+    );
+  saveDiagnosticDraft(store, draft);
+  return JSON.stringify(draft);
+}
